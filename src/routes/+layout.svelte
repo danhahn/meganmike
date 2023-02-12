@@ -10,7 +10,7 @@
 	<link rel="manifest" href="/site.webmanifest" />
 </svelte:head>
 
-<main class="container mx-auto text-center">
+<main class="container mx-auto text-center max-w-2xl">
 	<slot />
 </main>
 
