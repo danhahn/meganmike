@@ -12,14 +12,19 @@
 </svelte:head>
 
 <Navigation />
-<main class="container mx-auto text-center max-w-2xl">
+<main class="container mx-auto p-8 max-w-2xl">
 	<slot />
 </main>
+<footer class="text-megan-300 text-center lg:text-left p-5 border-t border-t-megan-200">
+	&copy: {new Date().getFullYear()} Megan and Mike All Rights Reserved.
+</footer>
 
 <style lang="postcss">
 	main {
 		min-height: var(--doc-height);
-		display: grid;
-		grid-template-rows: auto 1fr auto;
+	}
+
+	:global(body) {
+		@apply font-serif;
 	}
 </style>
