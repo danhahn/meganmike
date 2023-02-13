@@ -90,4 +90,7 @@
 	:global(html) {
 		background-color: theme(colors.megan.50);
 	}
+	:global(body) {
+		@apply font-serif;
+	}
 </style>
