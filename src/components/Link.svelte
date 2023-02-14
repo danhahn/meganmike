@@ -7,6 +7,6 @@
 
 <style lang="postcss">
 	a {
-		@apply block p-2 text-megan-100 uppercase;
+		@apply block p-2 text-megan-600 uppercase;
 	}
 </style>

@@ -7,10 +7,8 @@
 	};
 
 	$: hidden = !$nav ? 'hidden' : '';
-	$: showNav = $nav ? 'translate-x-0' : '';
+	$: showNav = $nav ? '--tw-translate-x: 0;' : '--tw-translate-x: -100%;';
 </script>
-
-{$nav ? 'open' : 'closed'}
 
 <nav
 	class="p-2 lg:p-4 grid grid-cols-mobile lg:grid-cols-desktop justify-between items-center bg-white"
@@ -31,16 +29,18 @@
 		</svg>
 	</a>
 	<div class="justify-self-end lg:hidden">
-		<button class="navbar-burger flex items-center text-megan-100 p-3" on:click={toggleSideBar}>
-			<svg
-				class="block h-4 w-4 fill-current"
-				viewBox="0 0 20 20"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<title>Mobile menu</title>
-				<path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-			</svg>
-		</button>
+		{#if !$nav}
+			<button class="navbar-burger flex items-center text-megan-100 p-3" on:click={toggleSideBar}>
+				<svg
+					class="block h-4 w-4 fill-current"
+					viewBox="0 0 20 20"
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<title>Mobile menu</title>
+					<path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+				</svg>
+			</button>
+		{/if}
 	</div>
 	<div class="hidden lg:block">
 		<ul>
@@ -58,13 +58,14 @@
 </nav>
 <div class="navbar-menu relative z-50 hidden" class:hidden>
 	<div class="navbar-backdrop fixed inset-0 bg-gray-800 opacity-25" />
-	<nav
-		class="-translate-x-full transition-all fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto"
+	<aside
+		style={showNav}
+		class={`-translate-x-full transition-transform fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto`}
 	>
 		<div class="flex items-center mb-8">
 			<a class="mr-auto text-3xl font-bold leading-none" href="/">
 				<svg
-					class="w-12 fill-megan-50"
+					class="w-12 fill-megan-600"
 					viewBox="0 0 530 368"
 					fill="none"
 					xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +80,7 @@
 			</a>
 			<button class="navbar-close" on:click={toggleSideBar}>
 				<svg
-					class="h-6 w-6 text-megan-100 cursor-pointer hover:text-megan-300"
+					class="h-6 w-6 text-megan-600 cursor-pointer hover:text-megan-800"
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
 					viewBox="0 0 24 24"
@@ -108,11 +109,11 @@
 			</ul>
 		</div>
 		<div class="mt-auto">
-			<p class="my-4 text-xs text-center text-megan-50">
+			<p class="my-4 text-xs text-center text-megan-700">
 				<span>Copyright © 2023</span>
 			</p>
 		</div>
-	</nav>
+	</aside>
 </div>
 
 <style lang="postcss">
