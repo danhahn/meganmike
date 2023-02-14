@@ -8,7 +8,11 @@
 
 	$: hidden = !$nav ? 'hidden' : '';
 	$: showNav = $nav ? '--tw-translate-x: 0;' : '--tw-translate-x: -100%;';
+
+	const checkResize = () => window.innerWidth >= 1024 && nav.set(false);
 </script>
+
+<svelte:window on:resize={checkResize} />
 
 <nav
 	class="p-2 lg:p-4 grid grid-cols-mobile lg:grid-cols-desktop justify-between items-center bg-white"
