@@ -1,1 +1,5 @@
-<h1>Contact</h1>
+<script>
+	import Headline from '$lib/Headline.svelte';
+</script>
+
+<Headline>Contact</Headline>

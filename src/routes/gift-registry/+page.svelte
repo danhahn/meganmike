@@ -1,1 +1,5 @@
-<h1>Gift Registry</h1>
+<script>
+	import Headline from '$lib/Headline.svelte';
+</script>
+
+<Headline>Gift Registry</Headline>

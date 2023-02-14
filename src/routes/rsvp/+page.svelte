@@ -1,1 +1,5 @@
-<h1>RSVP</h1>
+<script>
+	import Headline from '$lib/Headline.svelte';
+</script>
+
+<Headline>RSVP</Headline>

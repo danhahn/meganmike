@@ -1,9 +1,10 @@
 <script>
 	import Headline from '$lib/Headline.svelte';
+	import Section from '$lib/Section.svelte';
 </script>
 
 <Headline>Our Stroy</Headline>
-<section>
+<Section>
 	<h2>Mike</h2>
 	<p>
 		I still remember the day I met Megan in high school like it was yesterday. We were just friends
@@ -39,14 +40,4 @@
 	<p class="text-sm text-gray-400">
 		NOTE: this is not there real story I had chap GPT write it as filler
 	</p>
-</section>
-
-<style lang="postcss">
-	h2 {
-		@apply text-2xl text-megan-600 uppercase;
-	}
-
-	section {
-		@apply grid gap-4;
-	}
-</style>
+</Section>
