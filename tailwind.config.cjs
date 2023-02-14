@@ -16,6 +16,10 @@ module.exports = {
 					800: '#a3112e',
 					900: '#87152c'
 				}
+			},
+			gridTemplateColumns: {
+				desktop: '100px 1fr 100px',
+				mobile: '1fr 1fr'
 			}
 		}
 	},
