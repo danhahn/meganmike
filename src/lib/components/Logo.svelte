@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Stack from './Stack.svelte';
+
 	export let size: 'small' | 'large' = 'large';
 </script>
 
@@ -56,10 +58,17 @@
 {/if}
 
 {#if size === 'small'}
-	<div class={`sm-logo normal-case font-display text-2xl ${$$props.class}`}>
-		<span>M<span class="restName opacity-0">eagan</span></span>
-		<span class="translate-x-3 -mt-3 block">M<span class="restName opacity-0">ike</span></span>
-	</div>
+	<Stack>
+		<img
+			src="/butterfly.svg"
+			alt="butterfly"
+			class="opacity-40 z-10 -translate-x-4 -rotate-12  scale-50"
+		/>
+		<div class={`sm-logo normal-case font-display text-2xl z-20 ${$$props.class}`}>
+			<span>M<span class="restName opacity-0">eagan</span></span>
+			<span class="translate-x-3 -mt-3 block">M<span class="restName opacity-0">ike</span></span>
+		</div>
+	</Stack>
 {/if}
 
 <style lang="postcss">

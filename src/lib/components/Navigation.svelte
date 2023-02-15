@@ -2,6 +2,7 @@
 	import { nav } from '$lib/stores/navigation';
 	import A from './Link.svelte';
 	import Logo from './Logo.svelte';
+	import Stack from './Stack.svelte';
 
 	const toggleSideBar = () => {
 		nav.set(!$nav);
@@ -36,9 +37,17 @@
 		{/if}
 	</div>
 	<div class="hidden lg:grid lg:gap-2">
-		<div class="text-megan-100 text-center font-display text-5xl tracking-tighter">
-			Megan & Mike
-		</div>
+		<Stack class="items-center justify-center">
+			<img src="/butterfly.svg" alt="butterfly" class="opacity-50 z-10 -rotate-12 translate-x-10" />
+			<img
+				src="/butterfly.svg"
+				alt="butterfly"
+				class="opacity-50 z-10 rotate-12 translate-x-20 scale-50"
+			/>
+			<div class="text-megan-100 text-center font-display text-5xl tracking-tighter z-20">
+				Megan & Mike
+			</div>
+		</Stack>
 		<ul>
 			<li><a href="/">Home</a></li>
 			<li><a href="/about">About Us</a></li>
