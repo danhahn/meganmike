@@ -1,6 +1,7 @@
 <script>
 	import Headline from '$lib/components/Headline.svelte';
 	import Section from '$lib/components/Section.svelte';
+	import Img from '$lib/components/Img.svelte';
 	import { title } from '$lib/utils';
 </script>
 
@@ -9,6 +10,8 @@
 </svelte:head>
 
 <Headline>Wedding Details</Headline>
+<Img src="flowers-ring.jpg" alt="" size="small" />
+
 <Section>
 	<p>
 		Join Mike and Megan as they exchange their vows and become husband and wife on the beautiful
