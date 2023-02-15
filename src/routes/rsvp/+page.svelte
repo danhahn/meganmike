@@ -1,5 +1,8 @@
 <script>
 	import Headline from '$lib/Headline.svelte';
+	import Section from '$lib/Section.svelte';
 </script>
 
-<Headline>RSVP</Headline>
+<Section>
+	<Headline>RSVP</Headline>
+</Section>

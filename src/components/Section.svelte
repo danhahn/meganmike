@@ -6,6 +6,6 @@
 	}
 
 	section {
-		@apply grid gap-4;
+		@apply grid gap-4 container mx-auto p-8 max-w-2xl;
 	}
 </style>

@@ -1,9 +1,12 @@
 <script>
 	import Headline from '$lib/Headline.svelte';
+	import Img from '$lib/Img.svelte';
 	import Section from '$lib/Section.svelte';
 </script>
 
 <Headline>Contact</Headline>
+<Img src="together.jpg" alt="All smiles" gravity="faces" size="small" />
+
 <Section>
 	<p>
 		We would love to hear from you! If you have any questions or just want to say hello, please

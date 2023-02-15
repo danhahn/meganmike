@@ -1,9 +1,12 @@
 <script>
 	import Headline from '$lib/Headline.svelte';
+	import Img from '$lib/Img.svelte';
 	import Section from '$lib/Section.svelte';
 </script>
 
 <Headline>Wedding Details</Headline>
+<Img src="flowers-ring.jpg" alt="" size="small" />
+
 <Section>
 	<p>
 		Join Mike and Megan as they exchange their vows and become husband and wife on the beautiful
