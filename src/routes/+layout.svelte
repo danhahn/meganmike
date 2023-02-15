@@ -1,10 +1,11 @@
 <script lang="ts">
 	import '../app.css';
-	import Navigation from '$lib/Navigation.svelte';
+	import Navigation from '$lib/components/Navigation.svelte';
+	import { title } from '$lib/utils';
 </script>
 
 <svelte:head>
-	<title>Megan and Mike 2024</title>
+	<title>{title}</title>
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
 	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -12,7 +13,6 @@
 </svelte:head>
 
 <Navigation />
-
 <main class="container mx-auto p-8 max-w-2xl">
 	<slot />
 </main>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nav } from '../stores/navigation';
+	import { nav } from '$lib/stores/navigation';
 	export let href: string;
 </script>
 

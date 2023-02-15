@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nav } from '../stores/navigation';
+	import { nav } from '$lib/stores/navigation';
 	import A from './Link.svelte';
 
 	const toggleSideBar = () => {

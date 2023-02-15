@@ -1,7 +1,6 @@
 <script lang="ts">
-	import Img from '$lib/Img.svelte';
-
-	import Logo from '$lib/Logo.svelte';
+	import Img from '$lib/components/Img.svelte';
+	import Logo from '$lib/components/Logo.svelte';
 	import { onMount } from 'svelte';
 
 	const end = new Date('2024-08-15T12:17:30');

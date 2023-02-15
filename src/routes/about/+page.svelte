@@ -1,7 +1,12 @@
 <script>
-	import Headline from '$lib/Headline.svelte';
-	import Section from '$lib/Section.svelte';
+	import Headline from '$lib/components/Headline.svelte';
+	import Section from '$lib/components/Section.svelte';
+	import { title } from '$lib/utils';
 </script>
+
+<svelte:head>
+	<title>Our Story | {title}</title>
+</svelte:head>
 
 <Headline>Our Stroy</Headline>
 <Section>
