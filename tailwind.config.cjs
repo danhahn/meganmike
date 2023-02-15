@@ -18,7 +18,7 @@ module.exports = {
 				}
 			},
 			gridTemplateColumns: {
-				desktop: '100px 1fr 100px',
+				desktop: '1fr',
 				mobile: '1fr 1fr'
 			},
 			fontFamily: {

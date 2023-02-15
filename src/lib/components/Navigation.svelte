@@ -19,9 +19,11 @@
 <nav
 	class="p-1 lg:p-2 grid grid-cols-mobile lg:grid-cols-desktop justify-between items-center bg-white"
 >
-	<a href="/">
-		<Logo size="small" />
-	</a>
+	<div class="lg:hidden">
+		<a href="/">
+			<Logo size="small" />
+		</a>
+	</div>
 	<div class="justify-self-end lg:hidden">
 		{#if !$nav}
 			<button class="navbar-burger flex items-center text-megan-100 p-3" on:click={toggleSideBar}>
