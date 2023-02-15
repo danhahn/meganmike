@@ -22,7 +22,7 @@
 </script>
 
 <div class="flex flex-col gap-6">
-	<div class="stack rounded-full sm:rounded-2xl overflow-hidden shadow-xl">
+	<div class="stack overflow-hidden shadow-xl">
 		<Img alt="the ring" src="IMG_3894.jpg" />
 		<Logo class="sm:w-72 fill-megan-50" />
 	</div>
