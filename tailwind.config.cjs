@@ -5,21 +5,25 @@ module.exports = {
 		extend: {
 			colors: {
 				megan: {
-					50: '#fffafb',
-					100: '#ffe0e6',
-					200: '#ffc6d1',
-					300: '#ff9eb1',
-					400: '#ff6685',
-					500: '#fd365e',
-					600: '#eb1741',
-					700: '#c60f34',
-					800: '#a3112e',
-					900: '#87152c'
+					50: '#fefdfb',
+					100: '#fcfbf8',
+					200: '#eae4cd',
+					300: '#d3caa7',
+					400: '#beb48e',
+					500: '#aba382',
+					600: '#9f966f',
+					700: '#837e67',
+					800: '#686764',
+					900: '#595959'
 				}
 			},
 			gridTemplateColumns: {
-				desktop: '100px 1fr 100px',
+				desktop: '1fr',
 				mobile: '1fr 1fr'
+			},
+			fontFamily: {
+				display: ['Parisienne', 'cursive'],
+				link: ['Lustria', 'serif']
 			}
 		}
 	},

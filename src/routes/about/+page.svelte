@@ -1,6 +1,8 @@
 <script>
 	import Headline from '$lib/components/Headline.svelte';
+	import Img from '$lib/components/Img.svelte';
 	import Section from '$lib/components/Section.svelte';
+
 	import { title } from '$lib/utils';
 </script>
 
@@ -9,6 +11,7 @@
 </svelte:head>
 
 <Headline>Our Stroy</Headline>
+<Img src="smiles.jpg" alt="All smiles" gravity="faces" size="small" />
 <Section>
 	<h2>Mike</h2>
 	<p>
