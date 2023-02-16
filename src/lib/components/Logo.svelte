@@ -62,20 +62,11 @@
 		<img
 			src="/butterfly.svg"
 			alt="butterfly"
-			class="opacity-40 z-10 -translate-x-2 -translate-y-6 rotate-12  scale-50 absolute"
+			class="opacity-40 z-10 translate-x-10 -translate-y-6 rotate-12  scale-50 absolute"
 		/>
 		<div class={`sm-logo normal-case font-display text-2xl z-20 ${$$props.class}`}>
-			<span>M<span class="restName opacity-0">eagan</span></span>
-			<span class="translate-x-3 -mt-3 block">M<span class="restName opacity-0">ike</span></span>
+			<span>Meagan</span>
+			<span class="translate-x-3 -mt-3 block">& Mike</span>
 		</div>
 	</Stack>
 {/if}
-
-<style lang="postcss">
-	.sm-logo .restName {
-		@apply transition-opacity ease-in-out;
-	}
-	.sm-logo:hover .restName {
-		@apply opacity-100;
-	}
-</style>
