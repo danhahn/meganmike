@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import { nav } from '$lib/stores/navigation';
 	import A from './Link.svelte';
 	import Logo from './Logo.svelte';
@@ -12,6 +13,24 @@
 	$: showNav = $nav ? '--tw-translate-x: 0;' : '--tw-translate-x: -100%;';
 
 	const checkResize = () => window.innerWidth >= 1024 && nav.set(false);
+
+	type NavData = {
+		label: string;
+		url: string;
+		disabled?: boolean;
+	};
+
+	const navData: NavData[] = [
+		{ label: 'home', url: '/' },
+		{ url: '/about', label: 'About Us' },
+		{ url: '/wedding-details', label: 'Wedding Details' },
+		{ url: '/accommodations', label: 'Accommodations', disabled: true },
+		{ url: '/rsvp', label: 'RSVP', disabled: true },
+		{ url: '/gift-registry', label: 'Gift Registry', disabled: true },
+		{ url: '/gallery', label: 'Gallery' },
+		{ url: '/contact', label: 'Contact Us' },
+		{ url: '/faq', label: 'FAQs', disabled: true }
+	];
 </script>
 
 <svelte:window on:resize={checkResize} />
@@ -51,15 +70,15 @@
 			</div>
 		</Stack>
 		<ul>
-			<li><a href="/">Home</a></li>
-			<li><a href="/about">About Us</a></li>
-			<li><a href="/wedding-details">Wedding Details</a></li>
-			<!-- <li><a href="/accommodations">Accommodations</a></li> -->
-			<!-- <li><a href="/rsvp">RSVP</a></li> -->
-			<!-- <li><a href="/gift-registry">Gift Registry</a></li> -->
-			<li><a href="/gallery">Gallery</a></li>
-			<li><a href="/contact">Contact Us</a></li>
-			<!-- <li><a href="/faq">FAQs</a></li> -->
+			{#each navData as nav}
+				{#if !nav.disabled}
+					<li>
+						<a href={nav.url} class={`${$page.url.pathname === nav.url ? 'active' : ''}`}
+							>{nav.label}</a
+						>
+					</li>
+				{/if}
+			{/each}
 		</ul>
 	</div>
 </nav>
@@ -92,15 +111,15 @@
 		</div>
 		<div>
 			<ul class="grid gap-1">
-				<li><A href="/">Home</A></li>
-				<li><A href="/about">About Us</A></li>
-				<li><A href="/wedding-details">Wedding Details</A></li>
-				<!-- <li><a href="/accommodations">Accommodations</a></li> -->
-				<!-- <li><a href="/rsvp">RSVP</a></li> -->
-				<!-- <li><a href="/gift-registry">Gift Registry</a></li> -->
-				<li><A href="/gallery">Gallery</A></li>
-				<li><A href="/contact">Contact Us</A></li>
-				<!-- <li><a href="/faq">FAQs</a></li> -->
+				{#each navData as nav}
+					{#if !nav.disabled}
+						<li>
+							<A href={nav.url} class={`${$page.url.pathname === nav.url ? 'active' : ''}`}
+								>{nav.label}</A
+							>
+						</li>
+					{/if}
+				{/each}
 			</ul>
 		</div>
 		<div class="mt-auto">
@@ -119,6 +138,20 @@
 		@apply lg:flex gap-4 lg:justify-center;
 	}
 	a {
-		@apply font-link block p-2 text-megan-100 uppercase;
+		@apply font-link block p-2 text-megan-100 uppercase relative;
+	}
+
+	a::after {
+		content: '';
+		@apply border-b-2 border-transparent absolute inset-1 transition-all ease-in-out;
+		top: 0;
+	}
+
+	a:hover::after {
+		@apply border-megan-400;
+	}
+
+	a.active::after {
+		@apply border-slate-900;
 	}
 </style>
