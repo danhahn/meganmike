@@ -113,7 +113,11 @@
 			<ul class="grid gap-1">
 				{#each navData as nav}
 					{#if !nav.disabled}
-						<li><a href={nav.url}>{nav.label}</a></li>
+						<li>
+							<A href={nav.url} class={`${$page.url.pathname === nav.url ? 'active' : ''}`}
+								>{nav.label}</A
+							>
+						</li>
 					{/if}
 				{/each}
 			</ul>
