@@ -18,8 +18,6 @@
 	/>
 </svelte:head>
 
-<Navigation />
-
 <main>
 	<slot />
 </main>
