@@ -2,20 +2,21 @@
 	export let size: 'full' | 'small' = 'full';
 	export let centered: boolean = true;
 
-	$: sizeClass = size === 'full' ? 'w-full' : 'max-w-sm';
-	$: centeredClass = centered ? 'mx-auto' : '';
+	const sizeClass = size === 'full' ? 'w-full' : 'max-w-sm';
+	const centeredClass = centered ? 'mx-auto' : '';
+	const buttonAlign = size === 'full' ? 'flex-end' : 'auto';
 </script>
 
-{sizeClass}
-
-{centeredClass}
-
-<form {...$$props} class={`flex flex-col gap-4 ${sizeClass} ${centeredClass}`}>
+<form
+	{...$$props}
+	class={`flex flex-col gap-4 ${sizeClass} ${centeredClass}`}
+	style={`--align: ${buttonAlign}`}
+>
 	<slot />
 </form>
 
 <style lang="postcss">
 	:global(button:last-of-type) {
-		align-self: flex-end;
+		align-self: var(--align, 'auto');
 	}
 </style>

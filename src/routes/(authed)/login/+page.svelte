@@ -7,14 +7,9 @@
 
 <Headline>log in</Headline>
 
-<Form method="POST" size="full">
-	<div>
-		<label for="email">Email Address</label>
-		<Input id="email" type="email" />
-	</div>
-	<div>
-		<label for="password">Password</label>
-		<Input id="password" type="password" />
-	</div>
+<Form method="POST" size="small">
+	<Input id="email" type="email" label="Email Address" />
+
+	<Input id="password" type="password" label="Password" />
 	<Button>log in</Button>
 </Form>
