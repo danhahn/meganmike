@@ -1,1 +1,5 @@
-<h1>Admin</h1>
+<script>
+	import Headline from '$lib/components/Headline.svelte';
+</script>
+
+<Headline>Admin</Headline>

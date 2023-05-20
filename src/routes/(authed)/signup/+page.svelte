@@ -7,11 +7,12 @@
 </script>
 
 <Section>
-	<Headline>log in</Headline>
+	<Headline>Sign Up</Headline>
 
 	<Form method="POST" size="small">
 		<Input id="email" type="email" label="Email Address" />
 		<Input id="password" type="password" label="Password" />
-		<Button>log in</Button>
+		<Input id="confirm" type="password" label="confirm password" />
+		<Button>Sign Up</Button>
 	</Form>
 </Section>
