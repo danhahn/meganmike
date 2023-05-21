@@ -11,6 +11,7 @@
 	{...$$props}
 	class={`flex flex-col gap-4 ${sizeClass} ${centeredClass}`}
 	style={`--align: ${buttonAlign}`}
+	on:submit|preventDefault
 >
 	<slot />
 </form>
