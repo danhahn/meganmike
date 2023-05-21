@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { authHandlers } from '$lib/stores/authStore';
 	import Logo from '../Logo.svelte';
 	import Button from '../forms/Button.svelte';
 
@@ -34,9 +36,13 @@
 		{/each}
 	</ul>
 	<div class="px-4 py-5">
-		<form method="POST" action="/logout">
-			<Button>Logout</Button>
-		</form>
+		<Button
+			on:click={async () => {
+				console.log('try to logout');
+				await authHandlers.logout();
+				goto('/');
+			}}>Logout</Button
+		>
 	</div>
 </header>
 

@@ -45,26 +45,13 @@
 
 	<Form method="POST" size="small" on:submit={handleSubmit}>
 		<p>Register to gain access to the admin section of the site</p>
-		<Input id="name" type="text" label="Full Name" value="dan" errorMessages={errorMessages.name} />
-		<Input
-			id="email"
-			type="email"
-			label="Email Address"
-			value="dan@dan.com"
-			errorMessage={errorMessages.email}
-		/>
-		<Input
-			id="password"
-			type="password"
-			label="Password"
-			value="123456"
-			errorMessage={errorMessages.password}
-		/>
+		<Input id="name" type="text" label="Full Name" errorMessages={errorMessages.name} />
+		<Input id="email" type="email" label="Email Address" errorMessage={errorMessages.email} />
+		<Input id="password" type="password" label="Password" errorMessage={errorMessages.password} />
 		<Input
 			id="confirm"
 			type="password"
 			label="confirm password"
-			value="123456"
 			errorMessage={errorMessages.confirm}
 		/>
 		<Button>Sign Up</Button>

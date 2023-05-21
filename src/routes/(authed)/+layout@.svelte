@@ -6,7 +6,7 @@
 
 	import { onMount } from 'svelte';
 
-	const className = $authStore.currentUser ? 'grid grid-cols-[200px_1fr]' : '';
+	$: className = $authStore.currentUser ? 'grid grid-cols-[200px_1fr]' : '';
 
 	onMount(() => {
 		const unsubscribe = auth.onAuthStateChanged((user) => {
