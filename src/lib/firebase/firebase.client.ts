@@ -1,10 +1,11 @@
 // Import the functions you need from the SDKs you need
+import { dev } from '$app/environment';
 import { deleteApp, getApp, getApps, initializeApp } from 'firebase/app';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-import { getAuth, setPersistence, inMemoryPersistence } from 'firebase/auth';
+import { getAuth, connectAuthEmulator, setPersistence, inMemoryPersistence } from 'firebase/auth';
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -28,3 +29,7 @@ if (!getApps().length) {
 }
 
 export const auth = getAuth(firebaseApp);
+
+if (dev) {
+	connectAuthEmulator(auth, 'http://localhost:9099');
+}
