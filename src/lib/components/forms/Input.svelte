@@ -15,7 +15,7 @@
 	};
 </script>
 
-<div class="relative w-96">
+<div class={`relative w-full ${$$props.class}`}>
 	<label class="transition-all absolute left-4 top-[13px]" class:isActive for={id}
 		>{label}
 		{#if required}
