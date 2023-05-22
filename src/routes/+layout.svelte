@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import Navigation from '$lib/components/Navigation.svelte';
+
 	import { title } from '$lib/utils';
 </script>
 
@@ -17,19 +17,19 @@
 		rel="stylesheet"
 	/>
 </svelte:head>
-
-<main>
-	<slot />
-</main>
-<footer class="text-megan-300 text-center lg:text-left p-5 border-t border-t-megan-200">
-	&copy: {new Date().getFullYear()} Megan and Mike All Rights Reserved.
-</footer>
+<div class="content grid grid-cols-1 grid-rows-[1fr_auto]">
+	<main>
+		<slot />
+	</main>
+	<footer class="text-megan-300 text-center lg:text-left p-5 border-t border-t-megan-200">
+		&copy: {new Date().getFullYear()} Megan and Mike All Rights Reserved.
+	</footer>
+</div>
 
 <style lang="postcss">
-	main {
-		min-height: var(--doc-height);
+	.content {
+		min-height: 100dvh;
 	}
-
 	:global(body) {
 		@apply font-serif;
 	}
