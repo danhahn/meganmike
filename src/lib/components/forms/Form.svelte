@@ -2,7 +2,7 @@
 	export let size: 'full' | 'small' = 'full';
 	export let centered: boolean = true;
 
-	const sizeClass = size === 'full' ? 'w-full' : 'max-w-sm';
+	const sizeClass = size === 'full' ? 'w-full' : 'min-w-[60%]';
 	const centeredClass = centered ? 'mx-auto' : '';
 	const buttonAlign = size === 'full' ? 'flex-end' : 'auto';
 </script>
