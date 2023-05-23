@@ -5,7 +5,9 @@
 
 	import { onMount } from 'svelte';
 
-	$: className = $authStore.currentUser ? 'grid grid-cols-[200px_1fr]' : '';
+	$: className = $authStore.currentUser ? 'grid-cols-[200px_1fr]' : '';
+
+	$: multiColumn = !!$authStore.currentUser;
 
 	const end = new Date('2024-08-15T12:17:30');
 	let remainingTime = 0;
@@ -35,18 +37,32 @@
 	});
 </script>
 
-<div class={` min-h-full ${className}`}>
-	{#if !!className}
+<section class="grid min-h-full" class:multiColumn>
+	{#if $authStore.currentUser}
 		<Header />
 	{/if}
 
-	<div>
+	<div class="grid grid-rows-[auto_1fr]">
 		<div class="px-4 py-2 bg-megan-900 text-megan-100 flex justify-between">
-			<p>Welcome back Admin</p>
-			<p>{days} Days until the wedding</p>
+			<p><span>Welcome back</span> Admin</p>
+			<p>{days} Days <span>until the wedding</span></p>
 		</div>
-		<div class="p-4 sm:p-12">
+		<div class="p-4 sm:p-12 grid grid-rows-[auto_1fr] items-center lg:block">
 			<slot />
 		</div>
 	</div>
-</div>
+</section>
+
+<style lang="postcss">
+	span {
+		@apply hidden sm:inline-block;
+	}
+
+	section:not(.multiColumn) {
+		@apply grid-cols-1;
+	}
+
+	section.multiColumn {
+		@apply grid-cols-[250px_1fr];
+	}
+</style>

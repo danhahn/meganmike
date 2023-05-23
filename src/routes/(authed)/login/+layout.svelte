@@ -11,6 +11,4 @@
 	});
 </script>
 
-<Section>
-	<slot />
-</Section>
+<slot />
