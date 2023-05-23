@@ -24,20 +24,18 @@
 	};
 </script>
 
-<Section>
-	<Headline>log in</Headline>
+<Headline>log in</Headline>
 
-	{#if errorMessages.msg}
-		<p class="text-red-600">{errorMessages.msg}</p>
-	{/if}
-	<Form method="POST" size="small" on:submit={handleSubmit}>
-		<p>Login to Admin Section</p>
-		<Input id="email" type="email" label="Email Address" required />
-		<Input id="password" type="password" label="Password" required />
-		<div class="row">
-			<Button width="full">log in</Button>
-			<Button variant="naked" type="button" on:click={() => goto('/')}>Cancel</Button>
-		</div>
-		<p>Don't Have an account <a href="/signup" class="underline">Sign Up</a></p>
-	</Form>
-</Section>
+{#if errorMessages.msg}
+	<p class="text-red-600">{errorMessages.msg}</p>
+{/if}
+<Form method="POST" size="small" on:submit={handleSubmit}>
+	<p class="font-bold mb-4 tracking-tight text-megan-800">Login to Admin Section</p>
+	<Input id="email" type="email" label="Email Address" required />
+	<Input id="password" type="password" label="Password" required />
+	<div class="row">
+		<Button width="full">log in</Button>
+		<Button variant="naked" type="button" on:click={() => goto('/')}>Cancel</Button>
+	</div>
+	<p>Don't Have an account <a href="/signup" class="underline">Sign Up</a></p>
+</Form>

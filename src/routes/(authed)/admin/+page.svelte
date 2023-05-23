@@ -26,7 +26,7 @@
 
 <Headline class="block">Admin</Headline>
 
-<div class="grid grid-cols-2 gap-4">
+<div class="grid grid-rows-2 lg:grid-cols-2 gap-4">
 	<div class="rsvp">
 		<h2>Total Number of guest invited</h2>
 		<p>0</p>
@@ -45,6 +45,6 @@
 	}
 
 	.rsvp p {
-		@apply text-9xl text-megan-800;
+		@apply text-xl lg:text-9xl text-megan-800;
 	}
 </style>
