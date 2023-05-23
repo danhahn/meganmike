@@ -1,6 +1,27 @@
 <script>
 	import Headline from '$lib/components/Headline.svelte';
 	import Table from '$lib/components/admin/table/Table.svelte';
+
+	const tableData = [
+		{
+			name: 'John Doe',
+			email: 'johndoe@example.com',
+			phone: '123-456-7890',
+			address: '123 Main Street, Anytown, CA 91234',
+			rsvp: true,
+			guests: 2,
+			id: '123'
+		},
+		{
+			name: 'Jane Doe',
+			email: 'janedoe@example.com',
+			phone: '555-678-9012',
+			address: '456 Elm Street, Anytown, CA 91234',
+			rsvp: false,
+			guests: 0,
+			id: '456'
+		}
+	];
 </script>
 
 <Headline class="block">Admin</Headline>
@@ -16,7 +37,7 @@
 	</div>
 </div>
 
-<Table headerData={['Name', 'Email', 'Phone', 'Address', 'RSVP', 'Guests']} />
+<Table headerData={['Name', 'Email', 'Phone', 'Address', 'RSVP', 'Guests']} data={tableData} />
 
 <style lang="postcss">
 	.rsvp {

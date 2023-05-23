@@ -34,7 +34,10 @@
 		<p>Login to Admin Section</p>
 		<Input id="email" type="email" label="Email Address" required />
 		<Input id="password" type="password" label="Password" required />
-		<Button>log in</Button>
+		<div class="row">
+			<Button width="full">log in</Button>
+			<Button variant="naked" type="button" on:click={() => goto('/')}>Cancel</Button>
+		</div>
 		<p>Don't Have an account <a href="/signup" class="underline">Sign Up</a></p>
 	</Form>
 </Section>

@@ -9,7 +9,7 @@
 
 <form
 	{...$$props}
-	class={`flex flex-col gap-4 ${sizeClass} ${centeredClass}`}
+	class={`flex flex-col gap-2 sm:gap-4 ${sizeClass} ${centeredClass}`}
 	style={`--align: ${buttonAlign}`}
 	on:submit|preventDefault
 >
@@ -19,5 +19,9 @@
 <style lang="postcss">
 	:global(button:last-of-type) {
 		align-self: var(--align, 'auto');
+	}
+
+	:global(.row) {
+		@apply flex flex-col sm:flex-row gap-2 sm:gap-4 justify-end;
 	}
 </style>

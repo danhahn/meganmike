@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import Button from '$lib/components/forms/Button.svelte';
 	import Td from './Td.svelte';
 	import Th from './Th.svelte';
@@ -15,7 +16,7 @@
 	};
 
 	export let headerData: String[];
-	export let data: TableData[] = [];
+	export let data: TableData[];
 </script>
 
 <table {...$$props} class="mt-4 w-full border-collapse border border-megan-800">
@@ -28,23 +29,16 @@
 		</tr>
 	</thead>
 	<tbody>
-		<Tr>
-			<Td>John Doe</Td>
-			<Td>johndoe@example.com</Td>
-			<Td>123-456-7890</Td>
-			<Td>123 Main Street, Anytown, CA 91234</Td>
-			<Td>Yes</Td>
-			<Td>2</Td>
-			<Td><Button>Edit</Button></Td>
-		</Tr>
-		<Tr>
-			<Td>Jane Doe</Td>
-			<Td>janedoe@example.com</Td>
-			<Td>555-678-9012</Td>
-			<Td>456 Elm Street, Anytown, CA 91234</Td>
-			<Td>No</Td>
-			<Td>0</Td>
-			<Td><Button>Edit</Button></Td>
-		</Tr>
+		{#each data as row}
+			<Tr>
+				<Td>{row.name}</Td>
+				<Td>{row.email}</Td>
+				<Td>{row.phone}</Td>
+				<Td>{row.address}</Td>
+				<Td>{row.rsvp ? 'Yes' : 'No'}</Td>
+				<Td>{row.guests}</Td>
+				<Td><Button on:click={() => goto(`/admin/update-guest?id=${row.id}`)}>Edit</Button></Td>
+			</Tr>
+		{/each}
 	</tbody>
 </table>

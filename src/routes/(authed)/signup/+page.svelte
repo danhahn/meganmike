@@ -45,16 +45,18 @@
 
 	<Form method="POST" size="small" on:submit={handleSubmit}>
 		<p>Register to gain access to the admin section of the site</p>
-		<Input id="name" type="text" label="Full Name" errorMessages={errorMessages.name} />
 		<Input id="email" type="email" label="Email Address" errorMessage={errorMessages.email} />
 		<Input id="password" type="password" label="Password" errorMessage={errorMessages.password} />
 		<Input
 			id="confirm"
 			type="password"
-			label="confirm password"
+			label="Confirm Password"
 			errorMessage={errorMessages.confirm}
 		/>
-		<Button>Sign Up</Button>
+		<div class="row">
+			<Button width="full">Sign Up</Button>
+			<Button variant="naked" on:click={() => goto('/')}>Cancel</Button>
+		</div>
 		<p>Already have an account <a href="/login" class="underline">Login Here</a></p>
 	</Form>
 </Section>
