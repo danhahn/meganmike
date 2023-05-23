@@ -19,7 +19,7 @@
 		{ label: 'Tables', url: '/admin/tables' },
 		{
 			label: `
-			<svg xmlns="http://www.w3.org/2000/svg" class="h-4 fill-megan-900" viewBox="0 96 960 960"><path d="M655 976 255 576l400-400 56 57-343 343 343 343-56 57Z"/></svg>
+			
 			<span class="text-megan-900">Back to Site</span>`,
 			url: '/',
 			offset: true
@@ -27,7 +27,7 @@
 	];
 </script>
 
-<header class="bg-megan-300 grid grid-rows-[auto_1fr_auto]">
+<header class="absolute z-50 inset-0 right-12 sm:fixed bg-megan-300 grid grid-rows-[auto_1fr_auto]">
 	<div class="px-4 py-5">
 		<Logo size="small" />
 	</div>
@@ -57,6 +57,9 @@
 </header>
 
 <style lang="postcss">
+	header {
+		@apply -translate-x-full;
+	}
 	a.active {
 		@apply font-bold;
 	}
