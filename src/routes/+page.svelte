@@ -1,6 +1,8 @@
 <script lang="ts">
 	import Img from '$lib/components/Img.svelte';
 	import Logo from '$lib/components/Logo.svelte';
+	import Navigation from '$lib/components/Navigation.svelte';
+	import Section from '$lib/components/Section.svelte';
 	import Stack from '$lib/components/Stack.svelte';
 	import { onMount } from 'svelte';
 
@@ -22,22 +24,26 @@
 	onMount(startTimer);
 </script>
 
+<Navigation />
+
 <div class="flex flex-col gap-6">
 	<Stack class="overflow-hidden shadow-xl">
 		<Img alt="the ring" src="IMG_3894.jpg" />
 		<Logo class="sm:w-72 fill-megan-50" />
 	</Stack>
 
-	<div class="border-2 border-megan-900 bg-megan-400 rounded-lg m-4 p-10">
-		<h2 class="m-0 text-megan-700 text-2xl">Count Down</h2>
-		<p class="text-megan-100 font-serif text-5xl">
-			{#if remainingTime !== 0}
-				{days} days
-			{:else}
-				♥️♥️♥️ days
-			{/if}
-		</p>
-	</div>
+	<Section>
+		<div class="border-2 border-megan-900 bg-megan-400 rounded-lg m-4 p-10">
+			<h2 class="m-0 text-megan-700 text-2xl">Count Down</h2>
+			<p class="text-megan-100 font-serif text-5xl">
+				{#if remainingTime !== 0}
+					{days} days
+				{:else}
+					♥️♥️♥️ days
+				{/if}
+			</p>
+		</div>
+	</Section>
 </div>
 
 <style lang="postcss">

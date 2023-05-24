@@ -1,4 +1,8 @@
-<section><slot /></section>
+<script lang="ts">
+	export let isColumn: boolean = true;
+</script>
+
+<section {...$$props} class:isColumn><slot /></section>
 
 <style lang="postcss">
 	:global(h2) {
@@ -6,6 +10,10 @@
 	}
 
 	section {
-		@apply grid gap-4 container mx-auto p-8 max-w-5xl;
+		@apply container mx-auto p-8 max-w-5xl;
+	}
+
+	section.isColumn {
+		@apply grid gap-4;
 	}
 </style>

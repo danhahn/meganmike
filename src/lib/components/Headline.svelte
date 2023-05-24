@@ -3,7 +3,7 @@
 	import Stack from './Stack.svelte';
 </script>
 
-<Section>
+<Section isColumn={false}>
 	<Stack>
 		<img
 			src="/butterfly.svg"
