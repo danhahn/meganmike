@@ -27,7 +27,7 @@
 <Headline>log in</Headline>
 
 {#if errorMessages.msg}
-	<p class="text-red-600">{errorMessages.msg}</p>
+	<p class="text-red-600 text-center mb-4 font-black">{errorMessages.msg}</p>
 {/if}
 <Form method="POST" size="small" on:submit={handleSubmit}>
 	<p class="font-bold mb-4 tracking-tight text-megan-800">Login to Admin Section</p>

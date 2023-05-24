@@ -39,7 +39,7 @@
 <Headline>Sign Up</Headline>
 
 {#if errorMessages.msg}
-	<p class="text-red-600">{errorMessages.msg}</p>
+	<p class="text-red-600 text-center mb-4 font-black">{errorMessages.msg}</p>
 {/if}
 
 <Form method="POST" size="small" on:submit={handleSubmit}>
