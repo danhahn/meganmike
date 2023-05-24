@@ -10,7 +10,7 @@ import {
 } from 'firebase/auth';
 import { writable } from 'svelte/store';
 
-type AuthStore = {
+export type AuthStore = {
 	isLoading: boolean;
 	currentUser: User | null;
 };
