@@ -29,7 +29,7 @@
 
 <div class="flex flex-col gap-6">
 	<Stack class="overflow-hidden shadow-xl">
-		<Img alt="the ring" src="IMG_3894.jpg" />
+		<Img alt="the ring" src="homepage.jpg" size="square" />
 		<Logo class="sm:w-72 fill-megan-50" />
 	</Stack>
 
