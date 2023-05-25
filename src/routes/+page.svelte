@@ -25,7 +25,7 @@
 	onMount(startTimer);
 </script>
 
-<Navigation class="shadow-lg shadow-black/20 fixed right-0 left-0 z-10" />
+<Navigation class="shadow-lg shadow-black/20 fixed lg:static right-0 left-0 z-10" />
 
 <div class="flex flex-col gap-6 mt-11">
 	<div
