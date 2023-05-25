@@ -25,13 +25,17 @@
 	onMount(startTimer);
 </script>
 
-<Navigation />
+<Navigation class="shadow-lg shadow-black/20 fixed right-0 left-0 z-10" />
 
-<div class="flex flex-col gap-6">
-	<Stack class="overflow-hidden shadow-xl">
-		<Img alt="the ring" src="homepage.jpg" size="square" />
-		<Logo class="sm:w-72 fill-megan-50" />
-	</Stack>
+<div class="flex flex-col gap-6 mt-11">
+	<div
+		class="max-w-3xl mx-auto lg:mt-16 overflow-hidden lg:rounded-2xl shadow-2xl shadow-megan-800 lg:p-4"
+	>
+		<Stack class="overflow-hidden shadow-xl lg:rounded-xl">
+			<Img alt="the ring" src="homepage.jpg" size="square" />
+			<Logo class="sm:w-72 fill-megan-50" />
+		</Stack>
+	</div>
 
 	<Section>
 		<Headline>Event Details</Headline>
