@@ -23,7 +23,7 @@
 		<slot />
 	</main>
 	<footer
-		class="flex justify-between text-megan-300 text-center lg:text-left p-5 border-t border-t-megan-200"
+		class="flex justify-between text-megan-300 text-center lg:text-left p-2 lg:p-5 border-t border-t-megan-200"
 	>
 		&copy: {new Date().getFullYear()} Megan and Mike All Rights Reserved.
 		{#if $page.url.pathname === '/'}

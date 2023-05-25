@@ -10,7 +10,7 @@
 	}
 
 	section {
-		@apply container mx-auto p-8 max-w-5xl;
+		@apply container mx-auto p-4 lg:p-8 max-w-5xl;
 	}
 
 	section.isColumn {

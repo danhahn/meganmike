@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Headline from '$lib/components/Headline.svelte';
 	import Img from '$lib/components/Img.svelte';
 	import Logo from '$lib/components/Logo.svelte';
 	import Navigation from '$lib/components/Navigation.svelte';
@@ -33,9 +34,23 @@
 	</Stack>
 
 	<Section>
-		<div class="border-2 border-megan-900 bg-megan-400 rounded-lg m-4 p-10">
-			<h2 class="m-0 text-megan-700 text-2xl">Count Down</h2>
-			<p class="text-megan-100 font-serif text-5xl">
+		<Headline>Event Details</Headline>
+
+		<ul>
+			<li><span>Date</span> <date>August 15, 2024</date></li>
+			<li><span>Time</span> 5:00 PM - 11:00 PM</li>
+			<li><span>Venue</span> Larkfield Manor</li>
+			<li>
+				<span>Address</span>
+				<address>507 Larkfield Rd East <br class="lg:inline" />Northport, NY 11731</address>
+			</li>
+		</ul>
+
+		<div
+			class="border-2 border-megan-300 bg-megan-100 rounded-lg m-4 p-10 flex flex-col lg:flex-row items-center gap-4 justify-center"
+		>
+			<h2 class="m-0 text-megan-700 text-2xl lg:text-5xl">Count Down</h2>
+			<p class="text-megan-500 font-serif text-2xl lg:text-5xl">
 				{#if remainingTime !== 0}
 					{days} days
 				{:else}
@@ -43,11 +58,27 @@
 				{/if}
 			</p>
 		</div>
+		<Headline>Schedule</Headline>
+
+		<ul>
+			<li>5:00 PM - 5:30 PM: Doors Open</li>
+			<li>5:30 PM - 6:00 PM: Ceremony</li>
+			<li>6:00 PM - 7:00 PM: Cocktail Hour</li>
+			<li>7:00 PM - 11:00 PM: Dinner and Dancing</li>
+		</ul>
 	</Section>
 </div>
 
 <style lang="postcss">
 	:global(html) {
 		background-color: theme(colors.megan.50);
+	}
+
+	ul {
+		@apply text-center grid grid-rows-1 gap-2 lg:gap-4 text-xl;
+	}
+
+	li span {
+		@apply text-megan-500 block text-2xl lg:text-3xl mb-1 lg:mb-4;
 	}
 </style>
