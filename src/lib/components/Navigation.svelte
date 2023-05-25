@@ -36,7 +36,7 @@
 <svelte:window on:resize={checkResize} />
 
 <nav
-	class="p-1 lg:p-2 grid grid-cols-mobile lg:grid-cols-desktop justify-between items-center bg-white"
+	class={`p-1 lg:p-2 grid grid-cols-mobile lg:grid-cols-desktop justify-between items-center bg-white ${$$props.class}`}
 >
 	<div class="lg:hidden">
 		<a href="/">
