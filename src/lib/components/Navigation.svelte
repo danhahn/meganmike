@@ -167,12 +167,11 @@
 
 	.sideNav li {
 		@apply -translate-x-full transition-all ease-in-out;
-		transition-timing-function: cubic-bezier(0.25, 0.75, 0.5, 1.25);
+		transition-timing-function: cubic-bezier(0.17, 0.67, 1, 1.23);
 	}
 
 	.sideNav li.isOpen {
-		@apply translate-x-0 delay-75;
-
-		transition-delay: calc((120ms * var(--index)));
+		@apply translate-x-0;
+		transition-delay: calc((75ms * var(--index)) / 2);
 	}
 </style>
