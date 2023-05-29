@@ -12,6 +12,8 @@
 	$: hidden = !$nav ? 'hidden' : '';
 	$: showNav = $nav ? '--tw-translate-x: 0;' : '--tw-translate-x: -100%;';
 
+	$: isOpen = $nav;
+
 	const checkResize = () => window.innerWidth >= 1024 && nav.set(false);
 
 	type NavData = {
@@ -30,7 +32,7 @@
 		{ url: '/gallery', label: 'Gallery' },
 		{ url: '/contact', label: 'Contact Us' },
 		{ url: '/faq', label: 'FAQs', disabled: true }
-	];
+	].filter((item) => !item.disabled);
 </script>
 
 <svelte:window on:resize={checkResize} />
@@ -82,11 +84,11 @@
 		</ul>
 	</div>
 </nav>
-<div class="navbar-menu relative z-50 hidden" class:hidden>
-	<div class="navbar-backdrop fixed inset-0 bg-gray-800 opacity-25" />
+<div class="navbar-menu relative z-50">
+	<div class:isOpen class="overlay navbar-backdrop fixed inset-0 bg-gray-800 opacity-25 hidden" />
 	<aside
-		style={showNav}
-		class={`-translate-x-full transition-transform fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto`}
+		class:isOpen
+		class="-translate-x-full transition-all ease-in-out fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto"
 	>
 		<div class="flex items-center mb-8">
 			<div class="mr-auto text-3xl font-bold leading-none">
@@ -110,10 +112,10 @@
 			</button>
 		</div>
 		<div>
-			<ul class="grid gap-1">
-				{#each navData as nav}
+			<ul class="sideNav grid gap-1">
+				{#each navData as nav, index}
 					{#if !nav.disabled}
-						<li>
+						<li style={`--index: ${index + 1}`} class:isOpen>
 							<A href={nav.url} class={`${$page.url.pathname === nav.url ? 'active' : ''}`}
 								>{nav.label}</A
 							>
@@ -153,5 +155,24 @@
 
 	a.active::after {
 		@apply border-slate-900;
+	}
+
+	aside.isOpen {
+		@apply translate-x-0;
+	}
+
+	.overlay.isOpen {
+		@apply block;
+	}
+
+	.sideNav li {
+		@apply -translate-x-full transition-all ease-in-out;
+		transition-timing-function: cubic-bezier(0.25, 0.75, 0.5, 1.25);
+	}
+
+	.sideNav li.isOpen {
+		@apply translate-x-0 delay-75;
+
+		transition-delay: calc((120ms * var(--index)));
 	}
 </style>
