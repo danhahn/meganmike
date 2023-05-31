@@ -2,7 +2,7 @@
 	export let id: string;
 	export let label: string;
 	export let value: string = '';
-	export let required: boolean = true;
+	export let required: boolean = false;
 	export let errorMessage: string = '';
 
 	$: isActive = !!value;
@@ -25,6 +25,7 @@
 	<input
 		{...$$props}
 		{id}
+		name={id}
 		bind:value
 		on:focus={handleFocus}
 		on:blur={handleBlur}
