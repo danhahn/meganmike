@@ -22,7 +22,7 @@
 {/if}
 
 <Headline>log in</Headline>
-<form method="POST" use:enhance>
+<form method="POST">
 	<Form size="small">
 		<p class="font-bold mb-4 tracking-tight text-megan-800">Login to Admin Section</p>
 		<Input

@@ -22,7 +22,7 @@
 {/if}
 
 <Headline>Sign Up</Headline>
-<form method="post" use:enhance>
+<form method="post">
 	<Form method="POST" size="small">
 		<p class="font-bold mb-4 tracking-tight text-megan-800">
 			Register to gain access to the admin section of the site
