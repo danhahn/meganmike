@@ -3,60 +3,55 @@
 	import Button from '$lib/components/forms/Button.svelte';
 	import Form from '$lib/components/forms/Form.svelte';
 	import Input from '$lib/components/forms/Input.svelte';
-	import Section from '$lib/components/Section.svelte';
-	import { authHandlers } from '$lib/stores/authStore';
 	import { goto } from '$app/navigation';
+	import type { PageData } from './$types';
+	import { superForm } from 'sveltekit-superforms/client';
+	import { signUpSchema } from '$lib/schema/signUpSchema';
+	import { dev } from '$app/environment';
+	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 
-	const errorMessages = {
-		name: '',
-		email: '',
-		password: '',
-		confirm: '',
-		msg: ''
-	};
+	export let data: PageData;
 
-	const handleSubmit = async (event: any) => {
-		const firstName = event.target?.name.value;
-		const email = event.target?.email.value;
-		const password = event.target?.password.value;
-		const confirm = event.target?.confirm.value;
-
-		if (password !== confirm) {
-			errorMessages.confirm = 'Please ensure your password match';
-			errorMessages.password = 'Please ensure your password match';
-			return;
-		}
-
-		try {
-			await authHandlers.signup(email, password);
-			goto('/admin');
-		} catch (error) {
-			errorMessages.msg = error as string;
-		}
-	};
+	const { form, errors, enhance } = superForm(data.form, {
+		validators: signUpSchema
+	});
 </script>
 
-<Headline>Sign Up</Headline>
-
-{#if errorMessages.msg}
-	<p class="text-red-600 text-center mb-4 font-black">{errorMessages.msg}</p>
+{#if dev}
+	<SuperDebug data={$form} />
 {/if}
 
-<Form method="POST" size="small" on:submit={handleSubmit}>
-	<p class="font-bold mb-4 tracking-tight text-megan-800">
-		Register to gain access to the admin section of the site
-	</p>
-	<Input id="email" type="email" label="Email Address" errorMessage={errorMessages.email} />
-	<Input id="password" type="password" label="Password" errorMessage={errorMessages.password} />
-	<Input
-		id="confirm"
-		type="password"
-		label="Confirm Password"
-		errorMessage={errorMessages.confirm}
-	/>
-	<div class="row">
-		<Button width="full">Sign Up</Button>
-		<Button variant="naked" on:click={() => goto('/')}>Cancel</Button>
-	</div>
-	<p>Already have an account <a href="/login" class="underline">Login Here</a></p>
-</Form>
+<Headline>Sign Up</Headline>
+<form method="post" use:enhance>
+	<Form method="POST" size="small">
+		<p class="font-bold mb-4 tracking-tight text-megan-800">
+			Register to gain access to the admin section of the site
+		</p>
+		<Input
+			id="email"
+			type="email"
+			label="Email Address"
+			bind:value={$form.email}
+			errorMessages={$errors.email}
+		/>
+		<Input
+			id="password"
+			type="password"
+			label="Password"
+			bind:value={$form.password}
+			errorMessages={$errors.password}
+		/>
+		<Input
+			id="confirm"
+			type="password"
+			label="Confirm Password"
+			bind:value={$form.confirm}
+			errorMessages={$errors.confirm}
+		/>
+		<div class="row">
+			<Button width="full">Sign Up</Button>
+			<Button variant="naked" on:click={() => goto('/')}>Cancel</Button>
+		</div>
+		<p>Already have an account <a href="/login" class="underline">Login Here</a></p>
+	</Form>
+</form>

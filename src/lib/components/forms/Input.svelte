@@ -3,9 +3,10 @@
 	export let label: string;
 	export let value: string = '';
 	export let required: boolean = false;
-	export let errorMessage: string = '';
+	export let errorMessages: string[] = [];
 
 	$: isActive = !!value;
+	$: errorMessage = errorMessages.length;
 
 	const handleFocus = () => (isActive = true);
 
@@ -34,8 +35,10 @@
 		class:isActive
 		class="bg-white rounded-md py-3 px-4 border-2 w-full border-gray-400 focus:outline-none focus:border-megan-500"
 	/>
-	{#if errorMessage}
-		<p class="text-red-700">{errorMessage}</p>
+	{#if errorMessages.length}
+		{#each errorMessages as errorMessage}
+			<p class="text-red-700">{errorMessage}</p>
+		{/each}
 	{/if}
 </div>
 

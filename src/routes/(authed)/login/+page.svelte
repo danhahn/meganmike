@@ -8,10 +8,13 @@
 	import Input from '$lib/components/forms/Input.svelte';
 	import { goto } from '$app/navigation';
 	import { dev } from '$app/environment';
+	import { loginSchema } from '$lib/schema/loginSchema';
 
 	export let data: PageData;
 
-	const { form } = superForm(data.form);
+	const { form, errors, enhance } = superForm(data.form, {
+		validators: loginSchema
+	});
 </script>
 
 {#if dev}
@@ -19,11 +22,23 @@
 {/if}
 
 <Headline>log in</Headline>
-<form method="POST">
+<form method="POST" use:enhance>
 	<Form size="small">
 		<p class="font-bold mb-4 tracking-tight text-megan-800">Login to Admin Section</p>
-		<Input id="email" type="email" label="Email Address" bind:value={$form.email} />
-		<Input id="password" type="password" label="Password" bind:value={$form.password} />
+		<Input
+			id="email"
+			type="email"
+			label="Email Address"
+			bind:value={$form.email}
+			errorMessages={$errors.email}
+		/>
+		<Input
+			id="password"
+			type="password"
+			label="Password"
+			bind:value={$form.password}
+			errorMessages={$errors.password}
+		/>
 		<div class="row">
 			<Button width="full">log in</Button>
 			<Button variant="naked" type="button" on:click={() => goto('/')}>Cancel</Button>
