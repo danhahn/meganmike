@@ -11,7 +11,7 @@
 		phone: String;
 		address: String;
 		rsvp: Boolean;
-		guests: Number;
+		guests?: Number;
 		id?: String;
 	};
 

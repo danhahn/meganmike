@@ -9,7 +9,7 @@
 
 <form
 	{...$$props}
-	class={`flex flex-col gap-2 sm:gap-4 text-center lg:text-start mb-32 md:mb-64 lg:mb-0 ${sizeClass} ${centeredClass}`}
+	class={`flex flex-col gap-2 sm:gap-3 text-center lg:text-start mb-32 md:mb-64 lg:mb-0 ${sizeClass} ${centeredClass}`}
 	style={`--align: ${buttonAlign}`}
 	on:submit|preventDefault
 >

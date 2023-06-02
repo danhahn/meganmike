@@ -6,6 +6,7 @@ import { deleteApp, getApp, getApps, initializeApp } from 'firebase/app';
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 import { getAuth, connectAuthEmulator, setPersistence, inMemoryPersistence } from 'firebase/auth';
+import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -29,7 +30,10 @@ if (!getApps().length) {
 }
 
 export const auth = getAuth(firebaseApp);
+// Initialize Cloud Firestore and get a reference to the service
+export const db = getFirestore(firebaseApp);
 
 if (dev) {
 	connectAuthEmulator(auth, 'http://localhost:9099');
+	connectFirestoreEmulator(db, 'localhost', 8080);
 }
