@@ -1,5 +1,34 @@
 export const title = '❤️ Megan and Mike 2024 ❤️';
 
+export function getNextValue(currentValue: number, direction: 'prev' | 'next') {
+	let nextValue = direction === 'next' ? currentValue + 1 : currentValue - 1;
+
+	if (nextValue > 3) {
+		nextValue = 3;
+	} else if (nextValue === 0) {
+		nextValue = 1;
+	}
+
+	return nextValue;
+}
+
+type FormData = {
+	[name: string]: string;
+};
+
+export function getFormData(event: Event) {
+	const target = event.target as HTMLFormElement;
+	const formData: FormData = {};
+
+	Array.from(target.elements).forEach((element) => {
+		if (element instanceof HTMLInputElement) {
+			formData[element.name] = element.value;
+		}
+	});
+
+	return formData;
+}
+
 export const states = [
 	{ label: 'Alabama', value: 'AL' },
 	{ label: 'Alaska', value: 'AK' },

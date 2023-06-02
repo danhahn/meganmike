@@ -5,20 +5,19 @@
 	import Form from '$lib/components/forms/Form.svelte';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { db } from '$lib/firebase/firebase.client';
+	import { getFormData, getNextValue } from '$lib/utils';
+	import { collection, addDoc } from 'firebase/firestore';
 
 	let showAddGuest = false;
 	let additionalGuest = 1;
-
+	let status: 'idle' | 'submitting' | 'error' = 'idle';
 	function addAdditionalGuest() {
-		additionalGuest = additionalGuest + 1;
+		if (additionalGuest < 2) additionalGuest++;
 	}
 
 	function removeAdditionalGuest() {
-		const next = additionalGuest - 1;
-		additionalGuest = next == 0 ? 1 : next;
+		if (additionalGuest > 0) additionalGuest--;
 	}
-
-	import { collection, addDoc } from 'firebase/firestore';
 
 	let firstName: string = 'Dan';
 	let lastName: string = 'Hahn';
@@ -31,34 +30,22 @@
 	let email: string = 'danielhahn@gmail.com';
 
 	async function addGuest(event: any) {
-		console.log(event);
-		let target = event.target;
-		let formData = {};
+		const formData = getFormData(event);
+		status = 'submitting';
 
-		for (let i = 0; i < target.length; i++) {
-			formData[target.elements[i].getAttribute('name')] = target.elements[i].value;
+		try {
+			const docRef = await addDoc(collection(db, 'guests'), {
+				...formData,
+				rsvp: false
+			});
+			if (dev) {
+				console.log('Document written with ID: ', docRef.id);
+			}
+			status = 'idle';
+		} catch (e) {
+			console.error('Error adding document: ', e);
+			state = 'error';
 		}
-		console.log('formData', formData);
-
-		// try {
-		// 	const docRef = await addDoc(collection(db, 'users'), {
-		// 		firstName,
-		// 		lastName,
-		// 		address1,
-		// 		address2,
-		// 		city,
-		// 		state,
-		// 		zipCode,
-		// 		phoneNumber,
-		// 		email,
-		// 		rsvp: false
-		// 	});
-		// 	if (dev) {
-		// 		console.log('Document written with ID: ', docRef.id);
-		// 	}
-		// } catch (e) {
-		// 	console.error('Error adding document: ', e);
-		// }
 	}
 </script>
 
@@ -91,20 +78,26 @@
 			{/if}
 		</Button>
 		{#if showAddGuest}
-			<Button type="button" on:click={addAdditionalGuest} isRound size="small" variant="secondary">
-				<svg xmlns="http://www.w3.org/2000/svg" class="w-5 fill-current" viewBox="0 -960 960 960"
-					><path d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z" /></svg
-				>
-			</Button>
 			<Button
 				type="button"
-				on:click={removeAdditionalGuest}
+				on:click={() => (additionalGuest = getNextValue(additionalGuest, 'prev'))}
 				isRound
 				size="small"
 				variant="secondary"
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" class="w-5 fill-current" viewBox="0 -960 960 960"
 					><path d="M200-450v-60h560v60H200Z" /></svg
+				>
+			</Button>
+			<Button
+				type="button"
+				on:click={() => (additionalGuest = getNextValue(additionalGuest, 'next'))}
+				isRound
+				size="small"
+				variant="secondary"
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" class="w-5 fill-current" viewBox="0 -960 960 960"
+					><path d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z" /></svg
 				>
 			</Button>
 		{/if}
@@ -121,5 +114,5 @@
 		{/each}
 	{/if}
 
-	<Button>Add Guest</Button>
+	<Button disabled={status !== 'idle'} type="submit">Add Guest</Button>
 </Form>

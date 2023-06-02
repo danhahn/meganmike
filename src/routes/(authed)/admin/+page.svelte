@@ -19,7 +19,7 @@
 	let pageData: Guest[] = [];
 	let count = 0;
 
-	const ref = collection(db, 'users');
+	const ref = collection(db, 'guests');
 
 	const unsub = onSnapshot(ref, (doc) => {
 		doc.forEach((item) => {
@@ -32,9 +32,9 @@
 				{
 					id,
 					name: `${data.firstName} ${data.lastName}`,
-					address: `${data.address1} ${data.city} ${data.state} ${data.zipCode}`,
+					address: `${data.address} ${data.address2} ${data.city}, ${data.state} ${data.zipCode}`,
 					email: data.email,
-					phone: data.phoneNumber,
+					phone: data.phone,
 					rsvp: data.rsvp
 				}
 			];

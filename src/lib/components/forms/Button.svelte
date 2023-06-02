@@ -3,6 +3,7 @@
 	export let width: 'full' | 'default' = 'default';
 	export let size: 'small' | 'default' = 'default';
 	export let isRound: boolean = false;
+	export let disabled: boolean = false;
 	$: isPrimary = variant === 'primary';
 	$: isSecondary = variant === 'secondary';
 	$: isNaked = variant === 'naked';
@@ -14,6 +15,7 @@
 	{...$$props}
 	on:click
 	class="uppercase px-10 py-2 rounded-md transition-all ease-in-out hover:shadow hover:shadow-black/50 focus:outline-megan-900 "
+	{disabled}
 	class:isFull
 	class:isPrimary
 	class:isSecondary
@@ -23,14 +25,20 @@
 >
 
 <style lang="postcss">
-	.isPrimary {
-		@apply bg-megan-600 hover:bg-megan-500 text-white;
+	.isPrimary:not(:disabled) {
+		@apply hover:bg-megan-500;
 	}
 
 	.isPrimary {
-		@apply bg-megan-600 hover:bg-megan-500 text-white;
+		@apply bg-megan-600 text-white;
+	}
+	.isPrimary:disabled {
+		@apply bg-megan-400 text-white;
 	}
 
+	.isSecondary:not(:disabled) {
+		@apply hover:bg-megan-300;
+	}
 	.isSecondary {
 		@apply bg-megan-200 hover:bg-megan-300 text-black;
 	}
@@ -53,5 +61,8 @@
 
 	.isNaked {
 		@apply text-megan-900 hover:shadow-none hover:text-black;
+	}
+	button:disabled {
+		@apply hover:shadow-none cursor-not-allowed;
 	}
 </style>
