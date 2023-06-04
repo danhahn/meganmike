@@ -19,14 +19,72 @@ type FormData = {
 export function getFormData(event: Event) {
 	const target = event.target as HTMLFormElement;
 	const formData: FormData = {};
+	const guestsArray: FormData[] = [];
 
 	Array.from(target.elements).forEach((element) => {
 		if (element instanceof HTMLInputElement) {
-			formData[element.name] = element.value;
+			if (element.name.includes('guest')) {
+				guestsArray.push({ [element.name]: element.value });
+			} else {
+				formData[element.name] = element.value;
+			}
 		}
 	});
 
-	return formData;
+	const guests = convertArrayToObject(guestsArray);
+
+	return { ...formData, guests };
+}
+
+interface Guest {
+	firstName: string;
+	lastName: string;
+	[key: string]: string;
+}
+
+function convertArrayToObject(arr: object[]): Guest[] {
+	const result: Guest[] = [];
+
+	let currentIndex = 1;
+	let guestObj: Guest = {
+		firstName: '',
+		lastName: ''
+	};
+
+	arr.forEach((obj: object) => {
+		const keys = Object.keys(obj);
+		const values = Object.values(obj);
+
+		keys.forEach((key: string) => {
+			const propertyName = key.substring(0, key.length - 1);
+			const propertyValue = values[0];
+
+			if (propertyName === 'guestFirstName') {
+				guestObj.firstName = propertyValue;
+			}
+
+			if (propertyName === 'guestLastName') {
+				guestObj.lastName = propertyValue;
+			}
+		});
+
+		if (currentIndex % 2 === 0) {
+			result.push(guestObj);
+			guestObj = {
+				firstName: '',
+				lastName: ''
+			};
+		}
+
+		currentIndex++;
+	});
+
+	// Push the last guest object if it hasn't been pushed yet
+	if (guestObj.firstName !== '' || guestObj.lastName !== '') {
+		result.push(guestObj);
+	}
+
+	return result;
 }
 
 export const states = [

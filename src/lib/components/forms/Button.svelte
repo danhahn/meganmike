@@ -1,11 +1,13 @@
 <script lang="ts">
-	export let variant: 'primary' | 'naked' | 'secondary' = 'primary';
+	export let variant: 'primary' | 'naked' | 'secondary' | 'warning' | 'success' = 'primary';
 	export let width: 'full' | 'default' = 'default';
 	export let size: 'small' | 'default' = 'default';
 	export let isRound: boolean = false;
 	export let disabled: boolean = false;
 	$: isPrimary = variant === 'primary';
 	$: isSecondary = variant === 'secondary';
+	$: isWarning = variant === 'warning';
+	$: isSuccess = variant === 'success';
 	$: isNaked = variant === 'naked';
 	$: isFull = width === 'full';
 	$: isSmall = size === 'small';
@@ -19,6 +21,8 @@
 	class:isFull
 	class:isPrimary
 	class:isSecondary
+	class:isWarning
+	class:isSuccess
 	class:isSmall
 	class:isRound
 	class:isNaked><slot /></button
@@ -32,6 +36,7 @@
 	.isPrimary {
 		@apply bg-megan-600 text-white;
 	}
+
 	.isPrimary:disabled {
 		@apply bg-megan-400 text-white;
 	}
@@ -41,6 +46,14 @@
 	}
 	.isSecondary {
 		@apply bg-megan-200 hover:bg-megan-300 text-black;
+	}
+
+	.isWarning {
+		@apply bg-red-600 hover:bg-red-800 text-white p-2;
+	}
+
+	.isSuccess {
+		@apply bg-green-600 hover:bg-green-800 text-white p-2;
 	}
 
 	.isFull {

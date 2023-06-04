@@ -4,6 +4,7 @@
 	export let value: string = '';
 	export let required: boolean = true;
 	export let errorMessage: string = '';
+	export let disabled: boolean = false;
 
 	$: isActive = !!value;
 
@@ -15,7 +16,7 @@
 	};
 </script>
 
-<div class={`relative w-full ${$$props.class}`}>
+<div class:disabled class={`inputGroup relative w-full ${$$props.class}`}>
 	<label class="transition-all delay-[50ms] absolute left-4 top-[13px]" class:isActive for={id}
 		>{label}
 		{#if required}
@@ -30,6 +31,7 @@
 		on:focus={handleFocus}
 		on:blur={handleBlur}
 		on:change
+		{disabled}
 		class:errorMessage
 		class:isActive
 		class="bg-white rounded-md py-3 px-4 border-2 w-full border-gray-400 focus:outline-none focus:border-megan-500"
@@ -40,6 +42,9 @@
 </div>
 
 <style lang="postcss">
+	.inputGroup.disabled {
+		@apply opacity-50;
+	}
 	label.isActive {
 		@apply text-[10px] top-1 text-megan-800;
 	}
