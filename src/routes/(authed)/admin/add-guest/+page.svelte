@@ -8,6 +8,10 @@
 	import { db } from '$lib/firebase/firebase.client';
 	import { getFormData, getNextValue } from '$lib/utils';
 	import { collection, addDoc } from 'firebase/firestore';
+	import Dialog from '$lib/components/Dialog.svelte';
+	import { goto } from '$app/navigation';
+
+	let dialog: HTMLDialogElement;
 
 	let showAddGuest = false;
 	let additionalGuest = 1;
@@ -58,10 +62,19 @@
 			if (dev) {
 				console.log('Document written with ID: ', docRef.id);
 			}
-			setTimeout(resetForm, 1000);
+			dialog.showModal();
 		} catch (e) {
 			console.error('Error adding document: ', e);
 			state = 'error';
+		}
+	}
+
+	function handleDialogClose() {
+		if (dialog.returnValue === 'success') {
+			resetForm();
+		}
+		if (dialog.returnValue === 'cancel') {
+			goto('/admin');
 		}
 	}
 </script>
@@ -211,3 +224,12 @@
 
 	<Button disabled={status !== 'idle'} type="submit">Add Guest</Button>
 </Form>
+
+<Button on:click={() => dialog.showModal()}>open it!</Button>
+
+<Dialog id="addGuest" bind:dialog on:close={handleDialogClose} cancel="No" confirm="Yes">
+	<h1>
+		<span class="text-megan-700 font-extrabold">{firstName} {lastName}</span> Added to your wedding!
+	</h1>
+	<h3>Add another guest?</h3>
+</Dialog>

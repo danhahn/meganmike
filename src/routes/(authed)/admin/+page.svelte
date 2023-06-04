@@ -36,7 +36,7 @@
 					email: data.email,
 					phone: data.phone,
 					rsvp: data.rsvp,
-					guests: data.guests.length ? data.guests.length : '-'
+					guests: data.guests?.length || 0
 				}
 			];
 		});
