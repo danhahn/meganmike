@@ -225,8 +225,6 @@
 	<Button disabled={status !== 'idle'} type="submit">Add Guest</Button>
 </Form>
 
-<Button on:click={() => dialog.showModal()}>open it!</Button>
-
 <Dialog id="addGuest" bind:dialog on:close={handleDialogClose} cancel="No" confirm="Yes">
 	<h1>
 		<span class="text-megan-700 font-extrabold">{firstName} {lastName}</span> Added to your wedding!
