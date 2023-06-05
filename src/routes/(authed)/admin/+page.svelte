@@ -3,7 +3,7 @@
 	import Table from '$lib/components/admin/table/Table.svelte';
 	import { db } from '$lib/firebase/firebase.client';
 
-	import { collection, onSnapshot } from 'firebase/firestore';
+	import { collection, limit, onSnapshot, orderBy, query, startAfter } from 'firebase/firestore';
 	import { onDestroy } from 'svelte';
 
 	type Guest = {
@@ -20,8 +20,9 @@
 	let count = 0;
 
 	const ref = collection(db, 'guests');
+	const q = query(ref, orderBy('lastName', 'asc'), limit(10), startAfter(11));
 
-	const unsubscribe = onSnapshot(ref, (doc) => {
+	const unsubscribe = onSnapshot(q, (doc) => {
 		doc.forEach((item) => {
 			const id = item.id;
 			const data = item.data();

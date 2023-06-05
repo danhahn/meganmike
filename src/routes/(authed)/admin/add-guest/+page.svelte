@@ -35,21 +35,117 @@
 	let phoneNumber: string = '914262433';
 	let email: string = 'danielhahn@gmail.com';
 
+	const lastNames = [
+		'Smith',
+		'Jones',
+		'Williams',
+		'Brown',
+		'Davis',
+		'Wilson',
+		'Johnson',
+		'Miller',
+		'White',
+		'Anderson',
+		'Thomas',
+		'Jackson',
+		'Garcia',
+		'Martinez',
+		'Brown',
+		'Hernandez',
+		'Moore',
+		'Lee',
+		'Green',
+		'Walker',
+		'Thompson',
+		'White',
+		'Clark',
+		'Lewis',
+		'Wilson',
+		'Walker',
+		'Peterson',
+		'Hall',
+		'Young',
+		'Hernandez',
+		'Carter',
+		'Anderson',
+		'Green',
+		'Davis',
+		'Miller',
+		'Smith',
+		'Williams',
+		'Brown',
+		'Johnson',
+		'Jones',
+		'Garcia',
+		'Martin',
+		'Gonzalez',
+		'Williams',
+		'Wilson',
+		'Moore',
+		'Taylor',
+		'Thomas',
+		'Jackson',
+		'White',
+		'Harris',
+		'Martinez',
+		'Thompson',
+		'Lee',
+		'Hernandez',
+		'Lopez',
+		'Green',
+		'Walker',
+		'Clark',
+		'Davis',
+		'Miller',
+		'Smith',
+		'Williams',
+		'Brown',
+		'Johnson',
+		'Jones',
+		'Garcia',
+		'Martin',
+		'Gonzalez',
+		'Williams',
+		'Wilson',
+		'Moore',
+		'Taylor',
+		'Thomas',
+		'Jackson',
+		'White',
+		'Harris',
+		'Martinez',
+		'Thompson',
+		'Lee',
+		'Hernandez',
+		'Lopez',
+		'Green',
+		'Walker',
+		'Clark',
+		'Davis',
+		'Miller',
+		'Smith',
+		'Williams',
+		'Brown'
+	];
+
+	function generateLastName(): string {
+		// Load a list of last names.
+
+		// Choose a random last name from the list.
+		const randomIndex = Math.floor(Math.random() * lastNames.length);
+		const lastName = lastNames[randomIndex];
+
+		return lastName;
+	}
+
 	function resetForm() {
-		firstName = '';
-		lastName = '';
-		address1 = '';
-		address2 = '';
-		city = '';
-		state = '';
-		zipCode = '';
-		phoneNumber = '';
-		email = '';
+		lastName = generateLastName();
+
 		additionalGuest = 0;
 		status = 'idle';
 	}
 
-	async function addGuest(event: any) {
+	async function addGuest(event: Event) {
 		const formData = getFormData(event);
 
 		status = 'submitting';
@@ -72,6 +168,7 @@
 	function handleDialogClose() {
 		if (dialog.returnValue === 'success') {
 			resetForm();
+			// status = 'idle';
 		}
 		if (dialog.returnValue === 'cancel') {
 			goto('/admin');
@@ -80,10 +177,6 @@
 </script>
 
 <Headline>Add Guest</Headline>
-
-{#if status === 'submitting'}
-	<p class="text-2xl text-center m-6">{firstName} {lastName} Added to your wedding</p>
-{/if}
 
 <Form on:submit={addGuest}>
 	<p>Add a guest to the Wedding</p>
