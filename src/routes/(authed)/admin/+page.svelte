@@ -1,9 +1,19 @@
 <script lang="ts">
 	import Headline from '$lib/components/Headline.svelte';
+	import Pagination from '$lib/components/admin/Pagination.svelte';
 	import Table from '$lib/components/admin/table/Table.svelte';
 	import { db } from '$lib/firebase/firebase.client';
 
-	import { collection, limit, onSnapshot, orderBy, query, startAfter } from 'firebase/firestore';
+	import {
+		collection,
+		getCountFromServer,
+		limit,
+		onSnapshot,
+		orderBy,
+		query,
+		startAfter,
+		where
+	} from 'firebase/firestore';
 	import { onDestroy } from 'svelte';
 
 	type Guest = {
@@ -19,10 +29,20 @@
 	let pageData: Guest[] = [];
 	let count = 0;
 
-	const ref = collection(db, 'guests');
-	const q = query(ref, orderBy('lastName', 'asc'), limit(10), startAfter(11));
+	let totalNumberOfDocs: number = 0;
+	let totalNumberOfRsvp: number = 0;
 
-	const unsubscribe = onSnapshot(q, (doc) => {
+	const ref = collection(db, 'guests');
+
+	const rsvp = query(ref, where('rsvp', '==', true));
+	const q = query(ref, orderBy('lastName', 'asc'));
+
+	const unsubscribe = onSnapshot(q, async (doc) => {
+		const snapshot = await getCountFromServer(ref);
+		totalNumberOfDocs = snapshot.data().count;
+		const snapshotRsvp = await getCountFromServer(rsvp);
+		totalNumberOfRsvp = snapshotRsvp.data().count;
+
 		doc.forEach((item) => {
 			const id = item.id;
 			const data = item.data();
@@ -51,11 +71,11 @@
 <div class="grid grid-cols-2 gap-4">
 	<div class="rsvp">
 		<h2>Total <span class="hidden lg:inline-block">Number of guest invited</span></h2>
-		<p>{pageData.length}</p>
+		<p>{totalNumberOfDocs}</p>
 	</div>
 	<div class="rsvp">
 		<h2><span class="hidden lg:inline-block">Total Number of </span>RSVP</h2>
-		<p>{pageData.filter((item) => item.rsvp).length}</p>
+		<p>{totalNumberOfRsvp}</p>
 	</div>
 </div>
 
@@ -79,6 +99,7 @@
 		]}
 		data={pageData}
 	/>
+	<Pagination current={0} docsPerPage={10} total={totalNumberOfDocs} />
 </div>
 
 <style lang="postcss">
