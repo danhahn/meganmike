@@ -35,6 +35,101 @@
 	let phoneNumber: string = '914262433';
 	let email: string = 'danielhahn@gmail.com';
 
+	const firstNames = [
+		'Michael',
+		'James',
+		'William',
+		'David',
+		'John',
+		'Robert',
+		'Thomas',
+		'Joseph',
+		'Charles',
+		'George',
+		'Daniel',
+		'Christopher',
+		'Matthew',
+		'Anthony',
+		'Joseph',
+		'Andrew',
+		'Steven',
+		'Brandon',
+		'Zachary',
+		'Lucas',
+		'Noah',
+		'Elijah',
+		'Benjamin',
+		'Mason',
+		'William',
+		'Liam',
+		'Oliver',
+		'James',
+		'Logan',
+		'Alexander',
+		'Ethan',
+		'Henry',
+		'Aiden',
+		'Jackson',
+		'Daniel',
+		'Samuel',
+		'David',
+		'Elijah',
+		'Caleb',
+		'Owen',
+		'Matthew',
+		'Lucas',
+		'Jayden',
+		'William',
+		'Asher',
+		'Jacob',
+		'Michael',
+		'Christopher',
+		'Olivia',
+		'Emma',
+		'Ava',
+		'Sophia',
+		'Isabella',
+		'Charlotte',
+		'Amelia',
+		'Mia',
+		'Abigail',
+		'Emily',
+		'Madison',
+		'Chloe',
+		'Ella',
+		'Sophia',
+		'Elizabeth',
+		'Ava',
+		'Lily',
+		'Isabella',
+		'Charlotte',
+		'Evelyn',
+		'Abigail',
+		'Olivia',
+		'Mia',
+		'Sophia',
+		'Amelia',
+		'Isabella',
+		'Chloe',
+		'Ella',
+		'Madison',
+		'Evelyn',
+		'Lily',
+		'Charlotte',
+		'Elizabeth',
+		'Ava',
+		'Harper',
+		'Amelia',
+		'Emily',
+		'Chloe',
+		'Ella',
+		'Abigail',
+		'Sophia',
+		'Avery',
+		'Brooklyn',
+		'Lily'
+	];
+
 	const lastNames = [
 		'Smith',
 		'Jones',
@@ -128,18 +223,17 @@
 		'Brown'
 	];
 
-	function generateLastName(): string {
+	function generateLastName() {
 		// Load a list of last names.
 
 		// Choose a random last name from the list.
 		const randomIndex = Math.floor(Math.random() * lastNames.length);
-		const lastName = lastNames[randomIndex];
-
-		return lastName;
+		firstName = firstNames[randomIndex];
+		lastName = lastNames[randomIndex];
 	}
 
 	function resetForm() {
-		lastName = generateLastName();
+		generateLastName();
 
 		additionalGuest = 0;
 		status = 'idle';
