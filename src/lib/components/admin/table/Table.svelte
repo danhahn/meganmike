@@ -40,7 +40,7 @@
 	<tbody>
 		{#each data as row}
 			<Tr>
-				<Td>{row.name}</Td>
+				<Td><a href={`/admin/view/${row.id}`}>{row.name}</a></Td>
 				<Td>{row.email}</Td>
 				<Td>{row.phone}</Td>
 				<Td>{row.address}</Td>

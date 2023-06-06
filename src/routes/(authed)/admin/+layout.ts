@@ -7,8 +7,8 @@ let user: AuthStore;
 authStore.subscribe((value: AuthStore) => (user = value));
 
 export const load = (() => {
-	if (!user.currentUser) {
-		throw redirect(303, '/login');
-	}
+	// if (!user.currentUser) {
+	// 	throw redirect(303, '/login');
+	// }
 	return {};
 }) satisfies LayoutLoad;
