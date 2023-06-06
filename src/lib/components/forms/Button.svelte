@@ -1,5 +1,6 @@
 <script lang="ts">
-	export let variant: 'primary' | 'naked' | 'secondary' | 'warning' | 'success' = 'primary';
+	export let variant: 'primary' | 'naked' | 'secondary' | 'warning' | 'success' | 'light' =
+		'primary';
 	export let width: 'full' | 'default' = 'default';
 	export let size: 'small' | 'default' = 'default';
 	export let isRound: boolean = false;
@@ -8,6 +9,7 @@
 	$: isSecondary = variant === 'secondary';
 	$: isWarning = variant === 'warning';
 	$: isSuccess = variant === 'success';
+	$: isLight = variant === 'light';
 	$: isNaked = variant === 'naked';
 	$: isFull = width === 'full';
 	$: isSmall = size === 'small';
@@ -16,12 +18,13 @@
 <button
 	{...$$props}
 	on:click
-	class="uppercase px-10 py-2 rounded-md transition-all ease-in-out hover:shadow hover:shadow-black/50 focus:outline-megan-900 "
+	class={`${$$props.class}`}
 	{disabled}
 	class:isFull
 	class:isPrimary
 	class:isSecondary
 	class:isWarning
+	class:isLight
 	class:isSuccess
 	class:isSmall
 	class:isRound
@@ -29,6 +32,9 @@
 >
 
 <style lang="postcss">
+	button {
+		@apply uppercase px-10 py-2 rounded-md transition-all ease-in-out hover:shadow hover:shadow-black/50 focus:outline-megan-900;
+	}
 	.isPrimary:not(:disabled) {
 		@apply hover:bg-megan-500;
 	}
@@ -54,6 +60,10 @@
 
 	.isSuccess {
 		@apply bg-green-600 hover:bg-green-800 text-white p-2;
+	}
+
+	.isLight {
+		@apply bg-megan-50 hover:bg-white border border-megan-400 text-black font-light font-sans;
 	}
 
 	.isFull {

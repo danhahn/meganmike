@@ -7,6 +7,7 @@ import { deleteApp, getApp, getApps, initializeApp } from 'firebase/app';
 
 import { getAuth, connectAuthEmulator, setPersistence, inMemoryPersistence } from 'firebase/auth';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
+import { GoogleAuthProvider } from 'firebase/auth';
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -28,6 +29,8 @@ if (!getApps().length) {
 	deleteApp(firebaseApp);
 	firebaseApp = initializeApp(firebaseConfig);
 }
+
+export const provider = new GoogleAuthProvider();
 
 export const auth = getAuth(firebaseApp);
 // Initialize Cloud Firestore and get a reference to the service
