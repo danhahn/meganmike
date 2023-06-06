@@ -77,7 +77,7 @@
 	onDestroy(unsubscribe);
 </script>
 
-<Headline class="block">Admin {pageOffset} {itemsPerPage}</Headline>
+<Headline class="block">Admin</Headline>
 
 <div class="grid grid-cols-2 gap-4">
 	<div class="rsvp">
