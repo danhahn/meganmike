@@ -2,16 +2,16 @@
 	import Headline from '$lib/components/Headline.svelte';
 	import Pagination from '$lib/components/admin/Pagination.svelte';
 	import Table from '$lib/components/admin/table/Table.svelte';
+	import Button from '$lib/components/forms/Button.svelte';
 	import { db } from '$lib/firebase/firebase.client';
+	import { pageIndex } from '$lib/stores/navigation';
 
 	import {
 		collection,
 		getCountFromServer,
-		limit,
 		onSnapshot,
 		orderBy,
 		query,
-		startAfter,
 		where
 	} from 'firebase/firestore';
 	import { onDestroy } from 'svelte';
@@ -26,8 +26,14 @@
 		id: string;
 	};
 
+	type ItemsPerPage = 10 | 20 | 1000;
+
 	let pageData: Guest[] = [];
 	let count = 0;
+	let itemsPerPage: ItemsPerPage = 10;
+	$: pageOffset = $pageIndex * itemsPerPage;
+
+	$: currentPageData = pageData.slice(pageOffset, pageOffset + itemsPerPage);
 
 	let totalNumberOfDocs: number = 0;
 	let totalNumberOfRsvp: number = 0;
@@ -63,10 +69,15 @@
 		});
 	});
 
+	function setItemsPerPage(numberOfItems: ItemsPerPage) {
+		itemsPerPage = numberOfItems;
+		pageIndex.set(0);
+	}
+
 	onDestroy(unsubscribe);
 </script>
 
-<Headline class="block">Admin</Headline>
+<Headline class="block">Admin {pageOffset} {itemsPerPage}</Headline>
 
 <div class="grid grid-cols-2 gap-4">
 	<div class="rsvp">
@@ -77,6 +88,25 @@
 		<h2><span class="hidden lg:inline-block">Total Number of </span>RSVP</h2>
 		<p>{totalNumberOfRsvp}</p>
 	</div>
+</div>
+
+<div class="flex gap-2 mt-4">
+	<p>View Guest Per Page</p>
+	<Button
+		variant={itemsPerPage === 10 ? 'primary' : 'secondary'}
+		size="small"
+		on:click={() => setItemsPerPage(10)}>10</Button
+	>
+	<Button
+		variant={itemsPerPage === 20 ? 'primary' : 'secondary'}
+		size="small"
+		on:click={() => setItemsPerPage(20)}>20</Button
+	>
+	<Button
+		variant={itemsPerPage === 1000 ? 'primary' : 'secondary'}
+		size="small"
+		on:click={() => setItemsPerPage(1000)}>All</Button
+	>
 </div>
 
 <div class="overflow-auto">
@@ -97,9 +127,9 @@
 							/></svg
 						></div>`
 		]}
-		data={pageData}
+		data={currentPageData}
 	/>
-	<Pagination current={0} docsPerPage={10} total={totalNumberOfDocs} />
+	<Pagination current={$pageIndex} docsPerPage={itemsPerPage} total={totalNumberOfDocs} />
 </div>
 
 <style lang="postcss">
