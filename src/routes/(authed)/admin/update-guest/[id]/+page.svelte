@@ -15,6 +15,11 @@
 		[val: string]: any;
 	};
 
+	type AdditionalGuest = {
+		firstName: string;
+		lastName: string;
+	};
+
 	let firstName: string = '';
 	let lastName: string = '';
 	let address1: string = '';
@@ -24,6 +29,7 @@
 	let zipCode: string = '';
 	let phoneNumber: string = '';
 	let email: string = '';
+	let additionalGuest: AdditionalGuest[] = [];
 
 	let status: LoadingProps = 'loading';
 
@@ -35,6 +41,16 @@
 
 		if (docSnap.exists()) {
 			snapshot = docSnap.data();
+			firstName = snapshot.firstName;
+			lastName = snapshot.lastName;
+			address1 = snapshot.address;
+			address2 = snapshot.address2;
+			city = snapshot.city;
+			state = snapshot.state;
+			zipCode = snapshot.zipCode;
+			phoneNumber = snapshot.phone;
+			email = snapshot.email;
+			additionalGuest = snapshot.guest;
 			status = 'idle';
 		} else {
 			console.log('No such document!');
@@ -53,20 +69,8 @@
 	<Form>
 		<p>Update Wedding guest</p>
 		<div class="grid grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 gap-2 lg:gap-3">
-			<Input
-				id="firstName"
-				label="First Name"
-				bind:value={firstName}
-				required
-				disabled={status === 'loading'}
-			/>
-			<Input
-				id="lastName"
-				label="Last Name"
-				bind:value={lastName}
-				required
-				disabled={status === 'loading'}
-			/>
+			<Input id="firstName" label="First Name" bind:value={firstName} required disabled />
+			<Input id="lastName" label="Last Name" bind:value={lastName} required disabled />
 		</div>
 		<Input
 			id="address"
@@ -113,7 +117,15 @@
 				disabled={status === 'loading'}
 			/>
 		</div>
-
-		<Button disabled={status !== 'idle'} type="submit">Add Guest</Button>
+		{#if additionalGuest?.length}
+			<div>
+				<ul>
+					{#each additionalGuest as guest}
+						<li>{guest.firstName} {guest.lastName}</li>
+					{/each}
+				</ul>
+			</div>
+		{/if}
+		<Button>Update Guest</Button>
 	</Form>
 </Loading>
