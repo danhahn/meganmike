@@ -60,7 +60,7 @@
 					></Td
 				>
 				<Td class="px-1"
-					><Button variant="success" on:click={() => goto(`/admin/update-guest?id=${row.id}`)}>
+					><Button variant="success" on:click={() => goto(`/admin/update-guest/${row.id}`)}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							class="w-6 fill-current"
