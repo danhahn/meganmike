@@ -32,7 +32,7 @@
 	let city: string = 'Pleasantville';
 	let state: string = 'NY';
 	let zipCode: string = '10570';
-	let phoneNumber: string = '914262433';
+	let phoneNumber: string = '9142624333';
 	let email: string = 'danielhahn@gmail.com';
 
 	const firstNames = [
@@ -247,7 +247,7 @@
 		try {
 			const docRef = await addDoc(collection(db, 'guests'), {
 				...formData,
-				rsvp: false
+				rsvp: null
 			});
 			if (dev) {
 				console.log('Document written with ID: ', docRef.id);

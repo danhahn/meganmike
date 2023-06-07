@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/forms/Button.svelte';
+	import { formatPhoneNumber } from '$lib/utils';
 	import Td from './Td.svelte';
 	import Th from './Th.svelte';
 	import Tr from './Tr.svelte';
@@ -42,7 +43,7 @@
 			<Tr>
 				<Td><a href={`/admin/view/${row.id}`}>{row.name}</a></Td>
 				<Td>{row.email}</Td>
-				<Td>{row.phone}</Td>
+				<Td>{formatPhoneNumber(String(row.phone))}</Td>
 				<Td>{row.address}</Td>
 				<Td>{row.rsvp ? 'Yes' : 'No'}</Td>
 				<Td class="text-center text-2xl">{row.guests}</Td>
