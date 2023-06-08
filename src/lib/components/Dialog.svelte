@@ -20,6 +20,7 @@
 			<Button
 				id="confirmBtn"
 				value="default"
+				type="submit"
 				on:click={() => {
 					dialog.close('success');
 				}}>{confirm}</Button

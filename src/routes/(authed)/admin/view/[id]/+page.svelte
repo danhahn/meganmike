@@ -8,6 +8,7 @@
 	import Button from '$lib/components/forms/Button.svelte';
 	import type { LoadingProps } from '$lib/types';
 	import Loading from '$lib/components/Loading.svelte';
+	import { goto } from '$app/navigation';
 
 	export let data: PageData;
 
@@ -114,8 +115,14 @@
 					{/each}
 				</ul>
 			</div>
-		{:else}
-			<Button>Add Guests</Button>
 		{/if}
+		<div />
+		<div class="mt-11 justify-self-end">
+			<Button
+				size="small"
+				variant="secondary"
+				on:click={() => goto(`/admin/update-guest/${data.id}`)}>Edit</Button
+			>
+		</div>
 	</div>
 </Loading>

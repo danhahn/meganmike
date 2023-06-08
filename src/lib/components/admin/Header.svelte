@@ -11,19 +11,28 @@
 		url: string;
 		disabled?: boolean;
 		offset?: boolean;
+		type: 'button' | 'link';
 	};
 
+	//<svg xmlns="http://www.w3.org/2000/svg"  class="w-6 fill-current" viewBox="0 -960 960 960"><path d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z"/></svg>
+
 	const navData: NavData[] = [
-		{ label: 'View All Guest', url: '/admin' },
-		{ label: 'Add Guest', url: '/admin/add-guest' },
-		{ label: 'Update Guest', url: '/admin/update-guest' },
-		{ label: 'Tables', url: '/admin/tables' },
+		{
+			label: `
+			
+			Add Guest`,
+			url: '/admin/add-guest',
+			type: 'button'
+		},
+		{ label: 'View All Guest', url: '/admin', type: 'link' },
+		{ label: 'Organize Tables', url: '/admin/tables', type: 'link' },
 		{
 			label: `
 			<svg xmlns="http://www.w3.org/2000/svg" class="w-6 fill-megan-900" viewBox="0 96 960 960"><path d="M655 976 255 576l400-400 56 57-343 343 343 343-56 57Z"/></svg>
 			<span class="text-megan-900">Back to Site</span>`,
 			url: '/',
-			offset: true
+			offset: true,
+			type: 'link'
 		}
 	];
 
@@ -52,12 +61,17 @@
 		{#each navData as nav}
 			{#if !nav.disabled}
 				<li class={`px-8 py-1 ${nav.offset ? 'mt-8' : ''}`}>
-					<a
-						href={nav.url}
-						class={`grid grid-cols-[auto_1fr] gap-1 items-center hover:underline ${
-							$page.url.pathname === nav.url ? 'active' : ''
-						}`}>{@html nav.label}</a
-					>
+					{#if nav.type === 'link'}
+						<a
+							href={nav.url}
+							class={`grid grid-cols-[auto_1fr] gap-1 items-center hover:underline ${
+								$page.url.pathname === nav.url ? 'active' : ''
+							}`}>{@html nav.label}</a
+						>
+					{:else if nav.type === 'button'}
+						<Button class="flex gap-2 px-2" on:click={() => goto(nav.url)}>{@html nav.label}</Button
+						>
+					{/if}
 				</li>
 			{/if}
 		{/each}

@@ -25,15 +25,15 @@
 		if (additionalGuest > 0) additionalGuest--;
 	}
 
-	let firstName: string = 'Dan';
-	let lastName: string = 'Hahn';
-	let address1: string = '59 Stanley St';
+	let firstName: string = '';
+	let lastName: string = '';
+	let address1: string = '';
 	let address2: string;
-	let city: string = 'Pleasantville';
-	let state: string = 'NY';
-	let zipCode: string = '10570';
-	let phoneNumber: string = '9142624333';
-	let email: string = 'danielhahn@gmail.com';
+	let city: string = '';
+	let state: string = '';
+	let zipCode: string = '';
+	let phoneNumber: string = '';
+	let email: string = '';
 
 	const firstNames = [
 		'Michael',
@@ -416,7 +416,15 @@
 		{/each}
 	{/if}
 
-	<Button disabled={status !== 'idle'} type="submit">Add Guest</Button>
+	<div class="flex justify-end gap-4">
+		<Button
+			variant="secondary"
+			disabled={status !== 'idle'}
+			type="button"
+			on:click={() => goto('/admin')}>Cancel</Button
+		>
+		<Button disabled={status !== 'idle'} type="submit">Add Guest To Wedding</Button>
+	</div>
 </Form>
 
 <Dialog id="addGuest" bind:dialog on:close={handleDialogClose} cancel="No" confirm="Yes">

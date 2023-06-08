@@ -10,10 +10,13 @@
 	import type { PageData } from '../$types';
 	import Loading from '$lib/components/Loading.svelte';
 	import Dialog from '$lib/components/Dialog.svelte';
+	import { goto } from '$app/navigation';
 	export let data: PageData;
 
 	const firebaseDoc = 'guests';
 	const ref = doc(db, firebaseDoc, data.id);
+
+	let msg = '';
 
 	let guestFirstName: string = '';
 	let guestLastName: string = '';
@@ -71,16 +74,45 @@
 		getDocumentFromFirebase(data.id);
 	});
 
+	async function updateGuest() {
+		status = 'submitting';
+		try {
+			await updateDoc(ref, {
+				firstName,
+				lastName,
+				address: address1,
+				address2,
+				city,
+				state,
+				zipCode,
+				email,
+				phone: phoneNumber
+			});
+			msg = `Guest was successfully updated! 🎉`;
+			status = 'idle';
+			setTimeout(() => {
+				msg = '';
+			}, 2000);
+		} catch (error) {}
+	}
+
 	async function addGuestToWedding() {
 		const newGuest: Guest = {
 			firstName: guestFirstName,
 			lastName: guestLastName
 		};
 
+		status = 'submitting';
 		await updateDoc(ref, {
 			guests: [...guests, newGuest]
 		});
+		msg = `${guestFirstName} ${guestLastName} was added as a guest 🎉`;
+		status = 'idle';
+		setTimeout(() => {
+			msg = '';
+		}, 2000);
 	}
+
 	async function removeGuestFromWedding(guest: Guest) {
 		const updateGuests = guests.filter((g) => g !== guest);
 
@@ -106,35 +138,57 @@
 
 <Headline>Update Guest</Headline>
 
-<Loading {status}>
-	<Form>
+{#if msg}
+	<p class="text-center text-2xl text-megan-600">{msg}</p>
+{/if}
+
+<submitting {status}>
+	<Form on:submit={updateGuest}>
 		<p>Update Wedding guest</p>
 		<div class="grid grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 gap-2 lg:gap-3">
-			<Input id="firstName" label="First Name" bind:value={firstName} required disabled />
-			<Input id="lastName" label="Last Name" bind:value={lastName} required disabled />
+			<Input
+				id="firstName"
+				label="First Name"
+				bind:value={firstName}
+				required
+				disabled={status === 'submitting'}
+			/>
+			<Input
+				id="lastName"
+				label="Last Name"
+				bind:value={lastName}
+				required
+				disabled={status === 'submitting'}
+			/>
 		</div>
 		<Input
 			id="address"
 			required
 			label="Address"
 			bind:value={address1}
-			disabled={status === 'loading'}
+			disabled={status === 'submitting'}
 		/>
 		<Input
 			id="address2"
 			label="Address"
 			required={false}
 			bind:value={address2}
-			disabled={status === 'loading'}
+			disabled={status === 'submitting'}
 		/>
 		<div class="grid grid-rows-2 lg:grid-rows-1 lg:grid-cols-3 gap-2 lg:gap-3">
-			<Input id="city" required label="City" bind:value={city} disabled={status === 'loading'} />
-			<Input id="state" required label="State" bind:value={state} disabled={status === 'loading'} />
+			<Input id="city" required label="City" bind:value={city} disabled={status === 'submitting'} />
+			<Input
+				id="state"
+				required
+				label="State"
+				bind:value={state}
+				disabled={status === 'submitting'}
+			/>
 			<Input
 				id="zipCode"
 				type="number"
 				bind:value={zipCode}
-				disabled={status === 'loading'}
+				disabled={status === 'submitting'}
 				maxlength={5}
 				label="Zip Code"
 				required
@@ -147,7 +201,7 @@
 				label="Email Address"
 				type="email"
 				bind:value={email}
-				disabled={status === 'loading'}
+				disabled={status === 'submitting'}
 			/>
 			<Input
 				id="phone"
@@ -155,7 +209,7 @@
 				type="tel"
 				maxLength={10}
 				bind:value={phoneNumber}
-				disabled={status === 'loading'}
+				disabled={status === 'submitting'}
 			/>
 		</div>
 
@@ -196,7 +250,15 @@
 			</ul>
 		</div>
 
-		<Button>Update Guest</Button>
+		<div class="flex justify-end gap-4">
+			<Button
+				variant="secondary"
+				disabled={status !== 'idle'}
+				type="button"
+				on:click={() => goto('/admin')}>Cancel</Button
+			>
+			<Button type="submit" disabled={status !== 'idle'}>Update Guest</Button>
+		</div>
 	</Form>
 
 	<Dialog
@@ -214,4 +276,4 @@
 			</div>
 		</div>
 	</Dialog>
-</Loading>
+</submitting>
