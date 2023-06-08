@@ -132,6 +132,7 @@
 		}
 		if (dialog.returnValue === 'cancel') {
 			cancelAddGuest();
+			dialog.close();
 		}
 	}
 </script>
@@ -270,9 +271,9 @@
 	>
 		<div class="grid gap-4">
 			<h1 class="text-2xl">Add another guest</h1>
-			<div class="grid grid-cols-2 gap-4">
-				<Input id="guestFirstName" bind:value={guestFirstName} label="First Name" required={true} />
-				<Input id="guestLastName" bind:value={guestLastName} label="Last Name" required={true} />
+			<div class="grid lg:grid-cols-2 gap-4">
+				<Input id="guestFirstName" bind:value={guestFirstName} label="First Name" />
+				<Input id="guestLastName" bind:value={guestLastName} label="Last Name" />
 			</div>
 		</div>
 	</Dialog>
