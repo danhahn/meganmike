@@ -11,7 +11,7 @@
 		email: String;
 		phone: String;
 		address: String;
-		rsvp: Boolean;
+		rsvp: string | null;
 		guests?: Number;
 		id?: String;
 		delete?: string;
@@ -45,7 +45,7 @@
 				<Td>{row.email}</Td>
 				<Td>{formatPhoneNumber(String(row.phone))}</Td>
 				<Td>{row.address}</Td>
-				<Td>{row.rsvp ? 'Yes' : 'No'}</Td>
+				<Td>{row.rsvp === 'Yes' ? 'Yes' : 'No'}</Td>
 				<Td class="text-center text-2xl">{row.guests}</Td>
 				<Td class="text-center px-1"
 					><Button variant="warning" on:click={() => console.log(row.id)}

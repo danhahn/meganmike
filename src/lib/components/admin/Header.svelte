@@ -64,12 +64,16 @@
 					{#if nav.type === 'link'}
 						<a
 							href={nav.url}
+							on:click={() => adminNav.set(false)}
 							class={`grid grid-cols-[auto_1fr] gap-1 items-center hover:underline ${
 								$page.url.pathname === nav.url ? 'active' : ''
 							}`}>{@html nav.label}</a
 						>
 					{:else if nav.type === 'button'}
-						<Button class="flex gap-2 px-2" on:click={() => goto(nav.url)}>{@html nav.label}</Button
+						<Button
+							on:click={() => adminNav.set(false)}
+							class="flex gap-2 px-2"
+							on:click={() => goto(nav.url)}>{@html nav.label}</Button
 						>
 					{/if}
 				</li>

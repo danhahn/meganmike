@@ -25,7 +25,7 @@
 	<footer
 		class="flex justify-between text-megan-300 text-center lg:text-left p-2 lg:p-5 border-t border-t-megan-200"
 	>
-		&copy: {new Date().getFullYear()} Megan and Mike All Rights Reserved.
+		&copy; {new Date().getFullYear()} Megan and Mike All Rights Reserved.
 		{#if $page.url.pathname === '/'}
 			<a href="/admin">
 				<svg xmlns="http://www.w3.org/2000/svg" class="w-8 fill-megan-200" viewBox="0 -960 960 960"

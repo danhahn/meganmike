@@ -38,8 +38,15 @@
 	});
 </script>
 
+<a href="/admin" class="flex gap-1">
+	<svg xmlns="http://www.w3.org/2000/svg" class="w-4 fill-megan-900" viewBox="0 96 960 960"
+		><path d="M655 976 255 576l400-400 56 57-343 343 343 343-56 57Z" /></svg
+	>
+	<span class="text-megan-900">Back to View All Guests</span></a
+>
+<Headline>{snapshot.firstName} {snapshot.lastName}</Headline>
+
 <Loading {status}>
-	<Headline>{snapshot.firstName} {snapshot.lastName}</Headline>
 	<div
 		class="max-w-lg mx-auto grid grid-cols-[64px_1fr] gap-4 items-center border-2 border-megan-800 rounded-lg p-12 bg-megan-50"
 	>
@@ -117,12 +124,20 @@
 			</div>
 		{/if}
 		<div />
-		<div class="mt-11 justify-self-end">
-			<Button
-				size="small"
-				variant="secondary"
-				on:click={() => goto(`/admin/update-guest/${data.id}`)}>Edit</Button
+	</div>
+	<div class="mt-11 flex justify-center">
+		<Button
+			size="small"
+			variant="secondary"
+			on:click={() => goto(`/admin/update-guest/${data.id}`)}
+			class="flex gap-2"
+		>
+			<svg xmlns="http://www.w3.org/2000/svg" class="w-4 fill-current" viewBox="0 -960 960 960"
+				><path
+					d="M180-180h44l443-443-44-44-443 443v44Zm614-486L666-794l42-42q17-17 42-17t42 17l44 44q17 17 17 42t-17 42l-42 42Zm-42 42L248-120H120v-128l504-504 128 128Zm-107-21-22-22 44 44-22-22Z"
+				/></svg
 			>
-		</div>
+			Edit</Button
+		>
 	</div>
 </Loading>

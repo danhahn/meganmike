@@ -126,7 +126,7 @@
 		</div>
 		<div class="mt-auto">
 			<p class="my-4 text-xs text-center text-megan-700">
-				<span>Copyright © 2023</span>
+				<span>© 2023</span>
 			</p>
 		</div>
 	</aside>

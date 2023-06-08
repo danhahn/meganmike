@@ -57,11 +57,11 @@
 	}
 
 	.isWarning {
-		@apply bg-red-600 hover:bg-red-400 text-white p-2;
+		@apply bg-red-600 hover:bg-red-400 text-white p-1;
 	}
 
 	.isSuccess {
-		@apply bg-green-600 hover:bg-green-800 text-white p-2;
+		@apply bg-green-600 hover:bg-green-800 text-white p-1;
 	}
 
 	.isLight {

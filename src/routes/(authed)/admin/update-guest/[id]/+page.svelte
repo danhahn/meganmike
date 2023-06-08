@@ -6,11 +6,12 @@
 	import { db } from '$lib/firebase/firebase.client';
 	import type { LoadingProps } from '$lib/types';
 	import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import type { PageData } from '../$types';
 	import Loading from '$lib/components/Loading.svelte';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { goto } from '$app/navigation';
+	import type { Unsubscribe } from 'firebase/auth';
 	export let data: PageData;
 
 	const firebaseDoc = 'guests';
@@ -41,11 +42,13 @@
 
 	let status: LoadingProps = 'loading';
 
-	async function getDocumentFromFirebase(id: string) {
+	let unsubscribe: Unsubscribe = () => null;
+
+	async function getDocumentFromFirebase() {
 		status = 'loading';
 
 		try {
-			const unsub = await onSnapshot(ref, (doc) => {
+			unsubscribe = await onSnapshot(ref, (doc) => {
 				const snapshot = doc.data();
 				if (snapshot) {
 					firstName = snapshot.firstName;
@@ -70,9 +73,8 @@
 		}
 	}
 
-	onMount(() => {
-		getDocumentFromFirebase(data.id);
-	});
+	onMount(getDocumentFromFirebase);
+	onDestroy(unsubscribe);
 
 	async function updateGuest() {
 		status = 'submitting';
@@ -137,13 +139,19 @@
 	}
 </script>
 
+<a href="/admin" class="flex gap-1">
+	<svg xmlns="http://www.w3.org/2000/svg" class="w-4 fill-megan-900" viewBox="0 96 960 960"
+		><path d="M655 976 255 576l400-400 56 57-343 343 343 343-56 57Z" /></svg
+	>
+	<span class="text-megan-900">Back to View All Guests</span></a
+>
 <Headline>Update Guest</Headline>
 
 {#if msg}
 	<p class="text-center text-2xl text-megan-600">{msg}</p>
 {/if}
 
-<submitting {status}>
+<Loading {status}>
 	<Form on:submit={updateGuest}>
 		<p>Update Wedding guest</p>
 		<div class="grid grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 gap-2 lg:gap-3">
@@ -277,4 +285,4 @@
 			</div>
 		</div>
 	</Dialog>
-</submitting>
+</Loading>

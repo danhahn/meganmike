@@ -3,8 +3,9 @@
 	import { auth } from '$lib/firebase/firebase.client';
 	import { authStore } from '$lib/stores/authStore';
 	import { adminNav } from '$lib/stores/navigation';
+	import type { Unsubscribe } from 'firebase/auth';
 
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	$: notLoggedIn = !$authStore.currentUser;
 
@@ -25,8 +26,10 @@
 
 	$: days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
 
+	let unsubscribe: Unsubscribe = () => null;
+
 	onMount(() => {
-		const unsubscribe = auth.onAuthStateChanged((user) => {
+		unsubscribe = auth.onAuthStateChanged((user) => {
 			authStore.update((curr) => ({
 				...curr,
 				isLoading: false,
@@ -39,6 +42,7 @@
 	const handleAdminNavigation = () => {
 		adminNav.set(true);
 	};
+	onDestroy(unsubscribe);
 </script>
 
 <section class="grid min-h-full" class:multiColumn>
