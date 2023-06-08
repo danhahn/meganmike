@@ -12,7 +12,7 @@
 <dialog {id} bind:this={dialog} on:close on:cancel>
 	<Headline size="small" padding={false}>Megan and Mike</Headline>
 	<form class="grid grid-rows-[1fr_auto] h-full">
-		<div class="min-h-[100px] text-center text-2xl border-t border-t-megan-500 py-8">
+		<div class="min-h-[100px] text-center border-t border-t-megan-500 py-8">
 			<slot />
 		</div>
 		<div class="flex justify-end gap-2 border-t border-t-megan-500 pt-4">

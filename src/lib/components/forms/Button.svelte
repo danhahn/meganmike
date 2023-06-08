@@ -2,7 +2,7 @@
 	export let variant: 'primary' | 'naked' | 'secondary' | 'warning' | 'success' | 'light' =
 		'primary';
 	export let width: 'full' | 'default' = 'default';
-	export let size: 'small' | 'default' = 'default';
+	export let size: 'small' | 'default' | 'tiny' = 'default';
 	export let isRound: boolean = false;
 	export let disabled: boolean = false;
 	$: isPrimary = variant === 'primary';
@@ -13,12 +13,12 @@
 	$: isNaked = variant === 'naked';
 	$: isFull = width === 'full';
 	$: isSmall = size === 'small';
+	$: isTiny = size === 'tiny';
 </script>
 
 <button
 	{...$$props}
 	on:click
-	class={`${$$props.class}`}
 	{disabled}
 	class:isFull
 	class:isPrimary
@@ -28,7 +28,9 @@
 	class:isSuccess
 	class:isSmall
 	class:isRound
-	class:isNaked><slot /></button
+	class:isNaked
+	class:isTiny
+	class={`${$$props.class}`}><slot /></button
 >
 
 <style lang="postcss">
@@ -55,7 +57,7 @@
 	}
 
 	.isWarning {
-		@apply bg-red-600 hover:bg-red-800 text-white p-2;
+		@apply bg-red-600 hover:bg-red-400 text-white p-2;
 	}
 
 	.isSuccess {
@@ -72,6 +74,10 @@
 
 	.isSmall {
 		@apply px-3 py-1 text-sm;
+	}
+
+	.isTiny {
+		@apply p-[2px] aspect-square leading-none text-sm rounded hover:shadow-sm;
 	}
 
 	.isRound {

@@ -233,8 +233,15 @@
 	}
 
 	function resetForm() {
-		generateLastName();
-
+		firstName = '';
+		lastName = '';
+		address1 = '';
+		address2;
+		city = '';
+		state = '';
+		zipCode = '';
+		phoneNumber = '';
+		email = '';
 		additionalGuest = 0;
 		status = 'idle';
 	}
@@ -262,7 +269,7 @@
 	function handleDialogClose() {
 		if (dialog.returnValue === 'success') {
 			resetForm();
-			// status = 'idle';
+			status = 'idle';
 		}
 		if (dialog.returnValue === 'cancel') {
 			goto('/admin');
@@ -413,8 +420,8 @@
 </Form>
 
 <Dialog id="addGuest" bind:dialog on:close={handleDialogClose} cancel="No" confirm="Yes">
-	<h1>
-		<span class="text-megan-700 font-extrabold">{firstName} {lastName}</span> Added to your wedding!
+	<h1 class="text-3xl mb-4">
+		<span class="text-megan-700 font-extrabold">{firstName} {lastName}</span> Added to the wedding! 💍
 	</h1>
-	<h3>Add another guest?</h3>
+	<h3 class="text-xl">Add another guest?</h3>
 </Dialog>
