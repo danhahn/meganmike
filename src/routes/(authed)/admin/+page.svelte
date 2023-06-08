@@ -68,7 +68,9 @@
 						{
 							id,
 							name: `${data.firstName} ${data.lastName}`,
-							address: `${data.address} ${data.address2} ${data.city}, ${data.state} ${data.zipCode}`,
+							address: `${data.address}<br/> ${data.address2}${data.address2 && '<br/>'} ${
+								data.city
+							}, ${data.state} ${data.zipCode}`,
 							email: data.email,
 							phone: data.phone,
 							rsvp: data.rsvp,
@@ -105,25 +107,26 @@
 		</div>
 	</div>
 
-	<div class="flex gap-2 mt-4">
-		<p>View Guest Per Page</p>
-		<Button
-			variant={itemsPerPage === 10 ? 'primary' : 'secondary'}
-			size="small"
-			on:click={() => setItemsPerPage(10)}>10</Button
-		>
-		<Button
-			variant={itemsPerPage === 20 ? 'primary' : 'secondary'}
-			size="small"
-			on:click={() => setItemsPerPage(20)}>20</Button
-		>
-		<Button
-			variant={itemsPerPage === 1000 ? 'primary' : 'secondary'}
-			size="small"
-			on:click={() => setItemsPerPage(1000)}>All</Button
-		>
-	</div>
-
+	{#if totalNumberOfDocs > 10}
+		<div class="flex gap-2 mt-4">
+			<p>View Guest Per Page</p>
+			<Button
+				variant={itemsPerPage === 10 ? 'primary' : 'secondary'}
+				size="small"
+				on:click={() => setItemsPerPage(10)}>10</Button
+			>
+			<Button
+				variant={itemsPerPage === 20 ? 'primary' : 'secondary'}
+				size="small"
+				on:click={() => setItemsPerPage(20)}>20</Button
+			>
+			<Button
+				variant={itemsPerPage === 1000 ? 'primary' : 'secondary'}
+				size="small"
+				on:click={() => setItemsPerPage(1000)}>All</Button
+			>
+		</div>
+	{/if}
 	<div class="overflow-auto">
 		<Table
 			headerData={[

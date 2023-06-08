@@ -43,11 +43,25 @@
 	<tbody>
 		{#each data as row}
 			<Tr>
-				<Td isRow class="text-2xl lg:text-base"><a href={`/admin/view/${row.id}`}>{row.name}</a></Td
+				<Td isRow class="text-2xl lg:text-base">
+					<a class="hover:underline underline-offset-2 flex gap-2" href={`/admin/view/${row.id}`}
+						>{row.name}
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="w-4 fill-current"
+							viewBox="0 -960 960 960"
+							><path
+								d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h279v60H180v600h600v-279h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"
+							/></svg
+						>
+					</a>
+				</Td>
+				<Td isRow
+					><a class="hover:underline underline-offset-2" href={`mailto:${row.email}`}>{row.email}</a
+					></Td
 				>
-				<Td isRow><a href={`mailto:${row.email}`}>{row.email}</a></Td>
 				<Td isRow>{formatPhoneNumber(String(row.phone))}</Td>
-				<Td isRow>{row.address}</Td>
+				<Td isRow><address>{@html row.address}</address></Td>
 				<Td class="mt-4 lg:mt-0 text-2xl text-center">
 					<Rsvp rsvp={row.rsvp} />
 				</Td>
