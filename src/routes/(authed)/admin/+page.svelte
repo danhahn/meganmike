@@ -6,7 +6,7 @@
 	import Button from '$lib/components/forms/Button.svelte';
 	import { db } from '$lib/firebase/firebase.client';
 	import { pageIndex } from '$lib/stores/navigation';
-	import type { LoadingProps } from '$lib/types';
+	import type { LoadingProps, RsvpProps } from '$lib/types';
 	import type { Unsubscribe } from 'firebase/auth';
 
 	import {
@@ -24,7 +24,7 @@
 		email: string;
 		phone: string;
 		address: string;
-		rsvp: string | null;
+		rsvp: RsvpProps;
 		guests?: number;
 		id: string;
 	};

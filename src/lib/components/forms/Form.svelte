@@ -21,7 +21,7 @@
 		align-self: var(--align, 'auto');
 	}
 
-	:global(.row) {
+	:global(.formRow) {
 		@apply flex flex-col sm:flex-row gap-2 sm:gap-4 justify-end;
 	}
 </style>
