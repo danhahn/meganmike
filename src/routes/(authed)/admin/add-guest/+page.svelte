@@ -286,7 +286,7 @@
 <Headline>Add Guest</Headline>
 
 <Form on:submit={addGuest}>
-	<p>Add a guest to the Wedding</p>
+	<p>Guest's Name</p>
 	<div class="grid grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 gap-2 lg:gap-3">
 		<Input
 			id="firstName"
@@ -303,6 +303,7 @@
 			disabled={status === 'submitting'}
 		/>
 	</div>
+	<p>Address</p>
 	<Input
 		id="address"
 		required
@@ -369,7 +370,7 @@
 			}}
 		>
 			{#if !showAddGuest}
-				Add Guest
+				Add +1
 			{:else}
 				Cancel
 			{/if}
@@ -403,9 +404,11 @@
 		{#each Array.from({ length: additionalGuest }) as _, index}
 			<div
 				transition:slide
-				class="grid grid-rows-2 lg:grid-rows-1 lg:grid-cols-[auto_1fr_1fr] lg:items-center gap-2 lg:gap-3"
+				class="grid grid-rows-2 grid-cols-[auto_1fr] lg:grid-rows-1 lg:grid-cols-[auto_1fr_1fr] lg:items-center gap-2 lg:gap-3"
 			>
-				<p>Additional Guest {index + 1}</p>
+				<p class="text-2xl tracking-normal row-span-2 lg:row-span-1 m-1 lg:m-0 text-megan-800">
+					+{index + 1}
+				</p>
 				<Input
 					id={`guestFirstName${index + 1}`}
 					label="First Name"
@@ -422,14 +425,19 @@
 		{/each}
 	{/if}
 
-	<div class="flex justify-end gap-4">
+	<div class="flex flex-col-reverse lg:flex-row lg:justify-end gap-4 mt-12">
 		<Button
 			variant="secondary"
 			disabled={status !== 'idle'}
 			type="button"
 			on:click={() => goto('/admin')}>Cancel</Button
 		>
-		<Button disabled={status !== 'idle'} type="submit">Add Guest To Wedding</Button>
+		<Button disabled={status !== 'idle'} type="submit">
+			<svg xmlns="http://www.w3.org/2000/svg" class="w-6 fill-current" viewBox="0 -960 960 960"
+				><path d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z" /></svg
+			>
+			Add Guest To Wedding</Button
+		>
 	</div>
 </Form>
 

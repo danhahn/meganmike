@@ -69,7 +69,7 @@
 	}
 
 	.isFull {
-		@apply w-full;
+		@apply w-full px-0;
 	}
 
 	.isSmall {
