@@ -17,6 +17,11 @@
 		[val: string]: any;
 	};
 
+	const qrSize = 300;
+
+	var url = new URL(window.location.href);
+	var baseUrl = url.origin;
+
 	let snapshot: Snapshot = {};
 
 	let status: LoadingProps = 'loading';
@@ -52,6 +57,13 @@
 		class="max-w-lg mx-auto grid grid-cols-[64px_1fr] gap-4 items-center border-2 border-megan-800 rounded-lg p-12 bg-megan-50"
 	>
 		<Rsvp rsvp={snapshot.rsvp} size="large" row />
+
+		<div class="col-span-2">
+			<img
+				alt=""
+				src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${baseUrl}/rsvp?id=${snapshot.phone}`}
+			/>
+		</div>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			class="w-8 fill-megan-900 justify-self-center"
