@@ -61,7 +61,7 @@
 		<div class="col-span-2">
 			<img
 				alt=""
-				src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${baseUrl}/rsvp?id=${snapshot.phone}`}
+				src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${baseUrl}/rsvp/${snapshot.phone}`}
 			/>
 		</div>
 		<svg
