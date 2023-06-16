@@ -61,9 +61,9 @@
 		<div class="col-span-2 flex flex-col gap-4">
 			<img
 				alt=""
-				src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${baseUrl}/rsvp/${snapshot.phone}`}
+				src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${baseUrl}/rsvp/${data.id}`}
 			/>
-			<a href={`${baseUrl}/rsvp/${snapshot.phone}`}>{baseUrl}/rsvp/{snapshot.phone}</a>
+			<a href={`${baseUrl}/rsvp/${data.id}`}>{baseUrl}/rsvp/{data.id}</a>
 		</div>
 
 		<svg
