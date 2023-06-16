@@ -7,7 +7,7 @@
 	import type { LoadingProps } from '$lib/types';
 	import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 	import { onDestroy, onMount } from 'svelte';
-	import type { PageData } from '../$types';
+	import type { PageData } from './$types';
 	import Loading from '$lib/components/Loading.svelte';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { goto } from '$app/navigation';
@@ -138,6 +138,10 @@
 		}
 	}
 </script>
+
+<svelte:head>
+	<title>Update Guest</title>
+</svelte:head>
 
 <a href="/admin" class="flex gap-1">
 	<svg xmlns="http://www.w3.org/2000/svg" class="w-4 fill-megan-900" viewBox="0 96 960 960"

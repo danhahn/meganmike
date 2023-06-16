@@ -40,6 +40,7 @@
 			lastName = docSnap.data().lastName;
 			phone = docSnap.data().phone;
 			rsvp = docSnap.data().rsvp;
+			selectedGuests = docSnap.data().totalGuests || 0;
 
 			guests = [...guests, ...docSnap.data().guests];
 			status = 'idle';
@@ -54,10 +55,18 @@
 	};
 
 	const rsvpYes = async () => {
+		if (selectedGuests === 0) {
+			errorMessage = 'Please select the number of guest ';
+			return;
+		}
 		setDoc(docRef, { rsvp: 'yes', totalGuests: selectedGuests }, { merge: true });
 		status = 'confirm';
 	};
 	const rsvpNo = async () => {
+		if (selectedGuests) {
+			errorMessage = 'It looks like you selected guest';
+			return;
+		}
 		setDoc(docRef, { rsvp: 'no', totalGuests: 0 }, { merge: true });
 		status = 'confirm';
 	};
@@ -95,22 +104,27 @@
 <Section>
 	{#if status === 'idle'}
 		<h2>{firstName} {lastName}</h2>
+
+		{#if errorMessage}
+			<p class="text-red-600 font-bold">{errorMessage}</p>
+		{/if}
 		{#if !confirmed}
-			<p>
-				Congratulations! You have been invited to the wedding of Megan and Mike on August 22, 2022.
-			</p>
+			<h1>Congratulations!</h1>
+			<p>You have been invited to the wedding of</p>
+			<p>Megan and Mike</p>
+			<p>August 15, 2024.</p>
 
 			<p>To RSVP, please enter your phone number below.</p>
 
-			{#if errorMessage}
-				<p>{errorMessage}</p>
-			{/if}
-
-			{phone}
+			<button on:click={() => navigator.clipboard.writeText(phone)}>{phone}</button>
 
 			<Input name="phone" id="phone" label="phone number" bind:value={userEnteredPhone} />
 			<Button on:click={validatePhoneNumber}>Next</Button>
 		{:else}
+			<h1>Congratulations!</h1>
+			<p>You have been invited to the wedding of</p>
+			<p>Megan and Mike</p>
+			<p>August 15, 2024.</p>
 			<p>Please RSVP with the correct number of guest</p>
 
 			<div class="guests" on:mouseleave={() => (hoverSelected = 0)}>
@@ -124,11 +138,14 @@
 						{index + 1}
 					</RsvpButton>
 				{/each}
+				<Button variant="naked" on:click={() => (selectedGuests = 0)}>Reset</Button>
 			</div>
 
 			<div class="grid grid-cols-2 gap-4">
-				<Button variant="warning" on:click={rsvpNo}>RSVP NO</Button>
-				<Button variant="success" on:click={rsvpYes}
+				<Button variant="warning" size="default" on:click={rsvpNo} disabled={selectedGuests > 0}
+					>RSVP NO</Button
+				>
+				<Button variant="success" size="default" on:click={rsvpYes} disabled={selectedGuests === 0}
 					>RSVP YES
 
 					{#if selectedGuests}
@@ -140,10 +157,20 @@
 	{:else if status === 'loading'}
 		<p>loading</p>
 	{:else if status === 'confirm'}
+		{#if selectedGuests}
+			You RSVPed Yes
+		{:else}
+			<p>You RSVPed No</p>
+		{/if}
+
+		<Button on:click={() => (status = 'idle')}>Edit your RSVP</Button>
+
 		<p>you have confirmed your rsvp</p>
-		<p>{selectedGuests}</p>
 	{:else}
-		<p>There was an error</p>
+		<h1>Looks like there was an error</h1>
+		<p>We were unable to find your RSVP</p>
+		<p>Please check your invitation</p>
+		<p>If there there is still an issue contact support</p>
 	{/if}
 </Section>
 
@@ -155,5 +182,9 @@
 		grid-auto-columns: 3rem;
 		gap: 0.5rem;
 		justify-self: center;
+	}
+
+	h1 {
+		@apply text-2xl text-megan-600;
 	}
 </style>

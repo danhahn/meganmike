@@ -56,12 +56,19 @@
 		@apply bg-megan-200 hover:bg-megan-300 text-black;
 	}
 
-	.isWarning {
-		@apply bg-red-600 hover:bg-red-400 text-white p-1;
+	.isWarning:not(:disabled) {
+		@apply bg-red-600 hover:bg-red-800 text-white;
 	}
 
-	.isSuccess {
-		@apply bg-green-600 hover:bg-green-800 text-white p-1;
+	.isSuccess:not(:disabled) {
+		@apply bg-green-600 hover:bg-green-800 text-white;
+	}
+	.isWarning:disabled {
+		@apply bg-red-400 text-white;
+	}
+
+	.isSuccess:disabled {
+		@apply bg-green-400 text-white;
 	}
 
 	.isLight {
@@ -73,7 +80,7 @@
 	}
 
 	.isSmall {
-		@apply px-3 py-1 text-sm;
+		@apply p-1 text-sm;
 	}
 
 	.isTiny {

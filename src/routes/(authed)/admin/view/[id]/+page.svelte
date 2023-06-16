@@ -44,6 +44,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>View Guest</title>
+</svelte:head>
+
 <a href="/admin" class="flex gap-1">
 	<svg xmlns="http://www.w3.org/2000/svg" class="w-4 fill-megan-900" viewBox="0 96 960 960"
 		><path d="M655 976 255 576l400-400 56 57-343 343 343 343-56 57Z" /></svg

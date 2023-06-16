@@ -15,7 +15,7 @@
 
 <style lang="postcss">
 	.hover {
-		@apply bg-megan-800 text-megan-50;
+		@apply bg-megan-500 text-megan-50;
 	}
 	.selected {
 		@apply bg-megan-600 text-megan-100;
