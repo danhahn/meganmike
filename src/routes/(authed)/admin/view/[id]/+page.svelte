@@ -58,12 +58,14 @@
 	>
 		<Rsvp rsvp={snapshot.rsvp} size="large" row />
 
-		<div class="col-span-2">
+		<div class="col-span-2 flex flex-col gap-4">
 			<img
 				alt=""
 				src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${baseUrl}/rsvp/${snapshot.phone}`}
 			/>
+			<a href={`${baseUrl}/rsvp/${snapshot.phone}`}>{baseUrl}/rsvp/{snapshot.phone}</a>
 		</div>
+
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			class="w-8 fill-megan-900 justify-self-center"
