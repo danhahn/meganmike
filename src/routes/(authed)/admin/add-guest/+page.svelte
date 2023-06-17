@@ -6,7 +6,7 @@
 	import Form from '$lib/components/forms/Form.svelte';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { db } from '$lib/firebase/firebase.client';
-	import { getFormData, getNextValue } from '$lib/utils';
+	import { getFormData, getNextValue, realtimeFormatPhoneNumber } from '$lib/utils';
 	import { collection, addDoc } from 'firebase/firestore';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { goto } from '$app/navigation';
@@ -275,6 +275,10 @@
 			goto('/admin');
 		}
 	}
+
+	function formatPhone() {
+		phoneNumber = realtimeFormatPhoneNumber(phoneNumber);
+	}
 </script>
 
 <a href="/admin" class="flex gap-1">
@@ -350,8 +354,9 @@
 			id="phone"
 			label="Phone Number"
 			type="tel"
-			maxLength={10}
+			maxLength={14}
 			bind:value={phoneNumber}
+			on:keydown={formatPhone}
 			disabled={status === 'submitting'}
 		/>
 	</div>

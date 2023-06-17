@@ -31,6 +31,7 @@
 		on:focus={handleFocus}
 		on:blur={handleBlur}
 		on:change
+		on:keydown
 		{disabled}
 		class:errorMessage
 		class:isActive

@@ -103,6 +103,26 @@ export function formatPhoneNumber(phoneNumber: string): string {
 	return formattedPhoneNumber;
 }
 
+export function realtimeFormatPhoneNumber(phoneNumber: string): string {
+	// Remove all non-digit characters from the input
+	const cleaned = phoneNumber.replace(/\D/g, '');
+
+	// Check if the cleaned number has 10 digits (without country code)
+
+	// Extract the area code, prefix, and line number
+	const areaCode = cleaned.substring(0, 3);
+	const prefix = cleaned.substring(3, 6);
+	const lineNumber = cleaned.substring(6);
+	const open = cleaned.length >= 1 ? '(' : '';
+	const close = cleaned.length >= 4 ? ')' : '';
+	const space = cleaned.length >= 4 ? ' ' : '';
+	const dash = cleaned.length >= 7 ? '-' : '';
+
+	// Format the phone number
+	const formattedNumber = `${open}${areaCode}${close}${space}${prefix}${dash}${lineNumber}`;
+	return formattedNumber;
+}
+
 export const states = [
 	{ label: 'Alabama', value: 'AL' },
 	{ label: 'Alaska', value: 'AK' },
