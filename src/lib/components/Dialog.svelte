@@ -5,13 +5,16 @@
 	export let id: string;
 	export let cancel: string = 'Cancel';
 	export let confirm: string = 'Confirm';
+	export let title: string = 'Megan and Mike';
 
 	export let dialog: HTMLDialogElement;
+
+	export let disabled: boolean = false;
 </script>
 
 <dialog {id} bind:this={dialog} on:close on:cancel>
-	<Headline size="small" padding={false}>Megan and Mike</Headline>
-	<form class="grid grid-rows-[1fr_auto]">
+	<Headline size="small" padding={false}>{title}</Headline>
+	<form method="dialog" class="grid grid-rows-[1fr_auto]">
 		<div class="lg:min-h-[100px] text-center border-t border-t-megan-500 py-8">
 			<slot />
 		</div>
@@ -21,6 +24,7 @@
 				id="confirmBtn"
 				value="default"
 				type="submit"
+				{disabled}
 				on:click={() => {
 					dialog.close('success');
 				}}>{confirm}</Button
