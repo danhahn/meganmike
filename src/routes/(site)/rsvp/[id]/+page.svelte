@@ -10,11 +10,17 @@
 	import { db } from '$lib/firebase/firebase.client';
 	import { onMount } from 'svelte';
 	import RsvpButton from '$lib/components/RsvpButton.svelte';
+	import Loading from '$lib/components/Loading.svelte';
+	import type { LoadingProps } from '$lib/types';
+	import RsvpInfo from '$lib/components/RsvpInfo.svelte';
+	import { dev } from '$app/environment';
 
 	export let data: PageData;
 	const docRef = doc(db, 'guests', data.id);
 
-	let status: 'idle' | 'loading' | 'error' | 'confirm' = 'loading';
+	let status: LoadingProps = 'loading';
+
+	let hasRsvp: boolean = false;
 
 	let confirmed: boolean = false;
 	let errorMessage: string;
@@ -46,7 +52,7 @@
 			status = 'idle';
 
 			if (rsvp) {
-				status = 'confirm';
+				hasRsvp = true;
 			}
 		} else {
 			console.log('No such document!');
@@ -60,7 +66,7 @@
 			return;
 		}
 		setDoc(docRef, { rsvp: 'yes', totalGuests: selectedGuests }, { merge: true });
-		status = 'confirm';
+		hasRsvp = true;
 	};
 	const rsvpNo = async () => {
 		if (selectedGuests) {
@@ -68,7 +74,7 @@
 			return;
 		}
 		setDoc(docRef, { rsvp: 'no', totalGuests: 0 }, { merge: true });
-		status = 'confirm';
+		hasRsvp = true;
 	};
 
 	const validatePhoneNumber = () => {
@@ -76,7 +82,7 @@
 			localStorage.setItem(data.id, 'true');
 			confirmed = true;
 		} else {
-			errorMessage = 'Sorry the phone number is not correct please check and try again';
+			errorMessage = 'The phone number you entered is does not match our records';
 		}
 	};
 
@@ -92,6 +98,8 @@
 		selectedGuests = item;
 	};
 
+	$: name = `${firstName} ${lastName}`;
+
 	onMount(loadDoc);
 </script>
 
@@ -102,76 +110,108 @@
 <Headline>RSVP</Headline>
 
 <Section>
-	{#if status === 'idle'}
-		<h2>{firstName} {lastName}</h2>
+	<Loading {status}>
+		<h1 class="text-2xl text-center text-megan-700">Hey {name}!</h1>
 
-		{#if errorMessage}
-			<p class="text-red-600 font-bold">{errorMessage}</p>
-		{/if}
-		{#if !confirmed}
-			<h1>Congratulations!</h1>
-			<p>You have been invited to the wedding of</p>
-			<p>Megan and Mike</p>
-			<p>August 15, 2024.</p>
+		{#if !hasRsvp}
+			{#if !confirmed}
+				<RsvpInfo />
 
-			<p>To RSVP, please enter your phone number below.</p>
-
-			<button on:click={() => navigator.clipboard.writeText(phone)}>{phone}</button>
-
-			<Input name="phone" id="phone" label="phone number" bind:value={userEnteredPhone} />
-			<Button on:click={validatePhoneNumber}>Next</Button>
-		{:else}
-			<h1>Congratulations!</h1>
-			<p>You have been invited to the wedding of</p>
-			<p>Megan and Mike</p>
-			<p>August 15, 2024.</p>
-			<p>Please RSVP with the correct number of guest</p>
-
-			<div class="guests" on:mouseleave={() => (hoverSelected = 0)}>
-				{#each guests as _, index}
-					<RsvpButton
-						on:mouseenter={() => handleMouseOver(index + 1)}
-						on:click={() => selectGuest(index + 1)}
-						selected={selectedGuests >= index + 1}
-						hover={hoverSelected >= index + 1}
-					>
-						{index + 1}
-					</RsvpButton>
-				{/each}
-				<Button variant="naked" on:click={() => (selectedGuests = 0)}>Reset</Button>
-			</div>
-
-			<div class="grid grid-cols-2 gap-4">
-				<Button variant="warning" size="default" on:click={rsvpNo} disabled={selectedGuests > 0}
-					>RSVP NO</Button
+				<div class="min-w-[300px] mx-auto grid gap-4 text-center" style="text-wrap: balance">
+					<p>Please confirm your phone number below to get started</p>
+					{#if dev}
+						<button on:click={() => navigator.clipboard.writeText(phone)}>{phone}</button>
+					{/if}
+					<Input
+						{errorMessage}
+						name="phone"
+						id="phone"
+						label="phone number"
+						bind:value={userEnteredPhone}
+					/>
+					<Button on:click={validatePhoneNumber}>Next</Button>
+				</div>
+			{:else}
+				<div
+					class="border border-megan-500 rounded-md p-4 min-w-[300px] mx-auto grid gap-4 text-center"
+					style="text-wrap: balance"
 				>
-				<Button variant="success" size="default" on:click={rsvpYes} disabled={selectedGuests === 0}
-					>RSVP YES
+					<p class="font-black text-megan-600">
+						Please RSVP with the number of guest that will join us to celebrate!
+					</p>
+
+					<select
+						bind:value={selectedGuests}
+						class="bg-gray-50 border border-megan-300 text-megan-900 text-sm rounded-lg  block w-full p-2.5"
+					>
+						<option value="0">Sorry I can't make it</option>
+
+						{#each guests as _, index}
+							<option value={index + 1}>{index + 1}</option>
+						{/each}
+					</select>
+
+					<div class="guests" on:mouseleave={() => (hoverSelected = 0)}>
+						<RsvpButton
+							on:mouseenter={() => handleMouseOver(0)}
+							on:click={() => selectGuest(0)}
+							selected={selectedGuests !== 0}
+							hover={hoverSelected !== 0}
+						>
+							{0}
+						</RsvpButton>
+						{#each guests as _, index}
+							<RsvpButton
+								on:mouseenter={() => handleMouseOver(index + 1)}
+								on:click={() => selectGuest(index + 1)}
+								selected={selectedGuests >= index + 1}
+								hover={hoverSelected >= index + 1}
+							>
+								{index + 1}
+							</RsvpButton>
+						{/each}
+						<Button variant="naked" on:click={() => (selectedGuests = 0)}>Reset</Button>
+					</div>
 
 					{#if selectedGuests}
-						({selectedGuests})
+						<Button
+							variant="success"
+							size="default"
+							on:click={rsvpYes}
+							disabled={selectedGuests === 0}
+							>RSVP YES ({selectedGuests})
+						</Button>
+					{:else}
+						<Button variant="warning" size="default" on:click={rsvpNo} disabled={selectedGuests > 0}
+							>RSVP NO</Button
+						>
 					{/if}
-				</Button>
+				</div>
+				<RsvpInfo />
+			{/if}
+		{:else}
+			{#if selectedGuests}
+				<div class="text-center">
+					<h2>Congratulations</h2>
+					<p>You RSVP Yes 🎉</p>
+				</div>
+				<RsvpInfo short />
+			{:else}
+				<p>You RSVPed No</p>
+			{/if}
+
+			<div class="text-center grid gap-2 border border-megan-500 rounded-md p-4 mt-8">
+				<Button on:click={() => (hasRsvp = false)}>Edit your RSVP</Button>
+				<p class="text-xs">If you need to edit or RSVP please do so before June 17, 2023</p>
 			</div>
 		{/if}
-	{:else if status === 'loading'}
-		<p>loading</p>
-	{:else if status === 'confirm'}
-		{#if selectedGuests}
-			You RSVPed Yes
-		{:else}
-			<p>You RSVPed No</p>
-		{/if}
-
-		<Button on:click={() => (status = 'idle')}>Edit your RSVP</Button>
-
-		<p>you have confirmed your rsvp</p>
-	{:else}
-		<h1>Looks like there was an error</h1>
-		<p>We were unable to find your RSVP</p>
-		<p>Please check your invitation</p>
-		<p>If there there is still an issue contact support</p>
-	{/if}
+		<span slot="error">
+			<h1>Looks like there was an error</h1>
+			<p>We were unable to find your RSVP</p>
+			<p>Please check your invitation</p>
+			<p>If there there is still an issue contact support</p>
+		</span>
+	</Loading>
 </Section>
 
 <style lang="postcss">

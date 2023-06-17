@@ -8,7 +8,7 @@
 	on:click
 	class:hover
 	class:selected
-	class="aspect-square border border-megan-400 text-megan-800 rounded-full grid place-content-center text-2xl"
+	class="aspect-square border border-megan-400 text-megan-800 rounded-full grid place-content-center text-xl font-mono"
 >
 	<slot />
 </button>
