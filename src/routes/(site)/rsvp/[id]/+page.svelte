@@ -9,7 +9,6 @@
 	import type { PageData } from './$types';
 	import { db } from '$lib/firebase/firebase.client';
 	import { onMount } from 'svelte';
-	import RsvpButton from '$lib/components/RsvpButton.svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import type { LoadingProps } from '$lib/types';
 	import RsvpInfo from '$lib/components/RsvpInfo.svelte';
@@ -29,9 +28,11 @@
 	let lastName: string;
 	let rsvp: string;
 	let phone: string;
-	let guests: string[] = ['one'];
+	let guests: number[] = [0, 1];
 
 	let userEnteredPhone: string;
+
+	let selectedGuests = 0;
 
 	const loadDoc = async () => {
 		const isConfirmed = localStorage.getItem(data.id);
@@ -48,7 +49,7 @@
 			rsvp = docSnap.data().rsvp;
 			selectedGuests = docSnap.data().totalGuests || 0;
 
-			guests = [...guests, ...docSnap.data().guests];
+			guests = [...guests, ...docSnap.data().guests.map((_: any, index: number) => index + 2)];
 			status = 'idle';
 
 			if (rsvp) {
@@ -84,18 +85,6 @@
 		} else {
 			errorMessage = 'The phone number you entered is does not match our records';
 		}
-	};
-
-	let hoverSelected = 0;
-	let selectedGuests = 0;
-
-	const handleMouseOver = (item: number) => {
-		if (!selectedGuests) {
-			hoverSelected = item;
-		}
-	};
-	const selectGuest = (item: number) => {
-		selectedGuests = item;
 	};
 
 	$: name = `${firstName} ${lastName}`;
@@ -144,34 +133,10 @@
 						bind:value={selectedGuests}
 						class="bg-gray-50 border border-megan-300 text-megan-900 text-sm rounded-lg  block w-full p-2.5"
 					>
-						<option value="0">Sorry I can't make it</option>
-
 						{#each guests as _, index}
-							<option value={index + 1}>{index + 1}</option>
+							<option value={index}>{index}</option>
 						{/each}
 					</select>
-
-					<div class="guests" on:mouseleave={() => (hoverSelected = 0)}>
-						<RsvpButton
-							on:mouseenter={() => handleMouseOver(0)}
-							on:click={() => selectGuest(0)}
-							selected={selectedGuests !== 0}
-							hover={hoverSelected !== 0}
-						>
-							{0}
-						</RsvpButton>
-						{#each guests as _, index}
-							<RsvpButton
-								on:mouseenter={() => handleMouseOver(index + 1)}
-								on:click={() => selectGuest(index + 1)}
-								selected={selectedGuests >= index + 1}
-								hover={hoverSelected >= index + 1}
-							>
-								{index + 1}
-							</RsvpButton>
-						{/each}
-						<Button variant="naked" on:click={() => (selectedGuests = 0)}>Reset</Button>
-					</div>
 
 					{#if selectedGuests}
 						<Button
@@ -190,15 +155,17 @@
 				<RsvpInfo />
 			{/if}
 		{:else}
-			{#if selectedGuests}
-				<div class="text-center">
+			<div class="text-center grid gap-4">
+				{#if selectedGuests}
 					<h2>Congratulations</h2>
-					<p>You RSVP Yes 🎉</p>
-				</div>
-				<RsvpInfo short />
-			{:else}
-				<p>You RSVPed No</p>
-			{/if}
+					<p class="text-4xl text-green-600">You RSVP Yes ({selectedGuests}) 🎉</p>
+					<RsvpInfo short />
+				{:else}
+					<h2>Don't worry we still love you</h2>
+					<p class="text-4xl text-red-600">You RSVPed No ☹️</p>
+					<p>We are so sorry you can't make it.</p>
+				{/if}
+			</div>
 
 			<div class="text-center grid gap-2 border border-megan-500 rounded-md p-4 mt-8">
 				<Button on:click={() => (hasRsvp = false)}>Edit your RSVP</Button>
@@ -215,15 +182,6 @@
 </Section>
 
 <style lang="postcss">
-	.guests {
-		display: grid;
-		grid-template-columns: 3rem;
-		grid-auto-flow: column;
-		grid-auto-columns: 3rem;
-		gap: 0.5rem;
-		justify-self: center;
-	}
-
 	h1 {
 		@apply text-2xl text-megan-600;
 	}
