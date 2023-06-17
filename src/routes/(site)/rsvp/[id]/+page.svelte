@@ -115,7 +115,7 @@
 						{errorMessage}
 						name="phone"
 						id="phone"
-						label="phone number"
+						label="Confirm Your Phone Number"
 						bind:value={userEnteredPhone}
 					/>
 					<Button on:click={validatePhoneNumber}>Next</Button>
