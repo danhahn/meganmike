@@ -87,23 +87,23 @@ function convertArrayToObject(arr: object[]): Guest[] {
 	return result;
 }
 
+// export function formatPhoneNumber(phoneNumber: string): string {
+// 	// Check if the phone number is a valid number
+// 	if (!/^[0-9]{10}$/.test(phoneNumber)) {
+// 		return 'invalid phone number';
+// 	}
+
+// 	// Format the phone number
+// 	const formattedPhoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+// 		3,
+// 		6
+// 	)}-${phoneNumber.slice(6)}`;
+
+// 	// Return the formatted phone number
+// 	return formattedPhoneNumber;
+// }
+
 export function formatPhoneNumber(phoneNumber: string): string {
-	// Check if the phone number is a valid number
-	if (!/^[0-9]{10}$/.test(phoneNumber)) {
-		return 'invalid phone number';
-	}
-
-	// Format the phone number
-	const formattedPhoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
-		3,
-		6
-	)}-${phoneNumber.slice(6)}`;
-
-	// Return the formatted phone number
-	return formattedPhoneNumber;
-}
-
-export function realtimeFormatPhoneNumber(phoneNumber: string): string {
 	// Remove all non-digit characters from the input
 	const cleaned = phoneNumber.replace(/\D/g, '');
 
@@ -114,7 +114,7 @@ export function realtimeFormatPhoneNumber(phoneNumber: string): string {
 	const prefix = cleaned.substring(3, 6);
 	const lineNumber = cleaned.substring(6);
 	const open = cleaned.length >= 1 ? '(' : '';
-	const close = cleaned.length >= 4 ? ')' : '';
+	const close = cleaned.length >= 3 ? ')' : '';
 	const space = cleaned.length >= 4 ? ' ' : '';
 	const dash = cleaned.length >= 7 ? '-' : '';
 

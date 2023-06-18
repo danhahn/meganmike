@@ -6,7 +6,7 @@
 	import Form from '$lib/components/forms/Form.svelte';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { db } from '$lib/firebase/firebase.client';
-	import { getFormData, getNextValue, realtimeFormatPhoneNumber } from '$lib/utils';
+	import { getFormData, getNextValue, formatPhoneNumber } from '$lib/utils';
 	import { collection, addDoc } from 'firebase/firestore';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { goto } from '$app/navigation';
@@ -277,7 +277,7 @@
 	}
 
 	function formatPhone() {
-		phoneNumber = realtimeFormatPhoneNumber(phoneNumber);
+		phoneNumber = formatPhoneNumber(phoneNumber);
 	}
 </script>
 
