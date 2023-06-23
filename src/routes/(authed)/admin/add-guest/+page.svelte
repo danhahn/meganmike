@@ -6,7 +6,7 @@
 	import Form from '$lib/components/forms/Form.svelte';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { db } from '$lib/firebase/firebase.client';
-	import { getFormData, getNextValue } from '$lib/utils';
+	import { getFormData, getNextValue, formatPhoneNumber } from '$lib/utils';
 	import { collection, addDoc } from 'firebase/firestore';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { goto } from '$app/navigation';
@@ -122,6 +122,10 @@
 			goto('/admin');
 		}
 	}
+
+	function formatPhone() {
+		phoneNumber = formatPhoneNumber(phoneNumber);
+	}
 </script>
 
 <svelte:head>
@@ -201,8 +205,9 @@
 			id="phone"
 			label="Phone Number"
 			type="tel"
-			maxLength={10}
+			maxLength={14}
 			bind:value={phoneNumber}
+			on:keydown={formatPhone}
 			disabled={status === 'submitting'}
 		/>
 	</div>

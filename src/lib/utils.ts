@@ -87,20 +87,40 @@ function convertArrayToObject(arr: object[]): Guest[] {
 	return result;
 }
 
+// export function formatPhoneNumber(phoneNumber: string): string {
+// 	// Check if the phone number is a valid number
+// 	if (!/^[0-9]{10}$/.test(phoneNumber)) {
+// 		return 'invalid phone number';
+// 	}
+
+// 	// Format the phone number
+// 	const formattedPhoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+// 		3,
+// 		6
+// 	)}-${phoneNumber.slice(6)}`;
+
+// 	// Return the formatted phone number
+// 	return formattedPhoneNumber;
+// }
+
 export function formatPhoneNumber(phoneNumber: string): string {
-	// Check if the phone number is a valid number
-	if (!/^[0-9]{10}$/.test(phoneNumber)) {
-		return 'invalid phone number';
-	}
+	// Remove all non-digit characters from the input
+	const cleaned = phoneNumber.replace(/\D/g, '');
+
+	// Check if the cleaned number has 10 digits (without country code)
+
+	// Extract the area code, prefix, and line number
+	const areaCode = cleaned.substring(0, 3);
+	const prefix = cleaned.substring(3, 6);
+	const lineNumber = cleaned.substring(6);
+	const open = cleaned.length >= 1 ? '(' : '';
+	const close = cleaned.length >= 3 ? ')' : '';
+	const space = cleaned.length >= 4 ? ' ' : '';
+	const dash = cleaned.length >= 7 ? '-' : '';
 
 	// Format the phone number
-	const formattedPhoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
-		3,
-		6
-	)}-${phoneNumber.slice(6)}`;
-
-	// Return the formatted phone number
-	return formattedPhoneNumber;
+	const formattedNumber = `${open}${areaCode}${close}${space}${prefix}${dash}${lineNumber}`;
+	return formattedNumber;
 }
 
 export const states = [
