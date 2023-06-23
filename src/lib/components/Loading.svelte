@@ -28,7 +28,9 @@
 		</div>
 	</div>
 {:else if status === 'error'}
-	<p>There is an error</p>
+	<slot name="error">
+		<p>There is an error</p>
+	</slot>
 {:else}
 	<slot />
 {/if}

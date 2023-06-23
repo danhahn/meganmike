@@ -7,6 +7,7 @@
 	import { db } from '$lib/firebase/firebase.client';
 	import { pageIndex } from '$lib/stores/navigation';
 	import type { LoadingProps, RsvpProps } from '$lib/types';
+
 	import type { Unsubscribe } from 'firebase/auth';
 
 	import {
@@ -93,6 +94,10 @@
 	onMount(getDocumentFromFirebase);
 	onDestroy(unsubscribe);
 </script>
+
+<svelte:head>
+	<title>Admin</title>
+</svelte:head>
 
 <Headline class="block">Admin</Headline>
 <Loading {status}>

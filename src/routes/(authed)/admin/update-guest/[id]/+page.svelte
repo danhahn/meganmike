@@ -7,7 +7,7 @@
 	import type { LoadingProps } from '$lib/types';
 	import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 	import { onDestroy, onMount } from 'svelte';
-	import type { PageData } from '../$types';
+	import type { PageData } from './$types';
 	import Loading from '$lib/components/Loading.svelte';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { goto } from '$app/navigation';
@@ -21,6 +21,7 @@
 
 	let guestFirstName: string = '';
 	let guestLastName: string = '';
+	let unknownGuest: boolean = false;
 
 	let dialog: HTMLDialogElement;
 
@@ -110,6 +111,7 @@
 		});
 		msg = `${guestFirstName} ${guestLastName} was added as a guest 🎉`;
 		status = 'idle';
+		resetDialog();
 		setTimeout(() => {
 			msg = '';
 		}, 2000);
@@ -123,9 +125,10 @@
 		});
 	}
 
-	async function cancelAddGuest() {
+	async function resetDialog() {
 		guestFirstName = '';
 		guestLastName = '';
+		unknownGuest = false;
 	}
 
 	function handleDialogClose() {
@@ -133,11 +136,30 @@
 			addGuestToWedding();
 		}
 		if (dialog.returnValue === 'cancel') {
-			cancelAddGuest();
+			resetDialog();
 			dialog.close();
 		}
 	}
+
+	function handleKeyboardPress(event: KeyboardEventInit) {
+		if (event.key === 'Enter' && dialog.open) {
+			if (guestFirstName || unknownGuest) {
+				addGuestToWedding();
+			} else {
+				msg = 'No one was added';
+				setTimeout(() => {
+					msg = '';
+				}, 2000);
+			}
+		}
+	}
 </script>
+
+<svelte:head>
+	<title>Update Guest</title>
+</svelte:head>
+
+<svelte:body on:keypress={handleKeyboardPress} />
 
 <a href="/admin" class="flex gap-1">
 	<svg xmlns="http://www.w3.org/2000/svg" class="w-4 fill-megan-900" viewBox="0 96 960 960"
@@ -223,27 +245,20 @@
 		</div>
 
 		<div class="flex gap-4">
-			<p>Additional Guests</p>
-			<Button
-				type="button"
-				isRound
-				size="small"
-				variant="secondary"
-				on:click={() => dialog.showModal()}
-			>
-				<svg xmlns="http://www.w3.org/2000/svg" class="w-5 fill-current" viewBox="0 -960 960 960"
-					><path d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z" /></svg
-				>
-			</Button>
+			<Button type="button" variant="primary" on:click={() => dialog.showModal()}>Add +1</Button>
 		</div>
 		<div>
 			<ul class="flex gap-2">
 				{#each guests as guest}
-					<li class="border-2 border-megan-200 p-2 bg-megan-50 rounded-lg flex gap-2">
-						<p class="leading-none text-sm">
-							{guest.firstName}
-							{guest.lastName}
-						</p>
+					<li class="border-2 border-megan-200 p-2 bg-megan-50 rounded-lg flex gap-2 items-center">
+						{#if guest.firstName || guest.lastName}
+							<p class="leading-none text-sm">
+								{guest.firstName}
+								{guest.lastName}
+							</p>
+						{:else}
+							<p>+1 guest</p>
+						{/if}
 						<Button size="tiny" variant="warning" on:click={() => removeGuestFromWedding(guest)}>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -276,12 +291,29 @@
 		on:close={handleDialogClose}
 		cancel="Cancel"
 		confirm="Add Guest"
+		disabled={!(!!guestFirstName || unknownGuest)}
 	>
 		<div class="grid gap-4">
-			<h1 class="text-2xl">Add another guest</h1>
+			<h1 class="text-2xl">Add +1</h1>
 			<div class="grid lg:grid-cols-2 gap-4">
-				<Input id="guestFirstName" bind:value={guestFirstName} label="First Name" />
-				<Input id="guestLastName" bind:value={guestLastName} label="Last Name" />
+				<Input
+					id="guestFirstName"
+					bind:value={guestFirstName}
+					label="First Name"
+					disabled={unknownGuest}
+					required={false}
+				/>
+				<Input
+					id="guestLastName"
+					bind:value={guestLastName}
+					label="Last Name"
+					disabled={unknownGuest}
+					required={false}
+				/>
+			</div>
+			<div class="flex gap-4">
+				<input type="checkbox" class="accent-megan-600" id="unknown" bind:checked={unknownGuest} />
+				<label for="unknown">Don't know the name of +1 guest</label>
 			</div>
 		</div>
 	</Dialog>

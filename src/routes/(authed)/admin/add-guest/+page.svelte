@@ -10,6 +10,14 @@
 	import { collection, addDoc } from 'firebase/firestore';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { goto } from '$app/navigation';
+	import {
+		firstNames,
+		generateFakeStreetAddress,
+		generateRandomEmailAddress,
+		generateRandomPhoneNumber,
+		getRandomTownInNewYork,
+		lastNames
+	} from '$lib/devUtils';
 
 	let dialog: HTMLDialogElement;
 
@@ -35,193 +43,18 @@
 	let phoneNumber: string = '';
 	let email: string = '';
 
-	const firstNames = [
-		'Michael',
-		'James',
-		'William',
-		'David',
-		'John',
-		'Robert',
-		'Thomas',
-		'Joseph',
-		'Charles',
-		'George',
-		'Daniel',
-		'Christopher',
-		'Matthew',
-		'Anthony',
-		'Joseph',
-		'Andrew',
-		'Steven',
-		'Brandon',
-		'Zachary',
-		'Lucas',
-		'Noah',
-		'Elijah',
-		'Benjamin',
-		'Mason',
-		'William',
-		'Liam',
-		'Oliver',
-		'James',
-		'Logan',
-		'Alexander',
-		'Ethan',
-		'Henry',
-		'Aiden',
-		'Jackson',
-		'Daniel',
-		'Samuel',
-		'David',
-		'Elijah',
-		'Caleb',
-		'Owen',
-		'Matthew',
-		'Lucas',
-		'Jayden',
-		'William',
-		'Asher',
-		'Jacob',
-		'Michael',
-		'Christopher',
-		'Olivia',
-		'Emma',
-		'Ava',
-		'Sophia',
-		'Isabella',
-		'Charlotte',
-		'Amelia',
-		'Mia',
-		'Abigail',
-		'Emily',
-		'Madison',
-		'Chloe',
-		'Ella',
-		'Sophia',
-		'Elizabeth',
-		'Ava',
-		'Lily',
-		'Isabella',
-		'Charlotte',
-		'Evelyn',
-		'Abigail',
-		'Olivia',
-		'Mia',
-		'Sophia',
-		'Amelia',
-		'Isabella',
-		'Chloe',
-		'Ella',
-		'Madison',
-		'Evelyn',
-		'Lily',
-		'Charlotte',
-		'Elizabeth',
-		'Ava',
-		'Harper',
-		'Amelia',
-		'Emily',
-		'Chloe',
-		'Ella',
-		'Abigail',
-		'Sophia',
-		'Avery',
-		'Brooklyn',
-		'Lily'
-	];
+	if (dev) {
+		const randomIndex = Math.floor(Math.random() * firstNames.length);
 
-	const lastNames = [
-		'Smith',
-		'Jones',
-		'Williams',
-		'Brown',
-		'Davis',
-		'Wilson',
-		'Johnson',
-		'Miller',
-		'White',
-		'Anderson',
-		'Thomas',
-		'Jackson',
-		'Garcia',
-		'Martinez',
-		'Brown',
-		'Hernandez',
-		'Moore',
-		'Lee',
-		'Green',
-		'Walker',
-		'Thompson',
-		'White',
-		'Clark',
-		'Lewis',
-		'Wilson',
-		'Walker',
-		'Peterson',
-		'Hall',
-		'Young',
-		'Hernandez',
-		'Carter',
-		'Anderson',
-		'Green',
-		'Davis',
-		'Miller',
-		'Smith',
-		'Williams',
-		'Brown',
-		'Johnson',
-		'Jones',
-		'Garcia',
-		'Martin',
-		'Gonzalez',
-		'Williams',
-		'Wilson',
-		'Moore',
-		'Taylor',
-		'Thomas',
-		'Jackson',
-		'White',
-		'Harris',
-		'Martinez',
-		'Thompson',
-		'Lee',
-		'Hernandez',
-		'Lopez',
-		'Green',
-		'Walker',
-		'Clark',
-		'Davis',
-		'Miller',
-		'Smith',
-		'Williams',
-		'Brown',
-		'Johnson',
-		'Jones',
-		'Garcia',
-		'Martin',
-		'Gonzalez',
-		'Williams',
-		'Wilson',
-		'Moore',
-		'Taylor',
-		'Thomas',
-		'Jackson',
-		'White',
-		'Harris',
-		'Martinez',
-		'Thompson',
-		'Lee',
-		'Hernandez',
-		'Lopez',
-		'Green',
-		'Walker',
-		'Clark',
-		'Davis',
-		'Miller',
-		'Smith',
-		'Williams',
-		'Brown'
-	];
+		firstName = firstNames[randomIndex];
+		lastName = lastNames[randomIndex];
+		address1 = generateFakeStreetAddress();
+		city = getRandomTownInNewYork();
+		state = 'NY';
+		zipCode = '90036';
+		phoneNumber = generateRandomPhoneNumber();
+		email = generateRandomEmailAddress(randomIndex);
+	}
 
 	function generateLastName() {
 		// Load a list of last names.
@@ -242,6 +75,20 @@
 		zipCode = '';
 		phoneNumber = '';
 		email = '';
+
+		if (dev) {
+			const randomIndex = Math.floor(Math.random() * firstNames.length);
+
+			firstName = firstNames[randomIndex];
+			lastName = lastNames[randomIndex];
+			address1 = generateFakeStreetAddress();
+			city = getRandomTownInNewYork();
+			state = 'NY';
+			zipCode = '90036';
+			phoneNumber = generateRandomPhoneNumber();
+			email = generateRandomEmailAddress(randomIndex);
+		}
+
 		additionalGuest = 0;
 		status = 'idle';
 	}
@@ -276,6 +123,10 @@
 		}
 	}
 </script>
+
+<svelte:head>
+	<title>Add Guest</title>
+</svelte:head>
 
 <a href="/admin" class="flex gap-1">
 	<svg xmlns="http://www.w3.org/2000/svg" class="w-4 fill-megan-900" viewBox="0 96 960 960"

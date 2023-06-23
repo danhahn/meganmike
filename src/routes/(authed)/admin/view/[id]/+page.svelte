@@ -17,6 +17,11 @@
 		[val: string]: any;
 	};
 
+	const qrSize = 300;
+
+	var url = new URL(window.location.href);
+	var baseUrl = url.origin;
+
 	let snapshot: Snapshot = {};
 
 	let status: LoadingProps = 'loading';
@@ -39,6 +44,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>View Guest</title>
+</svelte:head>
+
 <a href="/admin" class="flex gap-1">
 	<svg xmlns="http://www.w3.org/2000/svg" class="w-4 fill-megan-900" viewBox="0 96 960 960"
 		><path d="M655 976 255 576l400-400 56 57-343 343 343 343-56 57Z" /></svg
@@ -52,6 +61,15 @@
 		class="max-w-lg mx-auto grid grid-cols-[64px_1fr] gap-4 items-center border-2 border-megan-800 rounded-lg p-12 bg-megan-50"
 	>
 		<Rsvp rsvp={snapshot.rsvp} size="large" row />
+
+		<div class="col-span-2 flex flex-col gap-4">
+			<img
+				alt=""
+				src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${baseUrl}/rsvp/${data.id}`}
+			/>
+			<a href={`${baseUrl}/rsvp/${data.id}`}>{baseUrl}/rsvp/{data.id}</a>
+		</div>
+
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			class="w-8 fill-megan-900 justify-self-center"

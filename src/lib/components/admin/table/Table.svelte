@@ -72,6 +72,7 @@
 					><Button
 						class="inline-flex w-full lg:w-auto gap-1"
 						variant="success"
+						size="small"
 						on:click={() => goto(`/admin/update-guest/${row.id}`)}
 					>
 						<svg
@@ -89,6 +90,7 @@
 					><Button
 						class="inline-flex w-full lg:w-auto gap-1"
 						variant="warning"
+						size="small"
 						on:click={() => console.log(row.id)}
 						><svg
 							class="w-6 fill-current"
