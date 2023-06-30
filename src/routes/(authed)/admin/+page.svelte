@@ -107,7 +107,7 @@
 			<p>{totalNumberOfDocs}</p>
 		</div>
 		<div class="rsvp">
-			<h2><span class="hidden lg:inline-block">Total Number of </span>RSVP</h2>
+			<h2><span class="hidden lg:inline-block">Total Number of</span> RSVP</h2>
 			<p>{totalNumberOfRsvp}</p>
 		</div>
 	</div>
