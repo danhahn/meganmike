@@ -11,41 +11,39 @@
 </svelte:head>
 
 <Headline>Our Stroy</Headline>
-<Img src="smiles.jpg" alt="All smiles" gravity="faces" size="small" />
+<Img src="engagment/snuggle.jpg" alt="All smiles" gravity="faces" size="small" />
 <Section>
-	<h2>Mike</h2>
-	<p>
-		I still remember the day I met Megan in high school like it was yesterday. We were just friends
-		at first, but as we talked more and more, I realized that she was the one I wanted to spend the
-		rest of my life with. When COVID hit and the world turned upside down, our friendship grew even
-		stronger, and I finally mustered up the courage to tell her how I truly felt. To my surprise,
-		she felt the same way and we started a long-distance relationship.
-	</p>
-	<p>
-		Despite the distance, our love for each other only grew stronger, and I knew I wanted to spend
-		the rest of my life with her. So, during one of my deployments, I surprised her with a proposal
-		and she said yes. Now, I can't wait to marry the love of my life and start our lives together.
-	</p>
-	<h2>Megan</h2>
-	<p>
-		I never would have thought that a chance meeting in high school would lead to the love of my
-		life. But from the moment I started talking to Mike, I knew he was someone special. Our
-		friendship only grew stronger during the COVID-19 pandemic, and when he told me how he felt, I
-		was overjoyed to realize that I felt the same way.
-	</p>
-	<p>
-		Our long-distance relationship was not easy, but it only made our love stronger. I never thought
-		I'd find someone who could understand and support me through anything, but Mike proved me wrong.
-		So, when he surprised me with a proposal during one of his deployments, I knew without a doubt
-		that I wanted to spend the rest of my life with him. I can't wait to marry my best friend and
-		soulmate.
-	</p>
-	<p>
-		We are so grateful to have found each other and can't wait to start our lives together as
-		husband and wife. Thank you for joining us on this journey.
-	</p>
-
-	<p class="text-sm text-gray-400">
-		NOTE: this is not there real story I had chap GPT write it as filler
-	</p>
+	<div class="px-6 py-4 lg:max-w-xl mx-auto grid gap-4">
+		<p class="first-line:text-2xl first-line:text-megan-600 first-line:uppercase">
+			Mike and I have been friends since our early days in first grade. Our first encounter took
+			place in the cafeteria, where I noticed Mike standing in the lunch line. Intrigued, I
+			approached him and inquired, "Why do you have so many cuts on your leg?" Mike explained that
+			they were the result of his adventurous bike rides and outdoor play. As time went on, our bond
+			grew stronger in fifth grade while collaborating on a community day project. Gradually,
+			feelings of mutual attraction began to develop between us. Although Mike had planned to ask me
+			to the fifth-grade dance, I had already made other arrangements, which left him disappointed.
+			Throughout middle school and the beginning of high school, we drifted apart as we mingled with
+			different friend groups.
+		</p>
+		<blockquote class="text-megan-600 text-2xl lg:text-4xl lg:-translate-x-16">
+			<p>"We started dating the beginning of tenth grade and have been so in love ever since."</p>
+		</blockquote>
+		<p>
+			However, our paths intersected again during our ninth-grade gym class. One day, Mike invited
+			me to play tennis with him, and without hesitation, I accepted. We cherished the moments of
+			laughter and camaraderie shared in the gym. It was during this time that our teacher
+			repeatedly expressed her belief that Mike harbored feelings for me. Despite her insistence, I
+			remained skeptical until that summer vacation when Mike reached out to me through Instagram's
+			direct messages. We started conversing and hung out a few times before he surprised me by
+			asking me to be his girlfriend at the mini-golf course. It was an incredibly sweet gesture
+			that touched my heart. Thus, our relationship officially commenced at the beginning of tenth
+			grade, and our love has only grown stronger since then.
+		</p>
+		<p>
+			Together, we have faced numerous challenges and experienced both joyous and tumultuous times
+			throughout our nearly six years of dating. Yet, we wouldn't trade our journey for anything
+			else. The prospect of spending a lifetime together fills us with overwhelming excitement and
+			happiness.
+		</p>
+	</div>
 </Section>
