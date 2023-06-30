@@ -34,8 +34,7 @@
 			class="bg-white max-w-3xl mx-auto lg:mt-16 overflow-hidden lg:rounded-2xl shadow-2xl shadow-megan-800 lg:p-4"
 		>
 			<Stack class="overflow-hidden shadow-xl lg:rounded-xl">
-				<Img alt="the ring" src="homepage.jpg" size="square" />
-				<Logo class="sm:w-72 fill-megan-50" />
+				<Img alt="the ring" src="engagment/love.jpg" size="square" />
 			</Stack>
 		</div>
 
