@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Background from '$lib/components/Background.svelte';
 	import Headline from '$lib/components/Headline.svelte';
 	import Img from '$lib/components/Img.svelte';
 	import Logo from '$lib/components/Logo.svelte';
@@ -25,53 +26,54 @@
 	onMount(startTimer);
 </script>
 
-<Navigation class="shadow-lg shadow-black/20 fixed lg:static right-0 left-0 z-10" />
+<Background>
+	<Navigation class="shadow-lg shadow-black/20 fixed lg:static right-0 left-0 z-10" />
 
-<div class="flex flex-col gap-6 mt-11">
-	<div
-		class="max-w-3xl mx-auto lg:mt-16 overflow-hidden lg:rounded-2xl shadow-2xl shadow-megan-800 lg:p-4"
-	>
-		<Stack class="overflow-hidden shadow-xl lg:rounded-xl">
-			<Img alt="the ring" src="homepage.jpg" size="square" />
-			<Logo class="sm:w-72 fill-megan-50" />
-		</Stack>
-	</div>
-
-	<Section>
-		<Headline>Event Details</Headline>
-
-		<ul>
-			<li><span>Date</span> <date>August 15, 2024</date></li>
-			<li><span>Time</span> 5:00 PM - 11:00 PM</li>
-			<li><span>Venue</span> Larkfield Manor</li>
-			<li>
-				<span>Address</span>
-				<address>507 Larkfield Rd East <br class="lg:inline" />Northport, NY 11731</address>
-			</li>
-		</ul>
-
+	<div class="flex flex-col gap-6 mt-11">
 		<div
-			class="border-2 border-megan-300 bg-megan-100 rounded-lg m-4 p-10 flex flex-col lg:flex-row items-center gap-4 justify-center"
+			class="bg-white max-w-3xl mx-auto lg:mt-16 overflow-hidden lg:rounded-2xl shadow-2xl shadow-megan-800 lg:p-4"
 		>
-			<h2 class="m-0 text-megan-700 text-2xl lg:text-5xl">Count Down</h2>
-			<p class="text-megan-500 font-serif text-2xl lg:text-5xl">
-				{#if remainingTime !== 0}
-					{days} days
-				{:else}
-					♥️♥️♥️ days
-				{/if}
-			</p>
+			<Stack class="overflow-hidden shadow-xl lg:rounded-xl">
+				<Img alt="" src="engagment/love.jpg" size="square" />
+			</Stack>
 		</div>
-		<Headline>Schedule</Headline>
 
-		<ul>
-			<li>5:00 PM - 5:30 PM: Doors Open</li>
-			<li>5:30 PM - 6:00 PM: Ceremony</li>
-			<li>6:00 PM - 7:00 PM: Cocktail Hour</li>
-			<li>7:00 PM - 11:00 PM: Dinner and Dancing</li>
-		</ul>
-	</Section>
-</div>
+		<Section>
+			<Headline>Event Details</Headline>
+
+			<ul>
+				<li><span>Date</span> <date>August 15, 2024</date></li>
+				<li><span>Time</span> 5:00 PM - 11:00 PM</li>
+				<li><span>Venue</span> Larkfield Manor</li>
+				<li>
+					<span>Address</span>
+					<address>507 Larkfield Rd East <br class="lg:inline" />Northport, NY 11731</address>
+				</li>
+			</ul>
+
+			<div
+				class="border-2 border-megan-300 bg-megan-100 rounded-lg m-4 p-10 flex flex-col lg:flex-row items-center gap-4 justify-center"
+			>
+				<h2 class="m-0 text-megan-700 text-2xl lg:text-5xl">Count Down</h2>
+				<p class="text-megan-500 font-serif text-2xl lg:text-5xl">
+					{#if remainingTime !== 0}
+						{days} days
+					{:else}
+						♥️♥️♥️ days
+					{/if}
+				</p>
+			</div>
+			<Headline>Schedule</Headline>
+
+			<ul>
+				<li>5:00 PM - 5:30 PM: Doors Open</li>
+				<li>5:30 PM - 6:00 PM: Ceremony</li>
+				<li>6:00 PM - 7:00 PM: Cocktail Hour</li>
+				<li>7:00 PM - 11:00 PM: Dinner and Dancing</li>
+			</ul>
+		</Section>
+	</div>
+</Background>
 
 <style lang="postcss">
 	:global(html) {
