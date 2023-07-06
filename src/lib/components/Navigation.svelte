@@ -28,7 +28,7 @@
 		{ url: '/wedding-details', label: 'Wedding Details' },
 		{ url: '/accommodations', label: 'Accommodations', disabled: true },
 		{ url: '/rsvp', label: 'RSVP', disabled: true },
-		{ url: '/gift-registry', label: 'Gift Registry', disabled: true },
+		{ url: '/gift-registry', label: 'Gift Registry' },
 		{ url: '/gallery', label: 'Gallery' },
 		{ url: '/contact', label: 'Contact Us' },
 		{ url: '/faq', label: 'FAQs', disabled: true }

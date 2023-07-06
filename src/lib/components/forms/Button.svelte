@@ -5,6 +5,7 @@
 	export let size: 'small' | 'default' | 'tiny' = 'default';
 	export let isRound: boolean = false;
 	export let disabled: boolean = false;
+	export let href: string;
 	$: isPrimary = variant === 'primary';
 	$: isSecondary = variant === 'secondary';
 	$: isWarning = variant === 'warning';
@@ -16,25 +17,44 @@
 	$: isTiny = size === 'tiny';
 </script>
 
-<button
-	{...$$props}
-	on:click
-	{disabled}
-	class:isFull
-	class:isPrimary
-	class:isSecondary
-	class:isWarning
-	class:isLight
-	class:isSuccess
-	class:isSmall
-	class:isRound
-	class:isNaked
-	class:isTiny
-	class={`${$$props.class}`}><slot /></button
->
+{#if href}
+	<a
+		{href}
+		{...$$props}
+		on:click
+		class:isFull
+		class:isPrimary
+		class:isSecondary
+		class:isWarning
+		class:isLight
+		class:isSuccess
+		class:isSmall
+		class:isRound
+		class:isNaked
+		class:isTiny
+		class={`button ${$$props.class}`}><slot /></a
+	>
+{:else}
+	<button
+		{...$$props}
+		on:click
+		{disabled}
+		class:isFull
+		class:isPrimary
+		class:isSecondary
+		class:isWarning
+		class:isLight
+		class:isSuccess
+		class:isSmall
+		class:isRound
+		class:isNaked
+		class:isTiny
+		class={`button ${$$props.class}`}><slot /></button
+	>
+{/if}
 
 <style lang="postcss">
-	button {
+	.button {
 		@apply flex justify-center gap-2 uppercase px-10 py-2 rounded-md transition-all ease-in-out hover:shadow hover:shadow-black/50 focus:outline-megan-900;
 	}
 	.isPrimary:not(:disabled) {
