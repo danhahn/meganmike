@@ -19,10 +19,10 @@
 	}
 
 	section.isColumn {
-		@apply grid gap-4 mt-8 mb-20;
+		@apply grid gap-4 lg:mt-8 mb-20;
 	}
 
 	section.padding {
-		@apply p-10 lg:p-8;
+		@apply px-10 pt-4 lg:pt-8 lg:px-0;
 	}
 </style>

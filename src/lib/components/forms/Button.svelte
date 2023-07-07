@@ -5,7 +5,7 @@
 	export let size: 'small' | 'default' | 'tiny' = 'default';
 	export let isRound: boolean = false;
 	export let disabled: boolean = false;
-	export let href: string;
+	export let href: string | undefined = undefined;
 	$: isPrimary = variant === 'primary';
 	$: isSecondary = variant === 'secondary';
 	$: isWarning = variant === 'warning';
