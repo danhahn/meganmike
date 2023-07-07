@@ -6,7 +6,7 @@
 	$: isSmall = size === 'small';
 </script>
 
-<Section isColumn={false} padding={size === 'default'}>
+<Section isColumn={false} padding={size === 'default'} class="mb-4">
 	<Stack>
 		<img
 			src="/butterfly.svg"

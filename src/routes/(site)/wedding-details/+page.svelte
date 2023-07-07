@@ -29,7 +29,7 @@
 		class="rounded-xl shadow-lg shadow-megan-800 lg:-mx-32 w-full lg:w-[calc(100%_+_(128px_*_2))]"
 	/>
 
-	<h2>Ceremony:</h2>
+	<h2>Ceremony</h2>
 
 	<p>
 		The ceremony will take place on site at Larkfield Manor at 5:30 PM. Please arrive by 5:00 PM to
@@ -42,25 +42,25 @@
 		starting at 7:00 PM. There will be dinner, dancing, and lots of fun to be had by all!
 	</p>
 
-	<h2>Dress Code:</h2>
+	<h2>Dress Code</h2>
 
 	<p>
 		Attire for the ceremony and reception is formal attire (suits for men and cocktail dresses or
 		evening gowns for women) in any color, including black.
 	</p>
 
-	<!-- <h2>Accommodations:</h2>
+	<!-- <h2>Accommodations</h2>
 
 	<p>Hotel rooms... TBD</p> -->
 
-	<h2>RSVP:</h2>
+	<h2>RSVP</h2>
 
 	<p>
 		Please RSVP by June 15th, 2024, to let us know if you can join us on our special day. We can't
 		wait to celebrate with you!
 	</p>
 
-	<h2>WEDDING REGISTRY</h2>
+	<h2>Wedding Registry</h2>
 
 	<p>
 		Mike and Megan have registered at several retailers for their wedding gifts. If you would like
@@ -70,7 +70,7 @@
 		> for more information.
 	</p>
 
-	<h2>CONTACT US</h2>
+	<h2>Contact Us</h2>
 
 	<p>
 		For any questions or additional information, please don't hesitate to contact us at <a
