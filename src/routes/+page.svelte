@@ -52,9 +52,9 @@
 			</ul>
 
 			<div
-				class="border-2 border-megan-300 bg-megan-100 rounded-lg m-4 p-10 flex flex-col lg:flex-row items-center gap-4 justify-center"
+				class="border-2 border-megan-300 bg-megan-100 rounded-lg m-4 p-10 flex flex-col items-center gap-2 justify-center"
 			>
-				<h2 class="m-0 text-megan-700 text-2xl lg:text-5xl">Count Down</h2>
+				<h2 class="m-0 text-megan-700 text-xl lg:text-5xl">Count Down</h2>
 				<p class="text-megan-500 font-serif text-2xl lg:text-5xl">
 					{#if remainingTime !== 0}
 						{days} days
