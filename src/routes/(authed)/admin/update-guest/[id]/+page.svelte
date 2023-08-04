@@ -228,19 +228,20 @@
 		<p>Contact Info</p>
 		<div class="grid grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 gap-2 lg:gap-3">
 			<Input
-				id="email"
-				label="Email Address"
-				type="email"
-				bind:value={email}
-				disabled={status === 'submitting'}
-			/>
-			<Input
 				id="phone"
 				label="Phone Number"
 				type="tel"
 				maxLength={10}
 				bind:value={phoneNumber}
 				disabled={status === 'submitting'}
+			/>
+			<Input
+				id="email"
+				label="Email Address"
+				type="email"
+				bind:value={email}
+				disabled={status === 'submitting'}
+				required={false}
 			/>
 		</div>
 
