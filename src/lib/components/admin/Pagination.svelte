@@ -25,7 +25,7 @@
 			{#each pages as _, index}
 				<Button
 					size="small"
-					class="w-7 font-mono"
+					class="w-8 font-sans"
 					on:click={() => pageIndex.set(index)}
 					variant={current === index ? 'primary' : 'naked'}>{index + 1}</Button
 				>

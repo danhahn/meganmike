@@ -129,16 +129,19 @@
 			<Button
 				variant={itemsPerPage === 10 ? 'primary' : 'secondary'}
 				size="small"
+				class="w-10 font-sans"
 				on:click={() => setItemsPerPage(10)}>10</Button
 			>
 			<Button
 				variant={itemsPerPage === 20 ? 'primary' : 'secondary'}
 				size="small"
+				class="w-10 font-sans"
 				on:click={() => setItemsPerPage(20)}>20</Button
 			>
 			<Button
 				variant={itemsPerPage === 1000 ? 'primary' : 'secondary'}
 				size="small"
+				class="w-10 font-sans"
 				on:click={() => setItemsPerPage(1000)}>All</Button
 			>
 		</div>
