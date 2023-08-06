@@ -42,6 +42,7 @@
 	$: currentPageData = pageData.slice(pageOffset, pageOffset + itemsPerPage);
 
 	let totalNumberOfDocs: number = 0;
+	let totalNumberOfGuests: number = 0;
 	let totalNumberOfRsvp: number = 0;
 
 	const ref = collection(db, 'guests');
@@ -55,6 +56,7 @@
 		try {
 			const snapshot = await getCountFromServer(ref);
 			totalNumberOfDocs = snapshot.data().count;
+			totalNumberOfGuests = snapshot.data().count;
 			const snapshotRsvp = await getCountFromServer(rsvp);
 			totalNumberOfRsvp = snapshotRsvp.data().count;
 			pageData = [];
@@ -79,7 +81,7 @@
 						totalGuests: data.totalGuests
 					}
 				];
-				totalNumberOfDocs = totalNumberOfDocs + data.guests?.length || 0;
+				totalNumberOfGuests = totalNumberOfGuests + data.guests?.length || 0;
 				if (data.totalGuests) {
 					totalNumberOfRsvp = totalNumberOfRsvp + data.totalGuests - 1;
 				}
@@ -108,7 +110,7 @@
 	<div class="grid grid-cols-2 gap-4">
 		<div class="rsvp">
 			<h2><span class="hidden lg:inline-block">Number of guest invited</span></h2>
-			<p>{totalNumberOfDocs}</p>
+			<p>{totalNumberOfGuests}</p>
 		</div>
 		<div class="rsvp">
 			<h2><span class="hidden lg:inline-block">Total Number of</span> RSVP</h2>
