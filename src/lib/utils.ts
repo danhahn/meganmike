@@ -1,3 +1,6 @@
+import { deleteDoc, doc } from 'firebase/firestore';
+import { db } from './firebase/firebase.client';
+
 export const title = '❤️ Megan and Mike 2024 ❤️';
 
 export function getNextValue(currentValue: number, direction: 'prev' | 'next') {
@@ -34,6 +37,11 @@ export function getFormData(event: Event) {
 	const guests = convertArrayToObject(guestsArray);
 
 	return { ...formData, guests };
+}
+
+export async function deleteGuest(id: string | undefined) {
+	if (id === undefined) return;
+	await deleteDoc(doc(db, 'guests', id));
 }
 
 interface Guest {

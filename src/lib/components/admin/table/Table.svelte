@@ -2,25 +2,41 @@
 	import { goto } from '$app/navigation';
 	import Rsvp from '$lib/components/Rsvp.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
+	import Dialog from '$lib/components/Dialog.svelte';
+
 	import type { RsvpProps } from '$lib/types';
-	import { formatPhoneNumber } from '$lib/utils';
+	import { deleteGuest, formatPhoneNumber } from '$lib/utils';
 	import Td from './Td.svelte';
 	import Th from './Th.svelte';
 	import Tr from './Tr.svelte';
 
 	type TableData = {
-		name: String;
-		email: String;
-		phone: String;
-		address: String;
+		name: string;
+		email: string;
+		phone: string;
+		address: string;
 		rsvp: RsvpProps;
 		guests?: Number;
-		id?: String;
+		id?: string;
 		delete?: string;
 	};
 
-	export let headerData: String[];
+	export let headerData: string[];
 	export let data: TableData[];
+
+	let deleteGuestData: TableData | undefined;
+
+	let dialog: HTMLDialogElement;
+
+	function handleDialogClose() {
+		if (dialog.returnValue === 'success') {
+			deleteGuest(deleteGuestData?.id);
+			deleteGuestData = undefined;
+		}
+		if (dialog.returnValue === 'cancel') {
+			goto('/admin');
+		}
+	}
 </script>
 
 <table {...$$props} class="mt-4 w-full border-collapse lg:border border-megan-800">
@@ -29,15 +45,6 @@
 			{#each headerData as header}
 				<Th>{@html header}</Th>
 			{/each}
-			<Th class="text-center px-0"
-				><div class="grid place-content-center">
-					<svg xmlns="http://www.w3.org/2000/svg" class="w-6 fill-current" viewBox="0 -960 960 960"
-						><path
-							d="M180-180h44l443-443-44-44-443 443v44Zm614-486L666-794l42-42q17-17 42-17t42 17l44 44q17 17 17 42t-17 42l-42 42Zm-42 42L248-120H120v-128l504-504 128 128Zm-107-21-22-22 44 44-22-22Z"
-						/></svg
-					>
-				</div></Th
-			>
 		</Tr>
 	</thead>
 	<tbody>
@@ -56,12 +63,12 @@
 						>
 					</a>
 				</Td>
-				<Td isRow
+				<!-- <Td isRow
 					><a class="hover:underline underline-offset-2" href={`mailto:${row.email}`}>{row.email}</a
 					></Td
-				>
-				<Td isRow>{formatPhoneNumber(String(row.phone))}</Td>
+				> -->
 				<Td isRow><address>{@html row.address}</address></Td>
+				<Td isRow>{formatPhoneNumber(String(row.phone))}</Td>
 				<Td class="mt-4 lg:mt-0 text-2xl text-center">
 					<Rsvp rsvp={row.rsvp} />
 				</Td>
@@ -91,7 +98,10 @@
 						class="inline-flex w-full lg:w-auto gap-1"
 						variant="warning"
 						size="small"
-						on:click={() => console.log(row.id)}
+						on:click={() => {
+							deleteGuestData = row;
+							dialog.showModal();
+						}}
 						><svg
 							class="w-6 fill-current"
 							xmlns="http://www.w3.org/2000/svg"
@@ -107,3 +117,12 @@
 		{/each}
 	</tbody>
 </table>
+
+<Dialog id="addGuest" bind:dialog on:close={handleDialogClose} cancel="Cancel" confirm="Delete">
+	{#if deleteGuestData}
+		<h1 class="text-3xl mb-4">
+			Are you sure you want to remote <span class="font-bold block">{deleteGuestData.name}</span> from
+			the wedding?
+		</h1>
+	{/if}
+</Dialog>
