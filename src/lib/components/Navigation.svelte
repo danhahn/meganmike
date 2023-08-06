@@ -26,7 +26,7 @@
 		{ label: 'home', url: '/' },
 		{ url: '/about', label: 'About Us' },
 		{ url: '/wedding-details', label: 'Wedding Details' },
-		{ url: '/accommodations', label: 'Accommodations', disabled: true },
+		{ url: '/accommodations', label: 'Accommodations' },
 		{ url: '/rsvp', label: 'RSVP', disabled: true },
 		{ url: '/gift-registry', label: 'Gift Registry' },
 		{ url: '/gallery', label: 'Gallery' },
