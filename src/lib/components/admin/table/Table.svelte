@@ -72,9 +72,11 @@
 				<Td class="mt-4 lg:mt-0 text-2xl text-center">
 					<Rsvp rsvp={row.rsvp} />
 				</Td>
-				<Td class="mt-4 lg:mt-0 text-center text-2xl"
-					><span class="lg:hidden">Guests:</span> {row.guests}</Td
-				>
+				<Td class="mt-4 lg:mt-0 text-center text-2xl">
+					{#if row.guests}
+						<span class="lg:hidden">+1s:</span> {row.guests}
+					{/if}
+				</Td>
 				<Td class="mt-4 lg:mt-0 text-center px-1"
 					><Button
 						class="inline-flex w-full lg:w-auto gap-1"
