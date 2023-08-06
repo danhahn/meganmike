@@ -110,11 +110,15 @@
 <Loading {status}>
 	<div class="grid grid-cols-2 gap-4">
 		<div class="rsvp">
-			<h2 class="text-base"><span class="hidden lg:inline-block">Number of guest invited</span></h2>
+			<h2 class="text-base mt-0">
+				<span class="hidden lg:inline-block">Number of guest invited</span>
+			</h2>
 			<p>{totalNumberOfGuests}</p>
 		</div>
 		<div class="rsvp">
-			<h2 class="text-base"><span class="hidden lg:inline-block">Total Number of</span> RSVP</h2>
+			<h2 class="text-base mt-0">
+				<span class="hidden lg:inline-block">Total Number of</span> RSVP
+			</h2>
 			<p>{totalNumberOfRsvp}</p>
 		</div>
 	</div>
