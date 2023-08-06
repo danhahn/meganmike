@@ -55,8 +55,9 @@
 	unsubscribe = onSnapshot(q, async (doc) => {
 		try {
 			const snapshot = await getCountFromServer(ref);
-			totalNumberOfDocs = snapshot.data().count;
-			totalNumberOfGuests = snapshot.data().count;
+			const docCount = snapshot.data().count;
+			totalNumberOfDocs = docCount;
+			totalNumberOfGuests = docCount;
 			const snapshotRsvp = await getCountFromServer(rsvp);
 			totalNumberOfRsvp = snapshotRsvp.data().count;
 			pageData = [];
