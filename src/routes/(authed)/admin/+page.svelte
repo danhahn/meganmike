@@ -77,6 +77,7 @@
 						guests: data.guests?.length || 0
 					}
 				];
+				totalNumberOfDocs = totalNumberOfDocs + data.guests?.length || 0;
 			});
 			status = 'idle';
 		} catch (error) {
