@@ -47,51 +47,49 @@
 
 	let unsubscribe: Unsubscribe = () => null;
 
-	async function getDocumentFromFirebase() {
-		pageData = [];
-		const rsvp = query(ref, where('rsvp', '==', 'yes'));
-		const q = query(ref, orderBy('lastName', 'asc'));
+	const rsvp = query(ref, where('rsvp', '==', 'yes'));
+	const q = query(ref, orderBy('lastName', 'asc'));
 
-		unsubscribe = onSnapshot(q, async (doc) => {
-			try {
-				const snapshot = await getCountFromServer(ref);
-				totalNumberOfDocs = snapshot.data().count;
-				const snapshotRsvp = await getCountFromServer(rsvp);
-				totalNumberOfRsvp = snapshotRsvp.data().count;
+	unsubscribe = onSnapshot(q, async (doc) => {
+		try {
+			const snapshot = await getCountFromServer(ref);
+			totalNumberOfDocs = snapshot.data().count;
+			const snapshotRsvp = await getCountFromServer(rsvp);
+			totalNumberOfRsvp = snapshotRsvp.data().count;
+			pageData = [];
 
-				doc.forEach((item) => {
-					const id = item.id;
-					const data = item.data();
-					count = count++;
+			doc.forEach((item) => {
+				const id = item.id;
+				const data = item.data();
+				count = count++;
 
-					pageData = [
-						...pageData,
-						{
-							id,
-							name: `${data.firstName} ${data.lastName}`,
-							address: `${data.address}<br/> ${data.address2}${data.address2 && '<br/>'} ${
-								data.city
-							}, ${data.state} ${data.zipCode}`,
-							email: data.email,
-							phone: data.phone,
-							rsvp: data.rsvp,
-							guests: data.guests?.length || 0
-						}
-					];
-				});
-				status = 'idle';
-			} catch (error) {
-				status = 'error';
-				console.log(error);
-			}
-		});
-	}
+				pageData = [
+					...pageData,
+					{
+						id,
+						name: `${data.firstName} ${data.lastName}`,
+						address: `${data.address}<br/> ${data.address2}${data.address2 && '<br/>'} ${
+							data.city
+						}, ${data.state} ${data.zipCode}`,
+						email: data.email,
+						phone: data.phone,
+						rsvp: data.rsvp,
+						guests: data.guests?.length || 0
+					}
+				];
+			});
+			status = 'idle';
+		} catch (error) {
+			status = 'error';
+			console.log(error);
+		}
+	});
 
 	function setItemsPerPage(numberOfItems: ItemsPerPage) {
 		itemsPerPage = numberOfItems;
 		pageIndex.set(0);
 	}
-	onMount(getDocumentFromFirebase);
+
 	onDestroy(unsubscribe);
 </script>
 
