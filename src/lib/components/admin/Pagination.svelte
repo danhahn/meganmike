@@ -11,7 +11,7 @@
 </script>
 
 {#if total > docsPerPage}
-	<div class="grid place-content-center gap-4">
+	<div class="grid place-content-center items-center gap-4">
 		<div class="pagination">
 			<Button
 				size="small"
@@ -25,6 +25,7 @@
 			{#each pages as _, index}
 				<Button
 					size="small"
+					class="w-7 font-mono"
 					on:click={() => pageIndex.set(index)}
 					variant={current === index ? 'primary' : 'naked'}>{index + 1}</Button
 				>

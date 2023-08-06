@@ -55,7 +55,7 @@
 
 <style lang="postcss">
 	.button {
-		@apply flex justify-center gap-2 uppercase px-10 py-2 rounded-md transition-all ease-in-out hover:shadow hover:shadow-black/50 focus:outline-megan-900;
+		@apply flex justify-center items-center gap-2 uppercase px-10 py-2 rounded-md transition-all ease-in-out hover:shadow hover:shadow-black/50 focus:outline-megan-900;
 	}
 	.isPrimary:not(:disabled) {
 		@apply hover:bg-megan-500;
