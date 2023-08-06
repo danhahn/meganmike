@@ -28,6 +28,7 @@
 		rsvp: RsvpProps;
 		guests?: number;
 		id: string;
+		totalGuests?: number;
 	};
 
 	type ItemsPerPage = 10 | 20 | 1000;
@@ -74,10 +75,14 @@
 						email: data.email,
 						phone: data.phone,
 						rsvp: data.rsvp,
-						guests: data.guests?.length || 0
+						guests: data.guests?.length || 0,
+						totalGuests: data.totalGuests
 					}
 				];
 				totalNumberOfDocs = totalNumberOfDocs + data.guests?.length || 0;
+				if (data.totalGuests) {
+					totalNumberOfRsvp = totalNumberOfRsvp + data.totalGuests - 1;
+				}
 			});
 			status = 'idle';
 		} catch (error) {
@@ -102,7 +107,7 @@
 <Loading {status}>
 	<div class="grid grid-cols-2 gap-4">
 		<div class="rsvp">
-			<h2>Total <span class="hidden lg:inline-block">Number of guest invited</span></h2>
+			<h2><span class="hidden lg:inline-block">Number of guest invited</span></h2>
 			<p>{totalNumberOfDocs}</p>
 		</div>
 		<div class="rsvp">
