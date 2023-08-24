@@ -5,6 +5,7 @@
 	import { auth, firestore, storage } from '$lib/firebase/firebase';
 	import { adminNav } from '$lib/stores/navigation';
 	import Login from '$lib/components/Login.svelte';
+	import { onMount } from 'svelte';
 
 	const end = new Date('2024-08-15T12:17:30');
 	let remainingTime = 0;
@@ -20,6 +21,8 @@
 	};
 
 	$: days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+
+	onMount(startTimer);
 
 	const handleAdminNavigation = () => {
 		adminNav.set(true);
