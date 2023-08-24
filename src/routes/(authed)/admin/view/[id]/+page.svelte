@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { doc, getDoc } from 'firebase/firestore';
 	import type { PageData } from './$types';
-	import { db } from '$lib/firebase/firebase.client';
+	import { db } from '$lib/firebase/firebase';
 	import { onMount } from 'svelte';
 	import Headline from '$lib/components/Headline.svelte';
 	import { formatPhoneNumber } from '$lib/utils';

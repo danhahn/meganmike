@@ -2,7 +2,7 @@
 	import { getAuth, signInWithPopup } from 'firebase/auth';
 	import Headline from './Headline.svelte';
 	import Button from './forms/Button.svelte';
-	import { provider } from '$lib/firebase/firebase.client';
+	import { provider } from '$lib/firebase/firebase';
 	import { goto } from '$app/navigation';
 	import Background from './Background.svelte';
 

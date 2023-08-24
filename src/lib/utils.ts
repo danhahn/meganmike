@@ -1,5 +1,5 @@
 import { deleteDoc, doc } from 'firebase/firestore';
-import { db } from './firebase/firebase.client';
+import { db } from './firebase/firebase';
 
 export const title = '❤️ Megan and Mike 2024 ❤️';
 

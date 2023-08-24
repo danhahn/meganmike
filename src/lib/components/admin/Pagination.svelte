@@ -6,7 +6,7 @@
 	export let current: number;
 	export let docsPerPage: number;
 
-	$: numberOfPages = total / docsPerPage + 1;
+	$: numberOfPages = Math.ceil(total / docsPerPage);
 	$: pages = Array.from({ length: numberOfPages });
 </script>
 

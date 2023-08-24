@@ -6,7 +6,7 @@
 	import { authHandlers } from '$lib/stores/authStore';
 	import { goto } from '$app/navigation';
 	import { getAuth, signInWithPopup } from 'firebase/auth';
-	import { provider } from '$lib/firebase/firebase.client';
+	import { provider } from '$lib/firebase/firebase';
 
 	const errorMessages = {
 		msg: ''

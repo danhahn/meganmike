@@ -5,7 +5,7 @@
 	import Button from '$lib/components/forms/Button.svelte';
 	import Form from '$lib/components/forms/Form.svelte';
 	import Input from '$lib/components/forms/Input.svelte';
-	import { db } from '$lib/firebase/firebase.client';
+	import { db } from '$lib/firebase/firebase';
 	import { getFormData, getNextValue } from '$lib/utils';
 	import { collection, addDoc } from 'firebase/firestore';
 	import Dialog from '$lib/components/Dialog.svelte';

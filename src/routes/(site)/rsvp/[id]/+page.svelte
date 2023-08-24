@@ -7,7 +7,7 @@
 	import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 	import type { PageData } from './$types';
-	import { db } from '$lib/firebase/firebase.client';
+	import { db } from '$lib/firebase/firebase';
 	import { onMount } from 'svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import type { LoadingProps } from '$lib/types';

@@ -2,6 +2,7 @@
 	import type { RsvpProps } from '$lib/types';
 
 	export let rsvp: RsvpProps;
+	export let totalGuests: number | undefined;
 	export let size: 'small' | 'large' = 'small';
 	export let row: boolean = false;
 	$: isSmall = size === 'small';
@@ -29,7 +30,7 @@
 			class:isLarge
 			class:isSmall><path d="M378-246 154-470l43-43 181 181 384-384 43 43-427 427Z" /></svg
 		>
-		<p class:isLarge class:isSmall>Yes 🎉</p>
+		<p class:isLarge class:isSmall>Yes 🎉 ({totalGuests})</p>
 	{:else}
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
