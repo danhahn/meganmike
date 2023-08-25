@@ -14,6 +14,8 @@
 
 	export let data: PageData;
 
+	$: id = data.id;
+
 	const qrSize = 300;
 
 	var url = new URL(window.location.href);
@@ -40,9 +42,9 @@
 		<div class="col-span-2 flex flex-col gap-4">
 			<img
 				alt=""
-				src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${baseUrl}/rsvp/${data.id}`}
+				src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${baseUrl}/rsvp/${id}`}
 			/>
-			<a href={`${baseUrl}/rsvp/${data.id}`}>{baseUrl}/rsvp/{data.id}</a>
+			<a href={`${baseUrl}/rsvp/${id}`}>{baseUrl}/rsvp/{id}</a>
 		</div>
 
 		<svg
