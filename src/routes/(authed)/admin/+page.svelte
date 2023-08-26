@@ -46,7 +46,7 @@
 	<title>Admin | {title}</title>
 </svelte:head>
 
-<Headline class="block">Admin</Headline>Parisienne
+<Headline class="block">Admin</Headline>
 
 <div class="grid grid-cols-2 gap-4">
 	<div class="rsvp">
