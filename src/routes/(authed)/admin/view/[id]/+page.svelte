@@ -1,51 +1,29 @@
 <script lang="ts">
 	import { doc, getDoc } from 'firebase/firestore';
 	import type { PageData } from './$types';
-	import { db } from '$lib/firebase/firebase.client';
+	import { db } from '$lib/firebase/firebase';
 	import { onMount } from 'svelte';
 	import Headline from '$lib/components/Headline.svelte';
-	import { formatPhoneNumber } from '$lib/utils';
+	import { formatPhoneNumber, title } from '$lib/utils';
 	import Button from '$lib/components/forms/Button.svelte';
 	import type { LoadingProps } from '$lib/types';
 	import Loading from '$lib/components/Loading.svelte';
 	import { goto } from '$app/navigation';
 	import Rsvp from '$lib/components/Rsvp.svelte';
+	import { Doc } from 'sveltefire';
 
 	export let data: PageData;
 
-	type Snapshot = {
-		[val: string]: any;
-	};
+	$: id = data.id;
 
 	const qrSize = 300;
 
 	var url = new URL(window.location.href);
 	var baseUrl = url.origin;
-
-	let snapshot: Snapshot = {};
-
-	let status: LoadingProps = 'loading';
-
-	async function getDocumentFromFirebase(id: string) {
-		const docRef = doc(db, 'guests', id);
-		const docSnap = await getDoc(docRef);
-
-		if (docSnap.exists()) {
-			snapshot = docSnap.data();
-			status = 'idle';
-		} else {
-			console.log('No such document!');
-			status = 'error';
-		}
-	}
-
-	onMount(() => {
-		getDocumentFromFirebase(data.id);
-	});
 </script>
 
 <svelte:head>
-	<title>View Guest</title>
+	<title>View Guest | {title}</title>
 </svelte:head>
 
 <a href="/admin" class="flex gap-1">
@@ -54,20 +32,19 @@
 	>
 	<span class="text-megan-900">Back to View All Guests</span></a
 >
-<Headline>{snapshot.firstName} {snapshot.lastName}</Headline>
-
-<Loading {status}>
+<Doc ref={`guests/${data.id}`} let:data>
+	<Headline>{data.firstName} {data.lastName}</Headline>
 	<div
 		class="max-w-lg mx-auto grid grid-cols-[64px_1fr] gap-4 items-center border-2 border-megan-800 rounded-lg p-12 bg-megan-50"
 	>
-		<Rsvp rsvp={snapshot.rsvp} size="large" row />
+		<Rsvp rsvp={data.rsvp} size="large" row totalGuests={data.totalGuests} />
 
 		<div class="col-span-2 flex flex-col gap-4">
 			<img
 				alt=""
-				src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${baseUrl}/rsvp/${data.id}`}
+				src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${baseUrl}/rsvp/${id}`}
 			/>
-			<a href={`${baseUrl}/rsvp/${data.id}`}>{baseUrl}/rsvp/{data.id}</a>
+			<a href={`${baseUrl}/rsvp/${id}`}>{baseUrl}/rsvp/{id}</a>
 		</div>
 
 		<svg
@@ -79,11 +56,11 @@
 			/></svg
 		>
 		<address>
-			<p>{snapshot.address}</p>
-			{#if snapshot.address2}
-				<p>{snapshot.address2}</p>
+			<p>{data.address}</p>
+			{#if data.address2}
+				<p>{data.address2}</p>
 			{/if}
-			<p>{snapshot.city} {snapshot.state} {snapshot.zipCode}</p>
+			<p>{data.city} {data.state} {data.zipCode}</p>
 		</address>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -93,7 +70,7 @@
 				d="M140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H140Zm340-302L140-685v465h680v-465L480-462Zm0-60 336-218H145l335 218ZM140-685v-55 520-465Z"
 			/></svg
 		>
-		<a href={`mailto:${snapshot.email}`}>{snapshot.email}</a>
+		<a href={`mailto:${data.email}`}>{data.email}</a>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			class="w-8 fill-megan-900 justify-self-center"
@@ -102,8 +79,8 @@
 				d="M260-40q-24 0-42-18t-18-42v-760q0-24 18-42t42-18h440q24 0 42 18t18 42v760q0 24-18 42t-42 18H260Zm0-150v90h440v-90H260Zm220.175 75q12.825 0 21.325-8.675 8.5-8.676 8.5-21.5 0-12.825-8.675-21.325-8.676-8.5-21.5-8.5-12.825 0-21.325 8.675-8.5 8.676-8.5 21.5 0 12.825 8.675 21.325 8.676 8.5 21.5 8.5ZM260-250h440v-520H260v520Zm0-580h440v-30H260v30Zm0 640v90-90Zm0-640v-30 30Z"
 			/></svg
 		>
-		<a href={`tel:+1${snapshot.phone}`}>{formatPhoneNumber(snapshot.phone)}</a>
-		{#if snapshot?.guests?.length}
+		<a href={`tel:+1${data.phone}`}>{formatPhoneNumber(data.phone)}</a>
+		{#if data?.guests?.length}
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				class="w-8 fill-megan-900 justify-self-center"
@@ -114,7 +91,7 @@
 			>
 			<div>
 				<ul>
-					{#each snapshot.guests as guest}
+					{#each data.guests as guest}
 						<li>{guest.firstName} {guest.lastName}</li>
 					{/each}
 				</ul>
@@ -137,4 +114,6 @@
 			Edit</Button
 		>
 	</div>
-</Loading>
+
+	<p slot="loading">...loading</p>
+</Doc>

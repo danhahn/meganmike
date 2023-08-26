@@ -4,27 +4,16 @@
 	import Button from '$lib/components/forms/Button.svelte';
 	import Dialog from '$lib/components/Dialog.svelte';
 
-	import type { RsvpProps } from '$lib/types';
+	import type { FirebaseResponse, Guest, RsvpProps } from '$lib/types';
 	import { deleteGuest, formatPhoneNumber } from '$lib/utils';
 	import Td from './Td.svelte';
 	import Th from './Th.svelte';
 	import Tr from './Tr.svelte';
 
-	type TableData = {
-		name: string;
-		email: string;
-		phone: string;
-		address: string;
-		rsvp: RsvpProps;
-		guests?: Number;
-		id?: string;
-		delete?: string;
-	};
-
 	export let headerData: string[];
-	export let data: TableData[];
+	export let data: FirebaseResponse[];
 
-	let deleteGuestData: TableData | undefined;
+	let deleteGuestData: FirebaseResponse | undefined;
 
 	let dialog: HTMLDialogElement;
 
@@ -52,7 +41,8 @@
 			<Tr>
 				<Td isRow class="text-2xl lg:text-base">
 					<a class="hover:underline underline-offset-2 flex gap-2" href={`/admin/view/${row.id}`}
-						>{row.name}
+						>{row.firstName}
+						{row.lastName}
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							class="w-4 fill-current"
@@ -63,18 +53,20 @@
 						>
 					</a>
 				</Td>
-				<!-- <Td isRow
-					><a class="hover:underline underline-offset-2" href={`mailto:${row.email}`}>{row.email}</a
-					></Td
-				> -->
-				<Td isRow><address>{@html row.address}</address></Td>
+				<Td isRow
+					><address class="text-base">
+						<p class="text-base">{row.address}</p>
+						<p class="text-base">{row.address2}</p>
+						<p class="text-base">{row.city} {row.state}, {row.zipCode}</p>
+					</address></Td
+				>
 				<Td isRow>{formatPhoneNumber(String(row.phone))}</Td>
 				<Td class="mt-4 lg:mt-0 text-2xl text-center">
-					<Rsvp rsvp={row.rsvp} />
+					<Rsvp rsvp={row.rsvp} totalGuests={row.totalGuests} />
 				</Td>
 				<Td class="mt-4 lg:mt-0 text-center text-2xl">
 					{#if row.guests}
-						<span class="lg:hidden">+1s:</span> {row.guests}
+						<span class="lg:hidden">+1s:</span> {row.guests.length}
 					{/if}
 				</Td>
 				<Td class="mt-4 lg:mt-0 text-center px-1"
@@ -123,8 +115,9 @@
 <Dialog id="addGuest" bind:dialog on:close={handleDialogClose} cancel="Cancel" confirm="Delete">
 	{#if deleteGuestData}
 		<h1 class="text-3xl mb-4">
-			Are you sure you want to remote <span class="font-bold block">{deleteGuestData.name}</span> from
-			the wedding?
+			Are you sure you want to remote <span class="font-bold block"
+				>{deleteGuestData.firstName} {deleteGuestData.lastName}</span
+			> from the wedding?
 		</h1>
 	{/if}
 </Dialog>

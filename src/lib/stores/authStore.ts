@@ -1,4 +1,4 @@
-import { auth } from '$lib/firebase/firebase.client';
+import { auth } from '$lib/firebase/firebase';
 import {
 	createUserWithEmailAndPassword,
 	sendPasswordResetEmail,

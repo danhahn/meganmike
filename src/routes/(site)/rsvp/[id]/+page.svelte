@@ -4,62 +4,30 @@
 	import Button from '$lib/components/forms/Button.svelte';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { title } from '$lib/utils';
-	import { doc, getDoc, setDoc } from 'firebase/firestore';
+	import { doc, setDoc } from 'firebase/firestore';
 
 	import type { PageData } from './$types';
-	import { db } from '$lib/firebase/firebase.client';
-	import { onMount } from 'svelte';
-	import Loading from '$lib/components/Loading.svelte';
-	import type { LoadingProps } from '$lib/types';
+	import { db, firestore } from '$lib/firebase/firebase';
+
 	import RsvpInfo from '$lib/components/RsvpInfo.svelte';
 	import { dev } from '$app/environment';
+	import { docStore } from 'sveltefire';
+	import Loading from '$lib/components/Loading.svelte';
+	import { onMount } from 'svelte';
 
 	export let data: PageData;
 	const docRef = doc(db, 'guests', data.id);
 
-	let status: LoadingProps = 'loading';
+	const guest = docStore(firestore, `guests/${data.id}`);
 
 	let hasRsvp: boolean = false;
 
 	let confirmed: boolean = false;
 	let errorMessage: string;
 
-	let firstName: string;
-	let lastName: string;
-	let rsvp: string;
-	let phone: string;
-	let guests: number[] = [0, 1];
-
 	let userEnteredPhone: string;
 
 	let selectedGuests = 0;
-
-	const loadDoc = async () => {
-		const isConfirmed = localStorage.getItem(data.id);
-		if (isConfirmed) confirmed = JSON.parse(isConfirmed);
-
-		status = 'loading';
-
-		const docSnap = await getDoc(docRef);
-
-		if (docSnap.exists()) {
-			firstName = docSnap.data().firstName;
-			lastName = docSnap.data().lastName;
-			phone = docSnap.data().phone;
-			rsvp = docSnap.data().rsvp;
-			selectedGuests = docSnap.data().totalGuests || 0;
-
-			guests = [...guests, ...docSnap.data().guests.map((_: any, index: number) => index + 2)];
-			status = 'idle';
-
-			if (rsvp) {
-				hasRsvp = true;
-			}
-		} else {
-			console.log('No such document!');
-			status = 'error';
-		}
-	};
 
 	const rsvpYes = async () => {
 		if (selectedGuests === 0) {
@@ -78,7 +46,7 @@
 		hasRsvp = true;
 	};
 
-	const validatePhoneNumber = () => {
+	const validatePhoneNumber = (phone: string) => {
 		if (userEnteredPhone === phone) {
 			localStorage.setItem(data.id, 'true');
 			confirmed = true;
@@ -87,9 +55,13 @@
 		}
 	};
 
-	$: name = `${firstName} ${lastName}`;
+	$: if ($guest?.rsvp) {
+		hasRsvp = true;
+	}
 
-	onMount(loadDoc);
+	onMount(() => {
+		confirmed = !!localStorage.getItem(data.id);
+	});
 </script>
 
 <svelte:head>
@@ -99,8 +71,8 @@
 <Headline>RSVP</Headline>
 
 <Section>
-	<Loading {status}>
-		<h1 class="text-2xl text-center text-megan-700">Hey {name}!</h1>
+	{#if $guest}
+		<h1 class="text-2xl text-center text-megan-700">Hey {$guest.firstName} {$guest.lastName}!</h1>
 
 		{#if !hasRsvp}
 			{#if !confirmed}
@@ -109,7 +81,9 @@
 				<div class="min-w-[300px] mx-auto grid gap-4 text-center" style="text-wrap: balance">
 					<p>Please confirm your phone number below to get started</p>
 					{#if dev}
-						<button on:click={() => navigator.clipboard.writeText(phone)}>{phone}</button>
+						<button on:click={() => navigator.clipboard.writeText($guest.phone)}
+							>{$guest.phone}</button
+						>
 					{/if}
 					<Input
 						{errorMessage}
@@ -118,11 +92,11 @@
 						label="Confirm Your Phone Number"
 						bind:value={userEnteredPhone}
 					/>
-					<Button on:click={validatePhoneNumber}>Next</Button>
+					<Button on:click={() => validatePhoneNumber($guest.phone)}>Next</Button>
 				</div>
 			{:else}
 				<div
-					class="border border-megan-500 rounded-md p-4 min-w-[300px] mx-auto grid gap-4 text-center"
+					class="border bg-white/80 border-megan-500 rounded-lg p-4 min-w-[300px] mx-auto grid gap-4 text-center"
 					style="text-wrap: balance"
 				>
 					<p class="font-black text-megan-600">
@@ -131,9 +105,9 @@
 
 					<select
 						bind:value={selectedGuests}
-						class="bg-gray-50 border border-megan-300 text-megan-900 text-sm rounded-lg  block w-full p-2.5"
+						class="bg-gray-50 border border-megan-300 text-megan-900 text-sm rounded-lg block w-full p-2.5"
 					>
-						{#each guests as _, index}
+						{#each Array.from({ length: $guest.guests.length + 2 }) as _, index}
 							<option value={index}>{index}</option>
 						{/each}
 					</select>
@@ -167,18 +141,14 @@
 				{/if}
 			</div>
 
-			<div class="text-center grid gap-2 border border-megan-500 rounded-md p-4 mt-8">
+			<div class="bg-white/80 text-center grid gap-2 border border-megan-500 rounded-md p-4 mt-8">
 				<Button on:click={() => (hasRsvp = false)}>Edit your RSVP</Button>
 				<p class="text-xs">If you need to edit or RSVP please do so before June 17, 2023</p>
 			</div>
 		{/if}
-		<span slot="error">
-			<h1>Looks like there was an error</h1>
-			<p>We were unable to find your RSVP</p>
-			<p>Please check your invitation</p>
-			<p>If there there is still an issue contact support</p>
-		</span>
-	</Loading>
+	{:else}
+		<Loading />
+	{/if}
 </Section>
 
 <style lang="postcss">
