@@ -30,7 +30,15 @@
 		<Button
 			rel="noreferrer"
 			href="https://www.hilton.com/en/hotels/nycrohw-homewood-suites-ronkonkoma/?SEO_id=GMB-AMER-HW-NYCROHW&y_source=1_MTIzOTE2NzUtNzE1LWxvY2F0aW9uLndlYnNpdGU%3D"
-			target="_blank">Website</Button
+			target="_blank"
+			>Website <svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="w-4 fill-current"
+				viewBox="0 -960 960 960"
+				><path
+					d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h279v60H180v600h600v-279h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"
+				/></svg
+			></Button
 		>
 		<ul
 			class="text-sm flex gap-4 bg-megan-300/50 justify-around p-2 rounded-md shadow shadow-megan-900/30"
@@ -50,7 +58,15 @@
 		<Button
 			rel="noreferrer"
 			href="https://www.hyatt.com/en-US/hotel/new-york/hyatt-regency-long-island/haupp?src=corp_lclb_gmb_seo_haupp"
-			target="_blank">Website</Button
+			target="_blank"
+			>Website <svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="w-4 fill-current"
+				viewBox="0 -960 960 960"
+				><path
+					d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h279v60H180v600h600v-279h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"
+				/></svg
+			></Button
 		>
 		<ul
 			class="text-sm flex gap-4 bg-megan-300/50 justify-around p-2 rounded-md shadow shadow-megan-900/30"
@@ -70,7 +86,15 @@
 		<Button
 			rel="noreferrer"
 			href="https://www.hilton.com/en/hotels/ispahgi-hilton-garden-inn-islip-macarthur-airport/"
-			target="_blank">Website</Button
+			target="_blank"
+			>Website <svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="w-4 fill-current"
+				viewBox="0 -960 960 960"
+				><path
+					d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h279v60H180v600h600v-279h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"
+				/></svg
+			></Button
 		>
 		<ul
 			class="text-sm flex gap-4 bg-megan-300/50 justify-around p-2 rounded-md shadow shadow-megan-900/30"
@@ -90,7 +114,15 @@
 		<Button
 			rel="noreferrer"
 			href="https://www.hilton.com/en/hotels/comnyhx-hampton-long-island-commack/"
-			target="_blank">Website</Button
+			target="_blank"
+			>Website <svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="w-4 fill-current"
+				viewBox="0 -960 960 960"
+				><path
+					d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h279v60H180v600h600v-279h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"
+				/></svg
+			></Button
 		>
 		<ul
 			class="text-sm flex gap-4 bg-megan-300/50 justify-around p-2 rounded-md shadow shadow-megan-900/30"
@@ -110,7 +142,15 @@
 		<Button
 			rel="noreferrer"
 			href="https://www.marriott.com/en-us/hotels/nycml-marriott-melville-long-island/overview/"
-			target="_blank">Website</Button
+			target="_blank"
+			>Website <svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="w-4 fill-current"
+				viewBox="0 -960 960 960"
+				><path
+					d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h279v60H180v600h600v-279h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"
+				/></svg
+			></Button
 		>
 		<ul
 			class="text-sm flex gap-4 bg-megan-300/50 justify-around p-2 rounded-md shadow shadow-megan-900/30"
