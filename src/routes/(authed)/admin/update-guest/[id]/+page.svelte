@@ -10,6 +10,7 @@
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { goto } from '$app/navigation';
 	import { docStore } from 'sveltefire';
+	import { title } from '$lib/utils';
 	export let data: PageData;
 
 	const firebaseDoc = 'guests';
@@ -124,7 +125,7 @@
 </script>
 
 <svelte:head>
-	<title>Update Guest</title>
+	<title>Update Guest | {title}</title>
 </svelte:head>
 
 <svelte:body on:keypress={handleKeyboardPress} />

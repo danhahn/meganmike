@@ -6,6 +6,7 @@
 	import { db, firestore } from '$lib/firebase/firebase';
 	import { pageIndex } from '$lib/stores/navigation';
 	import type { FirebaseResponse } from '$lib/types';
+	import { title } from '$lib/utils';
 
 	import { collection, orderBy, query, where } from 'firebase/firestore';
 	import { collectionStore } from 'sveltefire';
@@ -35,11 +36,6 @@
 		});
 	}
 
-	const ref = collection(db, 'guests');
-
-	const rsvp = query(ref, where('rsvp', '==', 'yes'));
-	const q = query(ref, orderBy('lastName', 'asc'));
-
 	function setItemsPerPage(numberOfItems: ItemsPerPage) {
 		itemsPerPage = numberOfItems;
 		pageIndex.set(0);
@@ -47,10 +43,10 @@
 </script>
 
 <svelte:head>
-	<title>Admin</title>
+	<title>Admin | {title}</title>
 </svelte:head>
 
-<Headline class="block">Admin</Headline>
+<Headline class="block">Admin</Headline>Parisienne
 
 <div class="grid grid-cols-2 gap-4">
 	<div class="rsvp">

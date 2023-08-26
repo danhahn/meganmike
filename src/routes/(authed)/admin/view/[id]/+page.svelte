@@ -4,7 +4,7 @@
 	import { db } from '$lib/firebase/firebase';
 	import { onMount } from 'svelte';
 	import Headline from '$lib/components/Headline.svelte';
-	import { formatPhoneNumber } from '$lib/utils';
+	import { formatPhoneNumber, title } from '$lib/utils';
 	import Button from '$lib/components/forms/Button.svelte';
 	import type { LoadingProps } from '$lib/types';
 	import Loading from '$lib/components/Loading.svelte';
@@ -23,7 +23,7 @@
 </script>
 
 <svelte:head>
-	<title>View Guest</title>
+	<title>View Guest | {title}</title>
 </svelte:head>
 
 <a href="/admin" class="flex gap-1">

@@ -6,7 +6,7 @@
 	import Form from '$lib/components/forms/Form.svelte';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { db } from '$lib/firebase/firebase';
-	import { getFormData, getNextValue } from '$lib/utils';
+	import { getFormData, getNextValue, title } from '$lib/utils';
 	import { collection, addDoc } from 'firebase/firestore';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { goto } from '$app/navigation';
@@ -54,15 +54,6 @@
 		zipCode = '90036';
 		phoneNumber = generateRandomPhoneNumber();
 		email = generateRandomEmailAddress(randomIndex);
-	}
-
-	function generateLastName() {
-		// Load a list of last names.
-
-		// Choose a random last name from the list.
-		const randomIndex = Math.floor(Math.random() * lastNames.length);
-		firstName = firstNames[randomIndex];
-		lastName = lastNames[randomIndex];
 	}
 
 	function resetForm() {
@@ -125,7 +116,7 @@
 </script>
 
 <svelte:head>
-	<title>Add Guest</title>
+	<title>Add Guest | {title}</title>
 </svelte:head>
 
 <a href="/admin" class="flex gap-1">
