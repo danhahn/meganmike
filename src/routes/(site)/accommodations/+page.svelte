@@ -15,7 +15,7 @@
 	<iframe
 		src="https://www.google.com/maps/d/u/0/embed?mid=1xBmshHiZZtDKnr51EkbSbF0BmALBnSA&ehbc=2E312F&noprof=1"
 		title="Wedding locations"
-		class="lg:col-span-2 h-96 w-full"
+		class="lg:col-span-2 h-96 w-full rounded-xl shadow-lg shadow-megan-800 lg:-mx-32 lg:w-[calc(100%_+_(128px_*_2))]"
 	></iframe>
 
 	<div class="hotel grid gap-2 bg-megan-50/90 border border-megan-400 p-4 rounded-lg">
