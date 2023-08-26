@@ -104,9 +104,9 @@
 		</ul>
 	</div>
 
-	<div class="hotel grid gap-2 bg-megan-50/90 border border-megan-400 p-4 rounded-lg">
+	<div class="hotel flex flex-col gap-2 bg-megan-50/90 border border-megan-400 p-4 rounded-lg">
 		<h2 class="mt-0 text-2xl">Hampton Inn Long Island Commack</h2>
-		<address>
+		<address class="flex-1">
 			680 Commack Rd.<br />
 			Commack, New York, 11725, USA<br />
 		</address>
