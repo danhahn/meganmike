@@ -12,6 +12,12 @@
 <Headline>Accommodations</Headline>
 
 <Section class="lg:grid-cols-2">
+	<iframe
+		src="https://www.google.com/maps/d/embed?mid=1xBmshHiZZtDKnr51EkbSbF0BmALBnSA&hl=en&ehbc=2E312F"
+		title="Wedding locations"
+		class="lg:col-span-2 h-96 w-full"
+	></iframe>
+
 	<div class="hotel grid gap-2 bg-megan-50/90 border border-megan-400 p-4 rounded-lg">
 		<h2 class="mt-0 text-2xl">Homewood Suites-Holbrook</h2>
 		<address>
