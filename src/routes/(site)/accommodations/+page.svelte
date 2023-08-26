@@ -1,5 +1,5 @@
 <script>
-	import { title } from '$lib/utils';
+	import { formatPhoneNumber, title } from '$lib/utils';
 	import Headline from '$lib/components/Headline.svelte';
 	import Section from '$lib/components/Section.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
@@ -25,7 +25,13 @@
 			Ronkonkoma, NY 11779<br />
 		</address>
 
-		<a href="tel:631-585-0080">631-585-0080</a>
+		<a href="tel:631-585-0080" class="flex gap-2"
+			><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-4 fill-current"
+				><path
+					d="M260-40q-24 0-42-18t-18-42v-760q0-24 18-42t42-18h440q24 0 42 18t18 42v760q0 24-18 42t-42 18H260Zm0-150v90h440v-90H260Zm220.175 75q12.825 0 21.325-8.675 8.5-8.676 8.5-21.5 0-12.825-8.675-21.325-8.676-8.5-21.5-8.5-12.825 0-21.325 8.675-8.5 8.676-8.5 21.5 0 12.825 8.675 21.325 8.676 8.5 21.5 8.5ZM260-250h440v-520H260v520Zm0-580h440v-30H260v30Zm0 640v90-90Zm0-640v-30 30Z"
+				/></svg
+			>{formatPhoneNumber('6315850080')}</a
+		>
 
 		<Button
 			rel="noreferrer"
@@ -54,7 +60,13 @@
 			1717 Motor Parkway<br />
 			Hauppauge, NY 11788<br />
 		</address>
-		<a href="tel:631-784-1234">631-784-1234</a>
+		<a href="tel:631-784-1234" class="flex gap-2"
+			><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-4 fill-current"
+				><path
+					d="M260-40q-24 0-42-18t-18-42v-760q0-24 18-42t42-18h440q24 0 42 18t18 42v760q0 24-18 42t-42 18H260Zm0-150v90h440v-90H260Zm220.175 75q12.825 0 21.325-8.675 8.5-8.676 8.5-21.5 0-12.825-8.675-21.325-8.676-8.5-21.5-8.5-12.825 0-21.325 8.675-8.5 8.676-8.5 21.5 0 12.825 8.675 21.325 8.676 8.5 21.5 8.5ZM260-250h440v-520H260v520Zm0-580h440v-30H260v30Zm0 640v90-90Zm0-640v-30 30Z"
+				/></svg
+			>{formatPhoneNumber('6317841234')}</a
+		>
 		<Button
 			rel="noreferrer"
 			href="https://www.hyatt.com/en-US/hotel/new-york/hyatt-regency-long-island/haupp?src=corp_lclb_gmb_seo_haupp"
@@ -82,7 +94,13 @@
 			3485 Veterans Memorial Highway<br />
 			Ronkonkoma, New York, 11779, USA<br />
 		</address>
-		<a href="tel:+1 631-738-7800">+1 631-738-7800</a>
+		<a href="tel:631-738-7800" class="flex gap-2"
+			><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-4 fill-current"
+				><path
+					d="M260-40q-24 0-42-18t-18-42v-760q0-24 18-42t42-18h440q24 0 42 18t18 42v760q0 24-18 42t-42 18H260Zm0-150v90h440v-90H260Zm220.175 75q12.825 0 21.325-8.675 8.5-8.676 8.5-21.5 0-12.825-8.675-21.325-8.676-8.5-21.5-8.5-12.825 0-21.325 8.675-8.5 8.676-8.5 21.5 0 12.825 8.675 21.325 8.676 8.5 21.5 8.5ZM260-250h440v-520H260v520Zm0-580h440v-30H260v30Zm0 640v90-90Zm0-640v-30 30Z"
+				/></svg
+			>{formatPhoneNumber('6317387800')}</a
+		>
 		<Button
 			rel="noreferrer"
 			href="https://www.hilton.com/en/hotels/ispahgi-hilton-garden-inn-islip-macarthur-airport/"
@@ -110,7 +128,13 @@
 			680 Commack Rd.<br />
 			Commack, New York, 11725, USA<br />
 		</address>
-		<a href="tel:+1 631-462-5700">+1 631-462-5700</a>
+		<a href="tel:631-462-5700" class="flex gap-2"
+			><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-4 fill-current"
+				><path
+					d="M260-40q-24 0-42-18t-18-42v-760q0-24 18-42t42-18h440q24 0 42 18t18 42v760q0 24-18 42t-42 18H260Zm0-150v90h440v-90H260Zm220.175 75q12.825 0 21.325-8.675 8.5-8.676 8.5-21.5 0-12.825-8.675-21.325-8.676-8.5-21.5-8.5-12.825 0-21.325 8.675-8.5 8.676-8.5 21.5 0 12.825 8.675 21.325 8.676 8.5 21.5 8.5ZM260-250h440v-520H260v520Zm0-580h440v-30H260v30Zm0 640v90-90Zm0-640v-30 30Z"
+				/></svg
+			>{formatPhoneNumber('6314625700')}</a
+		>
 		<Button
 			rel="noreferrer"
 			href="https://www.hilton.com/en/hotels/comnyhx-hampton-long-island-commack/"
@@ -138,7 +162,13 @@
 			1350 Walt Whitman Rd,<br />
 			Melville, NY 11747<br />
 		</address>
-		<a href="tel:+1 631-423-1600">+1 631-423-1600</a>
+		<a href="tel:631-423-1600" class="flex gap-2"
+			><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-4 fill-current"
+				><path
+					d="M260-40q-24 0-42-18t-18-42v-760q0-24 18-42t42-18h440q24 0 42 18t18 42v760q0 24-18 42t-42 18H260Zm0-150v90h440v-90H260Zm220.175 75q12.825 0 21.325-8.675 8.5-8.676 8.5-21.5 0-12.825-8.675-21.325-8.676-8.5-21.5-8.5-12.825 0-21.325 8.675-8.5 8.676-8.5 21.5 0 12.825 8.675 21.325 8.676 8.5 21.5 8.5ZM260-250h440v-520H260v520Zm0-580h440v-30H260v30Zm0 640v90-90Zm0-640v-30 30Z"
+				/></svg
+			>{formatPhoneNumber('6314231600')}</a
+		>
 		<Button
 			rel="noreferrer"
 			href="https://www.marriott.com/en-us/hotels/nycml-marriott-melville-long-island/overview/"
