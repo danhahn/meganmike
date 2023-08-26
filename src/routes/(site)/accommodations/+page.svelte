@@ -13,7 +13,7 @@
 
 <Section class="lg:grid-cols-2">
 	<iframe
-		src="https://www.google.com/maps/d/embed?mid=1xBmshHiZZtDKnr51EkbSbF0BmALBnSA&hl=en&ehbc=2E312F"
+		src="https://www.google.com/maps/d/u/0/embed?mid=1xBmshHiZZtDKnr51EkbSbF0BmALBnSA&ehbc=2E312F&noprof=1"
 		title="Wedding locations"
 		class="lg:col-span-2 h-96 w-full"
 	></iframe>

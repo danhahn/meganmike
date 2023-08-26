@@ -18,16 +18,20 @@
 		Larkfield Manor. The day will be filled with love, laughter, and lots of celebration!
 	</p>
 
+	<address class="text-center">
+		<p class="font-extrabold text-megan-700">Larkfield Manor</p>
+		<p>507 Larkfield Rd,</p>
+		<p>East Northport, NY 11731</p>
+	</address>
+
 	<iframe
-		src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3389.331441106185!2d-73.32109924769105!3d40.8646086109789!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89e82579ac9e08f7%3A0xee483764109b8f95!2sLarkfield!5e1!3m2!1sen!2sus!4v1688650348469!5m2!1sen!2sus"
+		src="https://www.google.com/maps/d/embed?mid=1-IfJPHRehjiNe2x0VpPLFgWG893Ja7k&hl=en&ehbc=2E312F&noprof=1"
+		title="Wedding locations"
 		width="100%"
 		height="450"
-		style="border:0;"
 		loading="lazy"
-		referrerpolicy="no-referrer-when-downgrade"
-		title=""
 		class="rounded-xl shadow-lg shadow-megan-800 lg:-mx-32 w-full lg:w-[calc(100%_+_(128px_*_2))]"
-	/>
+	></iframe>
 
 	<h2>Ceremony</h2>
 
