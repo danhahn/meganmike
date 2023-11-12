@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fly } from 'svelte/transition';
 	import type { PageData } from './$types';
 	import Headline from '$lib/components/Headline.svelte';
 	import Section from '$lib/components/Section.svelte';
@@ -6,26 +7,30 @@
 	import type { FirebaseResponse } from '$lib/types';
 	import { collectionStore } from 'sveltefire';
 	import { draggable, dropZone } from '$lib/dnd';
+	import { quintOut } from 'svelte/easing';
 
-	const guests = collectionStore<FirebaseResponse>(firestore, 'guests');
+	let guests = collectionStore<FirebaseResponse>(firestore, 'guests');
+
+	$: guestData = [...$guests];
 
 	export let data: PageData;
 
 	$: tables = [...data.tables];
 
-	$: console.log(tables);
+	// $: console.log(tables);
 
-	const checkIfTableIsOpen = (seats: number): boolean => seats > 0;
+	const checkIfTableIsOpen = (seats: number, partySize: number): boolean =>
+		!(seats <= 0 || seats < partySize);
 
 	function moveToTable(id: string, table: number) {
-		const guest = $guests.find((guest) => guest.id === id);
+		const guest = guestData.find((guest) => guest.id === id);
 		if (guest === undefined) return;
 
 		const numberOfGuests = (guest?.guests.length ?? 0) + 1;
 		const currentTable = tables.find(({ tableNumber }) => tableNumber === table);
 		const openSeatsAtTable = currentTable?.guests.filter((i) => i === null).length ?? 0;
 
-		if (checkIfTableIsOpen(openSeatsAtTable) && currentTable) {
+		if (checkIfTableIsOpen(openSeatsAtTable, numberOfGuests) && currentTable) {
 			const startingIndex = currentTable.guests.findIndex((guest) => guest === null);
 
 			const newData = [
@@ -39,6 +44,9 @@
 				{ tableNumber: currentTable.tableNumber, guests: newData },
 				...tables.slice(currentTable.tableNumber)
 			];
+			guestData = guestData.filter((item) => item.id !== guest.id);
+		} else {
+			console.log('No spots at that table');
 		}
 	}
 </script>
@@ -48,11 +56,18 @@
 	<div class="grid grid-cols-[auto_1fr] gap-4">
 		<div class="overflow-auto h-[calc((58px_+_10px)_*_10)] pr-2">
 			<ul class="grid gap-2">
-				{#each $guests as guest (guest.id)}
+				{#each guestData as guest (guest.id)}
 					<li
 						use:draggable={guest.id}
 						class="rounded border border-megan-600 p-4 bg-white"
 						id={guest.id}
+						out:fly={{
+							delay: 250,
+							duration: 800,
+							x: -300,
+							opacity: 0.1,
+							easing: quintOut
+						}}
 					>
 						{guest.firstName}
 						{guest.lastName}
