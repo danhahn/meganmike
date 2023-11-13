@@ -1,5 +1,6 @@
-import { deleteDoc, doc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc } from 'firebase/firestore';
 import { db } from './firebase/firebase';
+import { dev } from '$app/environment';
 
 export const title = '❤️ Megan and Mike 2024 ❤️';
 
@@ -163,3 +164,38 @@ export const states = [
 	{ label: 'Wisconsin', value: 'WI' },
 	{ label: 'Wyoming', value: 'WY' }
 ];
+
+interface Table {
+	tableNumber: number;
+	guests: (string | null)[];
+}
+
+export function createTableDataSet(numTables: number, guestsPerTable: number): Table[] {
+	if (numTables <= 0 || guestsPerTable <= 0) {
+		throw new Error('Both the number of tables and guests per table must be greater than 0.');
+	}
+
+	const tableDataSet: Table[] = [];
+
+	for (let tableNumber = 1; tableNumber <= numTables; tableNumber++) {
+		const table: Table = {
+			tableNumber,
+			guests: new Array(guestsPerTable).fill(null)
+		};
+		tableDataSet.push(table);
+	}
+
+	return tableDataSet;
+}
+
+export async function addTableToFirebase(table: Table) {
+	try {
+		const docRef = await addDoc(collection(db, 'tables'), table);
+		if (dev) {
+			console.log('Document written with ID: ', docRef.id);
+		}
+	} catch (e) {
+		console.error('Error adding document: ', e);
+		status = 'error';
+	}
+}

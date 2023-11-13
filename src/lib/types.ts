@@ -26,4 +26,11 @@ export type FirebaseResponse = {
 	totalGuests?: number;
 	zipCode: string;
 	id: string;
+	table?: number;
+};
+
+export type Table = {
+	tableNumber: number;
+	guests: (string | null)[];
+	id: string;
 };
