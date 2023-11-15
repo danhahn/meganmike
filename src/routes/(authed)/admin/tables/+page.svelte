@@ -3,7 +3,7 @@
 	import Headline from '$lib/components/Headline.svelte';
 	import Section from '$lib/components/Section.svelte';
 	import { db, firestore } from '$lib/firebase/firebase';
-	import type { FirebaseResponse as Guest, Table } from '$lib/types';
+	import type { Guest, Table } from '$lib/types';
 	import { collectionStore } from 'sveltefire';
 	import { draggable, dropZone } from '$lib/dnd';
 	import { quintOut } from 'svelte/easing';
@@ -85,6 +85,36 @@
 			addTableToFirebase(table);
 		});
 	}
+
+	function setActiveTable({ guests, id, tableNumber }: Table) {
+		let activeGuest: string | undefined;
+		let count: number = 0;
+		guests.forEach((guest) => {
+			if (guest !== null) {
+				const { firstName, lastName, guests } = guest;
+				// Check if the current guest is not the active guest
+				if (activeGuest !== guest.id) {
+					// If not, make the current guest the active guest
+					activeGuest = guest.id;
+					// Reset the count
+					count = 0;
+				} else {
+					// If the current guest is the active guest, increment the count
+					count++;
+				}
+				if (count === 0) {
+					console.log(`${firstName} ${lastName}`);
+				} else {
+					let plusOne = guests[count - 1];
+					if (plusOne.firstName === '') {
+						console.log(`${firstName} ${lastName} +1`);
+					} else {
+						console.log(`${plusOne.firstName} ${plusOne.lastName}`);
+					}
+				}
+			}
+		});
+	}
 </script>
 
 <Headline>tables</Headline>
@@ -139,9 +169,10 @@
 				<div class="grid grid-cols-2 gap-4">
 					{#each tables as table, index (index)}
 						<!-- svelte-ignore a11y-no-static-element-interactions -->
-						<div
+						<button
 							class="dropTable border-4 border-megan-600 grid grid-cols-6 justify-items-center gap-1 p-4 px-8 rounded-full bg-white"
 							id={`table-${index + 1}`}
+							on:click={() => setActiveTable(table)}
 							use:dropZone={{ onDropZone: moveToTable, tableNumber: table.tableNumber }}
 						>
 							<p class="pointer-events-none col-span-6 text-center text-megan-800">
@@ -158,7 +189,7 @@
 									></div>
 								{/if}
 							{/each}
-						</div>
+						</button>
 					{/each}
 				</div>
 			</div>

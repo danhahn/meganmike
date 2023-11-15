@@ -4,16 +4,16 @@
 	import Button from '$lib/components/forms/Button.svelte';
 	import Dialog from '$lib/components/Dialog.svelte';
 
-	import type { FirebaseResponse, Guest, RsvpProps } from '$lib/types';
+	import type { Guest, RsvpProps } from '$lib/types';
 	import { deleteGuest, formatPhoneNumber } from '$lib/utils';
 	import Td from './Td.svelte';
 	import Th from './Th.svelte';
 	import Tr from './Tr.svelte';
 
 	export let headerData: string[];
-	export let data: FirebaseResponse[];
+	export let data: Guest[];
 
-	let deleteGuestData: FirebaseResponse | undefined;
+	let deleteGuestData: Guest | undefined;
 
 	let dialog: HTMLDialogElement;
 
