@@ -3,14 +3,15 @@
 	import Headline from '$lib/components/Headline.svelte';
 	import Section from '$lib/components/Section.svelte';
 	import { db, firestore } from '$lib/firebase/firebase';
-	import type { Guest, Table } from '$lib/types';
+	import type { Guest, RsvpProps, Table } from '$lib/types';
 	import { collectionStore } from 'sveltefire';
 	import { draggable, dropZone } from '$lib/dnd';
 	import { quintOut } from 'svelte/easing';
 	import Input from '$lib/components/forms/Input.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
 	import { addTableToFirebase, createTableDataSet } from '$lib/utils';
-	import { doc, updateDoc } from 'firebase/firestore';
+	import { deleteField, doc, setDoc, updateDoc } from 'firebase/firestore';
+	import Dialog from '$lib/components/Dialog.svelte';
 
 	let numTables: string = '12';
 	let seatsPerTable: string = '12';
@@ -18,11 +19,29 @@
 	let seatsPerTableError: string;
 	let status: 'idle' | 'submitting' | 'error' = 'idle';
 
+	let dialog: HTMLDialogElement;
+
+	type TableGuest =
+		| {
+				name: string | null;
+				id?: string;
+				rsvp: RsvpProps;
+		  }
+		| undefined;
+
+	type TableView = {
+		guests?: TableGuest[];
+		tableNumber?: number;
+		id?: string;
+	};
+
+	let activeTable: TableView = {};
+
 	let guests: Guest[] = [];
 	let tables: Table[] = [];
 
-	const tableData = collectionStore<Table>(firestore, 'tables');
-	const guestData = collectionStore<Guest>(firestore, 'guests');
+	$: tableData = collectionStore<Table>(firestore, 'tables');
+	$: guestData = collectionStore<Guest>(firestore, 'guests');
 
 	$: {
 		tables = [...$tableData].sort((a, b) => a.tableNumber - b.tableNumber);
@@ -45,7 +64,7 @@
 
 			const newData = [
 				...currentTable.guests.slice(0, startingIndex),
-				...Array.from({ length: numberOfGuests }, () => guest),
+				...Array.from({ length: numberOfGuests }, () => guest.id),
 				...currentTable.guests.slice(startingIndex + numberOfGuests)
 			];
 
@@ -87,15 +106,17 @@
 	}
 
 	function setActiveTable({ guests, id, tableNumber }: Table) {
-		let activeGuest: string | undefined;
+		let activeGuest: string | null;
 		let count: number = 0;
-		guests.forEach((guest) => {
+		const table: TableGuest[] = guests.map((guest) => {
 			if (guest !== null) {
-				const { firstName, lastName, guests } = guest;
-				// Check if the current guest is not the active guest
-				if (activeGuest !== guest.id) {
+				const currentGuest = $guestData.find((g) => g.id === guest);
+				if (currentGuest === undefined) return;
+				const { firstName, lastName, guests } = currentGuest;
+				//Check if the current guest is not the active guest
+				if (activeGuest !== guest) {
 					// If not, make the current guest the active guest
-					activeGuest = guest.id;
+					activeGuest = guest;
 					// Reset the count
 					count = 0;
 				} else {
@@ -103,19 +124,72 @@
 					count++;
 				}
 				if (count === 0) {
-					console.log(`${firstName} ${lastName}`);
+					return {
+						name: `${firstName} ${lastName}`,
+						id: currentGuest.id,
+						rsvp: currentGuest.rsvp
+					};
 				} else {
 					let plusOne = guests[count - 1];
 					if (plusOne.firstName === '') {
-						console.log(`${firstName} ${lastName} +1`);
+						return {
+							name: `${firstName} ${lastName} +1`,
+							id: currentGuest.id,
+							rsvp: currentGuest.rsvp
+						};
 					} else {
-						console.log(`${plusOne.firstName} ${plusOne.lastName}`);
+						return {
+							name: `${plusOne.firstName} ${plusOne.lastName}`,
+							id: currentGuest.id,
+							rsvp: currentGuest.rsvp
+						};
 					}
 				}
 			}
 		});
+
+		activeTable = { guests: table, tableNumber, id };
+		dialog.showModal();
+	}
+
+	const checkIfIdHasRsvp = (id: string | null) =>
+		$guestData.find((g) => g.id === id)?.rsvp === 'yes';
+
+	function handleDialogClose() {
+		if (dialog.returnValue === 'success') {
+			activeTable = {};
+		}
+		if (dialog.returnValue === 'cancel') {
+		}
+	}
+
+	async function deleteGuestFromTable(id: string | undefined) {
+		if (id === undefined) return;
+		if (activeTable.id === undefined) return;
+		const updateTable = activeTable.guests?.filter((guest) => guest?.id !== id) ?? [];
+		const itemsInTable = updateTable?.length ?? 0;
+		const emptySeats = Array.from({ length: 12 - itemsInTable }, () => null);
+		const newTable = [...updateTable.map((table) => table?.id), ...emptySeats].map((i) =>
+			i === undefined ? null : i
+		);
+
+		try {
+			const docRef = doc(db, 'tables', activeTable.id);
+			const guestRef = doc(db, 'guests', id);
+			await updateDoc(docRef, { guests: [...newTable] });
+			await updateDoc(guestRef, { table: deleteField() });
+		} catch (error) {
+			console.error(error);
+		}
 	}
 </script>
+
+<svelte:head>
+	<link
+		rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+	/>
+</svelte:head>
 
 <Headline>tables</Headline>
 <Section>
@@ -180,13 +254,13 @@
 							</p>
 							{#each table.guests as seat}
 								{#if seat !== null}
+									{@const rsvp = checkIfIdHasRsvp(seat)}
 									<div
 										class="pointer-events-none aspect-square rounded-full w-4 bg-slate-600"
-									></div>
+										class:rsvp
+									/>
 								{:else}
-									<div
-										class="pointer-events-none aspect-square rounded-full w-4 bg-slate-600/10"
-									></div>
+									<div class="pointer-events-none aspect-square rounded-full w-4 bg-slate-600/10" />
 								{/if}
 							{/each}
 						</button>
@@ -196,10 +270,66 @@
 		</div>
 	{/if}
 </Section>
+<Dialog id="addGuest" bind:dialog on:close={handleDialogClose} cancel={null} confirm="Done">
+	{#if activeTable && activeTable.guests}
+		<h1 class="text-3xl mb-4">Table {activeTable.tableNumber}</h1>
+
+		{#each activeTable.guests as guest, index}
+			{#if guest !== undefined}
+				<div class="grid grid-cols-[auto_1fr_auto_auto] items-center justify-start gap-4">
+					<span class="block w-8 text-right text-megan-700">{index + 1}.</span>
+
+					<p class="text-left">
+						{guest.name}
+					</p>
+					{#if guest.rsvp === 'yes'}
+						<span class="material-symbols-outlined text-green-500"> check_circle </span>
+					{:else if guest.rsvp === 'no'}
+						<span class="material-symbols-outlined text-red-500"> block </span>
+					{:else}
+						<span class="material-symbols-outlined text-yellow-500"> warning </span>
+					{/if}
+					<button type="button" on:click={() => deleteGuestFromTable(guest?.id)}>
+						<span
+							class="material-symbols-outlined block aspect-square text-lg leading-none translate-y-1 hover:text-red-600"
+						>
+							delete
+						</span>
+					</button>
+				</div>
+			{:else}
+				<p class="flex items-center gap-4">
+					<span class="block w-8 text-right text-megan-700">{index + 1}.</span>
+					Open Seat
+					<span
+						class="material-symbols-outlined block aspect-square text-lg leading-none translate-y-1 text-gray-500"
+					>
+						event_seat
+					</span>
+				</p>
+			{/if}
+		{/each}
+	{/if}
+	<div class="flex gap-4 mt-4 justify-center">
+		<div class="flex gap-1">
+			<span class="material-symbols-outlined text-green-500"> check_circle </span>RSVP Yes
+		</div>
+		<div class="flex gap-1">
+			<span class="material-symbols-outlined text-red-500"> block </span> RSVP No
+		</div>
+		<div class="flex gap-1">
+			<span class="material-symbols-outlined text-yellow-500"> warning </span> No RSVP Yet
+		</div>
+	</div>
+</Dialog>
 
 <style lang="postcss">
 	.dropTable:global(.droppable) {
 		outline: 0.1rem solid blue;
 		outline-offset: 0.25rem;
+	}
+
+	.rsvp {
+		@apply bg-green-600;
 	}
 </style>

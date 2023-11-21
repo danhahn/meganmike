@@ -196,6 +196,5 @@ export async function addTableToFirebase(table: Table) {
 		}
 	} catch (e) {
 		console.error('Error adding document: ', e);
-		status = 'error';
 	}
 }

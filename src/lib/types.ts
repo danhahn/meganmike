@@ -20,6 +20,6 @@ export type Guest = {
 
 export type Table = {
 	tableNumber: number;
-	guests: (Guest | null)[];
+	guests: (string | null)[];
 	id: string;
 };
