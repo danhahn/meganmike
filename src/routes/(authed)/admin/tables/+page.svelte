@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 	import Headline from '$lib/components/Headline.svelte';
 	import Section from '$lib/components/Section.svelte';
 	import { db, firestore } from '$lib/firebase/firebase';
@@ -9,7 +9,7 @@
 	import { quintOut } from 'svelte/easing';
 	import Input from '$lib/components/forms/Input.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
-	import { addTableToFirebase, createTableDataSet } from '$lib/utils';
+	import { addTableToFirebase, checkIfTableIsOpen, createTableDataSet } from '$lib/utils';
 	import { deleteField, doc, setDoc, updateDoc } from 'firebase/firestore';
 	import Dialog from '$lib/components/Dialog.svelte';
 
@@ -26,6 +26,7 @@
 				name: string | null;
 				id?: string;
 				rsvp: RsvpProps;
+				deleted?: boolean;
 		  }
 		| undefined;
 
@@ -45,11 +46,15 @@
 
 	$: {
 		tables = [...$tableData].sort((a, b) => a.tableNumber - b.tableNumber);
-		guests = [...$guestData].filter((guest) => guest.table === undefined);
+		guests = [...$guestData]
+			.filter((guest) => guest.rsvp === 'yes')
+			.filter((guest) => guest.table === undefined);
 	}
+	$: numberOfGuestPerTable = tables.length
+		? tables.reduce((acc, table) => table.guests.length + acc, 0) / tables.length
+		: 0;
 
-	const checkIfTableIsOpen = (seats: number, partySize: number): boolean =>
-		!(seats <= 0 || seats < partySize);
+	$: console.log(numberOfGuestPerTable);
 
 	async function moveToTable(id: string, table: number) {
 		const guest = guests.find((guest) => guest.id === id);
@@ -166,15 +171,29 @@
 	async function deleteGuestFromTable(id: string | undefined) {
 		if (id === undefined) return;
 		if (activeTable.id === undefined) return;
+
+		const docId = activeTable.id;
+
+		const confirm = window.confirm('Are you sure you want to delete this guest?');
+		if (!confirm) return;
+
 		const updateTable = activeTable.guests?.filter((guest) => guest?.id !== id) ?? [];
+
+		activeTable.guests = activeTable.guests?.map((guest) => {
+			if (guest?.id === id) {
+				return { ...guest, deleted: true };
+			}
+			return guest;
+		});
+
 		const itemsInTable = updateTable?.length ?? 0;
-		const emptySeats = Array.from({ length: 12 - itemsInTable }, () => null);
+		const emptySeats = Array.from({ length: numberOfGuestPerTable - itemsInTable }, () => null);
 		const newTable = [...updateTable.map((table) => table?.id), ...emptySeats].map((i) =>
 			i === undefined ? null : i
 		);
 
 		try {
-			const docRef = doc(db, 'tables', activeTable.id);
+			const docRef = doc(db, 'tables', docId);
 			const guestRef = doc(db, 'guests', id);
 			await updateDoc(docRef, { guests: [...newTable] });
 			await updateDoc(guestRef, { table: deleteField() });
@@ -191,8 +210,10 @@
 	/>
 </svelte:head>
 
-<Headline>tables</Headline>
-<Section>
+<Headline>Table Assignments</Headline>
+<Section padding={false} wide>
+	<p class="text-center">Use this page to assign party groups to a table.</p>
+	<p class="text-center">Only Parties that have RSVPed Yes will show up.</p>
 	{#if tables.length === 0}
 		<h2>Set up tables</h2>
 		<form class="grid grid-cols-2 gap-4" on:submit|preventDefault={updateTableConfiguration}>
@@ -213,7 +234,7 @@
 			<Button class="col-span-2" disabled={status !== 'idle'}>Set Up Tables</Button>
 		</form>
 	{:else}
-		<div class="grid grid-cols-[auto_1fr] gap-4">
+		<div class="grid grid-cols-[230px_1fr] gap-4">
 			<div class="overflow-auto h-[calc((58px_+_10px)_*_10)] pr-2">
 				<ul class="grid gap-2">
 					{#each guests as guest (guest.id)}
@@ -222,8 +243,8 @@
 							class="rounded border border-megan-600 p-4 bg-white"
 							id={guest.id}
 							out:fly={{
-								delay: 250,
-								duration: 800,
+								delay: 100,
+								duration: 300,
 								x: -300,
 								opacity: 0.1,
 								easing: quintOut
@@ -236,6 +257,19 @@
 							{/if}
 						</li>
 					{/each}
+					{#if guests.length === 0}
+						<div
+							in:fade={{
+								delay: 400,
+								duration: 300,
+								easing: quintOut
+							}}
+							class="border border-megan-800 bg-megan-300/50 p-4 rounded-lg"
+						>
+							<p class="text-3xl text-center">🎉</p>
+							<p>All guests have been assigned to a table.</p>
+						</div>
+					{/if}
 				</ul>
 			</div>
 
@@ -270,6 +304,7 @@
 		</div>
 	{/if}
 </Section>
+
 <Dialog id="addGuest" bind:dialog on:close={handleDialogClose} cancel={null} confirm="Done">
 	{#if activeTable && activeTable.guests}
 		<h1 class="text-3xl mb-4">Table {activeTable.tableNumber}</h1>
@@ -279,19 +314,30 @@
 				<div class="grid grid-cols-[auto_1fr_auto_auto] items-center justify-start gap-4">
 					<span class="block w-8 text-right text-megan-700">{index + 1}.</span>
 
-					<p class="text-left">
+					<p class="text-left" class:deleted={guest.deleted}>
 						{guest.name}
 					</p>
 					{#if guest.rsvp === 'yes'}
-						<span class="material-symbols-outlined text-green-500"> check_circle </span>
+						<span class:deleted={guest.deleted} class="material-symbols-outlined text-green-500">
+							check_circle
+						</span>
 					{:else if guest.rsvp === 'no'}
-						<span class="material-symbols-outlined text-red-500"> block </span>
+						<span class:deleted={guest.deleted} class="material-symbols-outlined text-red-500">
+							block
+						</span>
 					{:else}
-						<span class="material-symbols-outlined text-yellow-500"> warning </span>
+						<span class:deleted={guest.deleted} class="material-symbols-outlined text-yellow-500">
+							warning
+						</span>
 					{/if}
-					<button type="button" on:click={() => deleteGuestFromTable(guest?.id)}>
+					<button
+						disabled={guest.deleted}
+						type="button"
+						on:click={() => deleteGuestFromTable(guest?.id)}
+					>
 						<span
 							class="material-symbols-outlined block aspect-square text-lg leading-none translate-y-1 hover:text-red-600"
+							class:deleted={guest.deleted}
 						>
 							delete
 						</span>
@@ -331,5 +377,12 @@
 
 	.rsvp {
 		@apply bg-green-600;
+	}
+
+	.deleted:not(span) {
+		@apply line-through text-gray-500 opacity-50;
+	}
+	span.deleted {
+		@apply text-gray-500 opacity-50;
 	}
 </style>

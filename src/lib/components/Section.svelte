@@ -1,9 +1,10 @@
 <script lang="ts">
 	export let isColumn: boolean = true;
 	export let padding: boolean = true;
+	export let wide: boolean = false;
 </script>
 
-<section {...$$props} class:isColumn class:padding><slot /></section>
+<section {...$$props} class:isColumn class:padding class:wide><slot /></section>
 
 <style lang="postcss">
 	:global(h2) {
@@ -24,5 +25,8 @@
 
 	section.padding {
 		@apply px-10 pt-4 lg:pt-8 lg:px-0;
+	}
+	section.wide {
+		@apply max-w-[90ch];
 	}
 </style>

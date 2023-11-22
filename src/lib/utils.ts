@@ -198,3 +198,6 @@ export async function addTableToFirebase(table: Table) {
 		console.error('Error adding document: ', e);
 	}
 }
+
+export const checkIfTableIsOpen = (seats: number, partySize: number): boolean =>
+	!(seats <= 0 || seats < partySize);
