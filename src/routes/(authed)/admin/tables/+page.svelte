@@ -54,8 +54,6 @@
 		? tables.reduce((acc, table) => table.guests.length + acc, 0) / tables.length
 		: 0;
 
-	$: console.log(numberOfGuestPerTable);
-
 	async function moveToTable(id: string, table: number) {
 		const guest = guests.find((guest) => guest.id === id);
 		if (guest === undefined) return;
@@ -201,6 +199,25 @@
 			console.error(error);
 		}
 	}
+
+	function convertStringToValidCssId(id: string) {
+		return `ID-${id}`;
+	}
+
+	function highlightAllWithSameId(id: string | undefined) {
+		if (id === undefined) return;
+		const elements = document.querySelectorAll(`#${id}`);
+		elements.forEach((element) => {
+			element.classList.add('bg-megan-300/50', 'rounded');
+		});
+	}
+	function removeHighlightAllWithSameId(id: string | undefined) {
+		if (id === undefined) return;
+		const elements = document.querySelectorAll(`#${id}`);
+		elements.forEach((element) => {
+			element.classList.remove('bg-megan-300/50', 'rounded');
+		});
+	}
 </script>
 
 <svelte:head>
@@ -309,52 +326,61 @@
 	{#if activeTable && activeTable.guests}
 		<h1 class="text-3xl mb-4">Table {activeTable.tableNumber}</h1>
 
-		{#each activeTable.guests as guest, index}
-			{#if guest !== undefined}
-				<div class="grid grid-cols-[auto_1fr_auto_auto] items-center justify-start gap-4">
-					<span class="block w-8 text-right text-megan-700">{index + 1}.</span>
+		<ul class="grid gap-1">
+			{#each activeTable.guests as guest, index}
+				{@const id = convertStringToValidCssId(guest?.id ?? '')}
+				{#if guest !== undefined}
+					<li
+						class="grid grid-cols-[auto_1fr_auto_auto] items-center justify-start gap-4"
+						{id}
+						class:deleted={guest.deleted}
+					>
+						<span class="block w-8 text-right text-megan-700">{index + 1}.</span>
 
-					<p class="text-left" class:deleted={guest.deleted}>
-						{guest.name}
-					</p>
-					{#if guest.rsvp === 'yes'}
-						<span class:deleted={guest.deleted} class="material-symbols-outlined text-green-500">
-							check_circle
-						</span>
-					{:else if guest.rsvp === 'no'}
-						<span class:deleted={guest.deleted} class="material-symbols-outlined text-red-500">
-							block
-						</span>
-					{:else}
-						<span class:deleted={guest.deleted} class="material-symbols-outlined text-yellow-500">
-							warning
-						</span>
-					{/if}
-					<button
-						disabled={guest.deleted}
-						type="button"
-						on:click={() => deleteGuestFromTable(guest?.id)}
-					>
-						<span
-							class="material-symbols-outlined block aspect-square text-lg leading-none translate-y-1 hover:text-red-600"
-							class:deleted={guest.deleted}
+						<p class="text-left" class:deleted={guest.deleted}>
+							{guest.name}
+						</p>
+						{#if guest.rsvp === 'yes'}
+							<span class:deleted={guest.deleted} class="material-symbols-outlined text-green-500">
+								check_circle
+							</span>
+						{:else if guest.rsvp === 'no'}
+							<span class:deleted={guest.deleted} class="material-symbols-outlined text-red-500">
+								block
+							</span>
+						{:else}
+							<span class:deleted={guest.deleted} class="material-symbols-outlined text-yellow-500">
+								warning
+							</span>
+						{/if}
+						<button
+							disabled={guest.deleted}
+							type="button"
+							on:click={() => deleteGuestFromTable(guest?.id)}
+							on:mouseenter={() => highlightAllWithSameId(id)}
+							on:mouseleave={() => removeHighlightAllWithSameId(id)}
 						>
-							delete
+							<span
+								class="material-symbols-outlined block aspect-square text-lg leading-none translate-y-1 hover:text-red-600"
+								class:deleted={guest.deleted}
+							>
+								delete
+							</span>
+						</button>
+					</li>
+				{:else}
+					<p class="flex items-center gap-4">
+						<span class="block w-8 text-right text-megan-700">{index + 1}.</span>
+						Open Seat
+						<span
+							class="material-symbols-outlined block aspect-square text-lg leading-none translate-y-1 text-gray-500"
+						>
+							event_seat
 						</span>
-					</button>
-				</div>
-			{:else}
-				<p class="flex items-center gap-4">
-					<span class="block w-8 text-right text-megan-700">{index + 1}.</span>
-					Open Seat
-					<span
-						class="material-symbols-outlined block aspect-square text-lg leading-none translate-y-1 text-gray-500"
-					>
-						event_seat
-					</span>
-				</p>
-			{/if}
-		{/each}
+					</p>
+				{/if}
+			{/each}
+		</ul>
 	{/if}
 	<div class="flex gap-4 mt-4 justify-center">
 		<div class="flex gap-1">
@@ -377,6 +403,10 @@
 
 	.rsvp {
 		@apply bg-green-600;
+	}
+
+	li.deleted {
+		@apply bg-red-200 rounded;
 	}
 
 	.deleted:not(span) {
