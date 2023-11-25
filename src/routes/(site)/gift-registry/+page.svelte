@@ -22,7 +22,7 @@
 	<Button
 		target="_blank"
 		rel="noreferrer"
-		href="https://www.amazon.com/hz/wishlist/ls/32I2XRT4S1Z1E/ref=nav_wishlist_lists_3"
+		href="https://www.amazon.com/wedding/registry/36N1N7K2MD39N?ref=wr_search_page_result_1"
 		>Link to Amazon</Button
 	>
 </Section>
