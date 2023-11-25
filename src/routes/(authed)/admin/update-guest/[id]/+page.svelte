@@ -4,7 +4,7 @@
 	import Form from '$lib/components/forms/Form.svelte';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { db, firestore } from '$lib/firebase/firebase';
-	import type { FirebaseResponse, LoadingProps } from '$lib/types';
+	import type { Guest, LoadingProps } from '$lib/types';
 	import { doc, updateDoc } from 'firebase/firestore';
 	import type { PageData } from './$types';
 	import Dialog from '$lib/components/Dialog.svelte';
@@ -16,9 +16,7 @@
 	const firebaseDoc = 'guests';
 	const ref = doc(db, firebaseDoc, data.id);
 
-	const guest = docStore<FirebaseResponse>(firestore, `${firebaseDoc}/${data.id}`);
-
-	$: console.log($guest);
+	const guest = docStore<Guest>(firestore, `${firebaseDoc}/${data.id}`);
 
 	let msg = '';
 
@@ -38,11 +36,6 @@
 	$: phoneNumber = $guest?.phone || '';
 	$: email = $guest?.email || '';
 	$: guests = $guest?.guests || [];
-
-	type Guest = {
-		firstName: string;
-		lastName: string;
-	};
 
 	let status: LoadingProps = 'loading';
 
@@ -68,8 +61,13 @@
 		} catch (error) {}
 	}
 
+	type NewGuest = {
+		firstName: string;
+		lastName: string;
+	};
+
 	async function addGuestToWedding() {
-		const newGuest: Guest = {
+		const newGuest: NewGuest = {
 			firstName: guestFirstName,
 			lastName: guestLastName
 		};
@@ -86,7 +84,7 @@
 		}, 2000);
 	}
 
-	async function removeGuestFromWedding(guest: Guest) {
+	async function removeGuestFromWedding(guest: NewGuest) {
 		const updateGuests = guests.filter((g) => g !== guest);
 
 		await updateDoc(ref, {

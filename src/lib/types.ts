@@ -2,17 +2,6 @@ export type LoadingProps = 'loading' | 'error' | 'idle' | 'submitting';
 export type RsvpProps = 'yes' | 'no' | null;
 
 export type Guest = {
-	name: string;
-	email: string;
-	phone: string;
-	address: string;
-	rsvp: RsvpProps;
-	guests?: { firstName: string; lastName: string }[];
-	id: string;
-	totalGuests?: number;
-};
-
-export type FirebaseResponse = {
 	address: string;
 	address2: string;
 	city: string;
@@ -25,5 +14,12 @@ export type FirebaseResponse = {
 	state: string;
 	totalGuests?: number;
 	zipCode: string;
+	id: string;
+	table?: number;
+};
+
+export type Table = {
+	tableNumber: number;
+	guests: (string | null)[];
 	id: string;
 };

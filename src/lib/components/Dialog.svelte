@@ -3,7 +3,7 @@
 	import Button from './forms/Button.svelte';
 
 	export let id: string;
-	export let cancel: string = 'Cancel';
+	export let cancel: string | null = 'Cancel';
 	export let confirm: string = 'Confirm';
 	export let title: string = 'Megan and Mike';
 
@@ -19,7 +19,9 @@
 			<slot />
 		</div>
 		<div class="flex justify-end gap-2 border-t border-t-megan-500 pt-4">
-			<Button value="cancel" formmethod="dialog" variant="secondary">{cancel}</Button>
+			{#if cancel !== null}
+				<Button value="cancel" formmethod="dialog" variant="secondary">{cancel}</Button>
+			{/if}
 			<Button
 				id="confirmBtn"
 				value="default"

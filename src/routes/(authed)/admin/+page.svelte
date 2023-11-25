@@ -5,13 +5,13 @@
 	import Button from '$lib/components/forms/Button.svelte';
 	import { db, firestore } from '$lib/firebase/firebase';
 	import { pageIndex } from '$lib/stores/navigation';
-	import type { FirebaseResponse } from '$lib/types';
+	import type { Guest } from '$lib/types';
 	import { title } from '$lib/utils';
 
 	import { collection, orderBy, query, where } from 'firebase/firestore';
 	import { collectionStore } from 'sveltefire';
 
-	const testGuest = collectionStore<FirebaseResponse>(firestore, 'guests');
+	const testGuest = collectionStore<Guest>(firestore, 'guests');
 
 	type ItemsPerPage = 10 | 20 | 1000;
 	let itemsPerPage: ItemsPerPage = 10;
@@ -28,7 +28,7 @@
 		totalNumberOfDocs = $testGuest.length;
 		let countGuests = 0;
 		let countRsvp = 0;
-		$testGuest.map((guest: FirebaseResponse) => {
+		$testGuest.map((guest: Guest) => {
 			countGuests = countGuests + guest.guests.length + 1;
 			countRsvp = countRsvp + (guest.totalGuests ?? 0);
 			totalNumberOfGuests = countGuests;
