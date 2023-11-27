@@ -12,6 +12,7 @@
 	import { addTableToFirebase, checkIfTableIsOpen, createTableDataSet } from '$lib/utils';
 	import { deleteField, doc, setDoc, updateDoc } from 'firebase/firestore';
 	import Dialog from '$lib/components/Dialog.svelte';
+	import { dev } from '$app/environment';
 
 	let numTables: string = '12';
 	let seatsPerTable: string = '12';
@@ -46,13 +47,14 @@
 
 	$: {
 		tables = [...$tableData].sort((a, b) => a.tableNumber - b.tableNumber);
-		guests = [...$guestData]
-			.filter((guest) => guest.rsvp === 'yes')
-			.filter((guest) => guest.table === undefined);
+		if (dev) {
+			guests = [...$guestData].filter((guest) => guest.table === undefined);
+		} else {
+			guests = [...$guestData]
+				.filter((guest) => guest.rsvp === 'yes')
+				.filter((guest) => guest.table === undefined);
+		}
 	}
-	$: numberOfGuestPerTable = tables.length
-		? tables.reduce((acc, table) => table.guests.length + acc, 0) / tables.length
-		: 0;
 
 	async function moveToTable(id: string, table: number) {
 		const guest = guests.find((guest) => guest.id === id);
@@ -176,6 +178,7 @@
 		if (!confirm) return;
 
 		const updateTable = activeTable.guests?.filter((guest) => guest?.id !== id) ?? [];
+		const numberOfGuestPerTable = activeTable.guests?.length ?? 0;
 
 		activeTable.guests = activeTable.guests?.map((guest) => {
 			if (guest?.id === id) {
@@ -217,6 +220,16 @@
 		elements.forEach((element) => {
 			element.classList.remove('bg-megan-300/50', 'rounded');
 		});
+	}
+
+	async function addSetToTable(event: Event) {
+		event.preventDefault();
+		if (activeTable.id === undefined) return;
+
+		const { id } = activeTable;
+		const tableRef = doc(db, 'tables', id);
+		if (activeTable.guests === undefined) return;
+		await updateDoc(tableRef, { guests: [...activeTable.guests.map((i) => i?.id), null] });
 	}
 </script>
 
@@ -392,6 +405,12 @@
 		<div class="flex gap-1">
 			<span class="material-symbols-outlined text-yellow-500"> warning </span> No RSVP Yet
 		</div>
+	</div>
+	<div class="mt-4 flex justify-end">
+		<Button size="small" variant="naked" on:click={addSetToTable}>
+			<span class="material-symbols-outlined"> add </span>
+			Seat to table</Button
+		>
 	</div>
 </Dialog>
 
