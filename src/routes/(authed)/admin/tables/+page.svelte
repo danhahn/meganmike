@@ -237,6 +237,22 @@
 			console.error(error);
 		}
 	}
+
+	async function deleteSeatFromTable(event: Event) {
+		event.preventDefault();
+		if (activeTable.id === undefined) return;
+		const { id } = activeTable;
+		const tableRef = doc(db, 'tables', id);
+		if (activeTable.guests === undefined) return;
+		try {
+			await updateDoc(tableRef, {
+				guests: [...activeTable.guests.map((i) => i?.id || null).slice(0, -1)]
+			});
+			activeTable = { ...activeTable, guests: [...activeTable.guests.slice(0, -1)] };
+		} catch (error) {
+			console.error(error);
+		}
+	}
 </script>
 
 <svelte:head>
@@ -388,7 +404,7 @@
 						</button>
 					</li>
 				{:else}
-					<p class="flex items-center gap-4">
+					<p class="flex items-center gap-4 open-seat relative">
 						<span class="block w-8 text-right text-megan-700">{index + 1}.</span>
 						Open Seat
 						<span
@@ -396,6 +412,19 @@
 						>
 							event_seat
 						</span>
+						{#if activeTable.guests.length === index + 1}
+							<button
+								type="button"
+								on:click={deleteSeatFromTable}
+								class="invisible delete transition ease-in-out absolute delay-75 right-0"
+							>
+								<span
+									class="material-symbols-outlined block aspect-square text-lg leading-none translate-y-2 hover:text-red-600"
+								>
+									delete
+								</span>
+							</button>
+						{/if}
 					</p>
 				{/if}
 			{/each}
@@ -439,5 +468,9 @@
 	}
 	span.deleted {
 		@apply text-gray-500 opacity-50;
+	}
+
+	.open-seat:hover .delete {
+		@apply visible;
 	}
 </style>
