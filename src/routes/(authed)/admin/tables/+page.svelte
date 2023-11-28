@@ -225,11 +225,17 @@
 	async function addSetToTable(event: Event) {
 		event.preventDefault();
 		if (activeTable.id === undefined) return;
-
 		const { id } = activeTable;
 		const tableRef = doc(db, 'tables', id);
 		if (activeTable.guests === undefined) return;
-		await updateDoc(tableRef, { guests: [...activeTable.guests.map((i) => i?.id), null] });
+		try {
+			await updateDoc(tableRef, {
+				guests: [...activeTable.guests.map((i) => i?.id || null), null]
+			});
+			activeTable = { ...activeTable, guests: [...activeTable.guests, undefined] };
+		} catch (error) {
+			console.error(error);
+		}
 	}
 </script>
 
