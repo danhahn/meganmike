@@ -12,6 +12,11 @@
 	import { addTableToFirebase, checkIfTableIsOpen, createTableDataSet } from '$lib/utils';
 	import { deleteField, doc, setDoc, updateDoc } from 'firebase/firestore';
 	import Dialog from '$lib/components/Dialog.svelte';
+	import { dev } from '$app/environment';
+	import tippy, { type Props } from 'tippy.js';
+	import 'tippy.js/dist/tippy.css';
+
+	type Options = Partial<Props>;
 
 	let numTables: string = '12';
 	let seatsPerTable: string = '12';
@@ -46,13 +51,14 @@
 
 	$: {
 		tables = [...$tableData].sort((a, b) => a.tableNumber - b.tableNumber);
-		guests = [...$guestData]
-			.filter((guest) => guest.rsvp === 'yes')
-			.filter((guest) => guest.table === undefined);
+		if (dev) {
+			guests = [...$guestData].filter((guest) => guest.table === undefined);
+		} else {
+			guests = [...$guestData]
+				.filter((guest) => guest.rsvp === 'yes')
+				.filter((guest) => guest.table === undefined);
+		}
 	}
-	$: numberOfGuestPerTable = tables.length
-		? tables.reduce((acc, table) => table.guests.length + acc, 0) / tables.length
-		: 0;
 
 	async function moveToTable(id: string, table: number) {
 		const guest = guests.find((guest) => guest.id === id);
@@ -158,6 +164,9 @@
 	const checkIfIdHasRsvp = (id: string | null) =>
 		$guestData.find((g) => g.id === id)?.rsvp === 'yes';
 
+	const checkIfIdHasRsvpNo = (id: string | null) =>
+		$guestData.find((g) => g.id === id)?.rsvp === 'no';
+
 	function handleDialogClose() {
 		if (dialog.returnValue === 'success') {
 			activeTable = {};
@@ -176,6 +185,7 @@
 		if (!confirm) return;
 
 		const updateTable = activeTable.guests?.filter((guest) => guest?.id !== id) ?? [];
+		const numberOfGuestPerTable = activeTable.guests?.length ?? 0;
 
 		activeTable.guests = activeTable.guests?.map((guest) => {
 			if (guest?.id === id) {
@@ -218,6 +228,57 @@
 			element.classList.remove('bg-megan-300/50', 'rounded');
 		});
 	}
+
+	async function addSetToTable(event: Event) {
+		event.preventDefault();
+		if (activeTable.id === undefined) return;
+		const { id } = activeTable;
+		const tableRef = doc(db, 'tables', id);
+		if (activeTable.guests === undefined) return;
+		try {
+			await updateDoc(tableRef, {
+				guests: [...activeTable.guests.map((i) => i?.id || null), null]
+			});
+			activeTable = { ...activeTable, guests: [...activeTable.guests, undefined] };
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	async function deleteSeatFromTable(event: Event) {
+		event.preventDefault();
+		if (activeTable.id === undefined) return;
+		const { id } = activeTable;
+		const tableRef = doc(db, 'tables', id);
+		if (activeTable.guests === undefined) return;
+		try {
+			await updateDoc(tableRef, {
+				guests: [...activeTable.guests.map((i) => i?.id || null).slice(0, -1)]
+			});
+			activeTable = { ...activeTable, guests: [...activeTable.guests.slice(0, -1)] };
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	function tooltip(element: HTMLElement, options: Options) {
+		// create tooltip
+		const tooltip = tippy(element, options);
+
+		return {
+			update(options: Options) {
+				// update options
+				console.log(options);
+				tooltip.setProps(options);
+			},
+			destroy() {
+				// cleanup
+				tooltip.destroy();
+			}
+		};
+	}
+
+	$: content = 'content';
 </script>
 
 <svelte:head>
@@ -306,9 +367,14 @@
 							{#each table.guests as seat}
 								{#if seat !== null}
 									{@const rsvp = checkIfIdHasRsvp(seat)}
+									{@const rsvpNo = checkIfIdHasRsvpNo(seat)}
 									<div
-										class="pointer-events-none aspect-square rounded-full w-4 bg-slate-600"
+										class="aspect-square rounded-full w-4 bg-slate-600"
 										class:rsvp
+										class:rsvpNo
+										use:tooltip={{
+											content: rsvp ? 'RSVP Yes' : rsvpNo ? 'RSVP No' : 'No RSVP Response'
+										}}
 									/>
 								{:else}
 									<div class="pointer-events-none aspect-square rounded-full w-4 bg-slate-600/10" />
@@ -369,7 +435,7 @@
 						</button>
 					</li>
 				{:else}
-					<p class="flex items-center gap-4">
+					<p class="flex items-center gap-4 open-seat relative">
 						<span class="block w-8 text-right text-megan-700">{index + 1}.</span>
 						Open Seat
 						<span
@@ -377,6 +443,19 @@
 						>
 							event_seat
 						</span>
+						{#if activeTable.guests.length === index + 1}
+							<button
+								type="button"
+								on:click={deleteSeatFromTable}
+								class="invisible delete transition ease-in-out absolute delay-75 right-0"
+							>
+								<span
+									class="material-symbols-outlined block aspect-square text-lg leading-none translate-y-2 hover:text-red-600"
+								>
+									delete
+								</span>
+							</button>
+						{/if}
 					</p>
 				{/if}
 			{/each}
@@ -393,6 +472,12 @@
 			<span class="material-symbols-outlined text-yellow-500"> warning </span> No RSVP Yet
 		</div>
 	</div>
+	<div class="mt-4 flex justify-end">
+		<Button size="small" variant="naked" on:click={addSetToTable}>
+			<span class="material-symbols-outlined"> add </span>
+			Seat to table</Button
+		>
+	</div>
 </Dialog>
 
 <style lang="postcss">
@@ -404,6 +489,9 @@
 	.rsvp {
 		@apply bg-green-600;
 	}
+	.rsvpNo {
+		@apply bg-red-600;
+	}
 
 	li.deleted {
 		@apply bg-red-200 rounded;
@@ -414,5 +502,9 @@
 	}
 	span.deleted {
 		@apply text-gray-500 opacity-50;
+	}
+
+	.open-seat:hover .delete {
+		@apply visible;
 	}
 </style>

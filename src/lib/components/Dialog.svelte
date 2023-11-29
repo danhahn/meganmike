@@ -39,7 +39,7 @@
 	dialog {
 		@apply rounded-xl shadow-xl shadow-megan-900/50 lg:min-w-[50%] p-4 border-4 border-megan-600;
 	}
-	dialog:backdrop {
-		@apply bg-black/20;
+	dialog::backdrop {
+		@apply bg-black/50;
 	}
 </style>
