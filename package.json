@@ -34,6 +34,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"sveltefire": "^0.4.2"
+		"sveltefire": "^0.4.2",
+		"tippy.js": "^6.3.7"
 	}
 }

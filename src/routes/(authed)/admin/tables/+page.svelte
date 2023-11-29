@@ -13,6 +13,10 @@
 	import { deleteField, doc, setDoc, updateDoc } from 'firebase/firestore';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { dev } from '$app/environment';
+	import tippy, { type Props } from 'tippy.js';
+	import 'tippy.js/dist/tippy.css';
+
+	type Options = Partial<Props>;
 
 	let numTables: string = '12';
 	let seatsPerTable: string = '12';
@@ -160,6 +164,9 @@
 	const checkIfIdHasRsvp = (id: string | null) =>
 		$guestData.find((g) => g.id === id)?.rsvp === 'yes';
 
+	const checkIfIdHasRsvpNo = (id: string | null) =>
+		$guestData.find((g) => g.id === id)?.rsvp === 'no';
+
 	function handleDialogClose() {
 		if (dialog.returnValue === 'success') {
 			activeTable = {};
@@ -253,6 +260,25 @@
 			console.error(error);
 		}
 	}
+
+	function tooltip(element: HTMLElement, options: Options) {
+		// create tooltip
+		const tooltip = tippy(element, options);
+
+		return {
+			update(options: Options) {
+				// update options
+				console.log(options);
+				tooltip.setProps(options);
+			},
+			destroy() {
+				// cleanup
+				tooltip.destroy();
+			}
+		};
+	}
+
+	$: content = 'content';
 </script>
 
 <svelte:head>
@@ -341,9 +367,14 @@
 							{#each table.guests as seat}
 								{#if seat !== null}
 									{@const rsvp = checkIfIdHasRsvp(seat)}
+									{@const rsvpNo = checkIfIdHasRsvpNo(seat)}
 									<div
-										class="pointer-events-none aspect-square rounded-full w-4 bg-slate-600"
+										class="aspect-square rounded-full w-4 bg-slate-600"
 										class:rsvp
+										class:rsvpNo
+										use:tooltip={{
+											content: rsvp ? 'RSVP Yes' : rsvpNo ? 'RSVP No' : 'No RSVP Response'
+										}}
 									/>
 								{:else}
 									<div class="pointer-events-none aspect-square rounded-full w-4 bg-slate-600/10" />
@@ -457,6 +488,9 @@
 
 	.rsvp {
 		@apply bg-green-600;
+	}
+	.rsvpNo {
+		@apply bg-red-600;
 	}
 
 	li.deleted {
