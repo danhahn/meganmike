@@ -9,14 +9,17 @@
 	import { quintOut } from 'svelte/easing';
 	import Input from '$lib/components/forms/Input.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
-	import { addTableToFirebase, checkIfTableIsOpen, createTableDataSet } from '$lib/utils';
+	import {
+		addTableToFirebase,
+		checkIfTableIsOpen,
+		convertStringToValidCssId,
+		createTableDataSet,
+		tooltip
+	} from '$lib/utils';
 	import { deleteField, doc, setDoc, updateDoc } from 'firebase/firestore';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { dev } from '$app/environment';
-	import tippy, { type Props } from 'tippy.js';
 	import 'tippy.js/dist/tippy.css';
-
-	type Options = Partial<Props>;
 
 	let numTables: string = '12';
 	let seatsPerTable: string = '12';
@@ -210,10 +213,6 @@
 		}
 	}
 
-	function convertStringToValidCssId(id: string) {
-		return `ID-${id}`;
-	}
-
 	function highlightAllWithSameId(id: string | undefined) {
 		if (id === undefined) return;
 		const elements = document.querySelectorAll(`#${id}`);
@@ -221,6 +220,7 @@
 			element.classList.add('bg-megan-300/50', 'rounded');
 		});
 	}
+
 	function removeHighlightAllWithSameId(id: string | undefined) {
 		if (id === undefined) return;
 		const elements = document.querySelectorAll(`#${id}`);
@@ -260,25 +260,6 @@
 			console.error(error);
 		}
 	}
-
-	function tooltip(element: HTMLElement, options: Options) {
-		// create tooltip
-		const tooltip = tippy(element, options);
-
-		return {
-			update(options: Options) {
-				// update options
-				console.log(options);
-				tooltip.setProps(options);
-			},
-			destroy() {
-				// cleanup
-				tooltip.destroy();
-			}
-		};
-	}
-
-	$: content = 'content';
 </script>
 
 <svelte:head>

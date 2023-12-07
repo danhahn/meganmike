@@ -1,6 +1,8 @@
 import { addDoc, collection, deleteDoc, doc } from 'firebase/firestore';
 import { db } from './firebase/firebase';
 import { dev } from '$app/environment';
+import tippy, { type Props } from 'tippy.js';
+type Options = Partial<Props>;
 
 export const title = '❤️ Megan and Mike 2024 ❤️';
 
@@ -201,3 +203,24 @@ export async function addTableToFirebase(table: Table) {
 
 export const checkIfTableIsOpen = (seats: number, partySize: number): boolean =>
 	!(seats <= 0 || seats < partySize);
+
+export function tooltip(element: HTMLElement, options: Options) {
+	// create tooltip
+	const tooltip = tippy(element, options);
+
+	return {
+		update(options: Options) {
+			// update options
+			console.log(options);
+			tooltip.setProps(options);
+		},
+		destroy() {
+			// cleanup
+			tooltip.destroy();
+		}
+	};
+}
+
+export function convertStringToValidCssId(id: string) {
+	return `ID-${id}`;
+}
