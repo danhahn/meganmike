@@ -1,13 +1,8 @@
 <script lang="ts">
-	import { doc, getDoc } from 'firebase/firestore';
 	import type { PageData } from './$types';
-	import { db } from '$lib/firebase/firebase';
-	import { onMount } from 'svelte';
 	import Headline from '$lib/components/Headline.svelte';
 	import { formatPhoneNumber, title } from '$lib/utils';
 	import Button from '$lib/components/forms/Button.svelte';
-	import type { LoadingProps } from '$lib/types';
-	import Loading from '$lib/components/Loading.svelte';
 	import { goto } from '$app/navigation';
 	import Rsvp from '$lib/components/Rsvp.svelte';
 	import { Doc } from 'sveltefire';
