@@ -23,3 +23,8 @@ export type Table = {
 	guests: (string | null)[];
 	id: string;
 };
+
+export type Gallery = {
+	name: string;
+	photos: string[];
+};
