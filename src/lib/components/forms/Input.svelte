@@ -37,7 +37,7 @@
 		class="bg-white rounded-md py-3 px-4 border-2 w-full border-gray-400 focus:outline-none focus:border-megan-500"
 	/>
 	{#if errorMessage}
-		<p class="text-red-700">{errorMessage}</p>
+		<p class="text-red-700 text-xs mt-2 px-2">{errorMessage}</p>
 	{/if}
 </div>
 
