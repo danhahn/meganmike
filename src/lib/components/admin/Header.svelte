@@ -25,6 +25,7 @@
 		{ label: 'View All Guest', url: '/admin', type: 'link' },
 		{ label: 'Organize Tables', url: '/admin/tables', type: 'link' },
 		{ label: 'Print QR Codes', url: '/admin/print-qr', type: 'link' },
+		{ label: 'Add Photo Gallery', url: '/admin/add-photo-gallery', type: 'link' },
 		{
 			label: `
 			<svg xmlns="http://www.w3.org/2000/svg" class="w-6 fill-megan-900" viewBox="0 96 960 960"><path d="M655 976 255 576l400-400 56 57-343 343 343 343-56 57Z"/></svg>
