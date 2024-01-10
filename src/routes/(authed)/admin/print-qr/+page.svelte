@@ -6,10 +6,14 @@
 	import { title } from '$lib/utils';
 	import { collectionStore } from 'sveltefire';
 
+	import { collection, where, query, orderBy } from 'firebase/firestore';
+
 	const qrSize = 200;
 	var baseUrl = 'https://www.meganandmike2024.com';
 
-	$: guestData = collectionStore<Guest>(firestore, 'guests');
+	const postsRef = collection(firestore, 'guests');
+	const q = query(postsRef, orderBy('lastName', 'asc'));
+	$: guestData = collectionStore(firestore, q);
 </script>
 
 <svelte:head>
