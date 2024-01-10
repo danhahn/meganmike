@@ -87,7 +87,7 @@
 			{:else if list.prefixes.length === 0 && list.items.length === 0}
 				<li>Empty</li>
 			{:else}
-				<ul class="grid grid-cols-4 gap-4">
+				<ul class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 					<!-- Listing the prefixes -->
 					{#each list.prefixes as prefix}
 						<li>
