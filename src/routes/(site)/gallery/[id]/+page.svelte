@@ -4,34 +4,84 @@
 	import type { PageData } from './$types';
 	import { DownloadURL, StorageList, UploadTask, collectionStore } from 'sveltefire';
 
-	import { collection, where, query } from 'firebase/firestore';
+	import { collection, where, query, doc, arrayUnion, updateDoc } from 'firebase/firestore';
 	import { firestore } from '$lib/firebase/firebase';
-	import { set } from 'firebase/database';
 	import Button from '$lib/components/forms/Button.svelte';
+	import { onMount } from 'svelte';
+	import Input from '$lib/components/forms/Input.svelte';
 	export let data: PageData;
 
 	const postsRef = collection(firestore, 'galleries');
+	type Gallery = {
+		id: string;
+		name: string;
+		photos: {
+			name: string;
+			date: string;
+			uploadedBy: string;
+		}[];
+	};
 	const q = query(postsRef, where('name', '==', data.id));
 
 	const gallery = collectionStore(firestore, q);
 
 	$: isValidGallery = $gallery && $gallery.length === 1;
 
+	$: id = $gallery[0]?.id;
+
+	$: g = $gallery[0] as Gallery;
+
+	$: console.log(g);
+
 	let image = '';
 
 	let file: File | undefined;
 
+	let guestName: string = '';
+	let uploadedBy: string | undefined;
+
 	let uploader: HTMLInputElement;
 
-	function chooseFile(e: Event) {
+	type Photo = {
+		name: string;
+		date: string;
+		uploadedBy: string;
+	};
+
+	async function chooseFile(e: Event) {
 		file = (e.target as HTMLInputElement).files?.[0];
-		setTimeout(resetUpload, 2000);
+		if (!file) return;
+		if (!uploadedBy) return;
+
+		const photoData: Photo = {
+			name: file.name,
+			date: new Date().toISOString(),
+			uploadedBy
+		};
+
+		setTimeout(async () => {
+			await updateDoc(doc(firestore, 'galleries', id), { photos: arrayUnion(photoData) });
+			console.log('uploaded');
+			resetUpload();
+		}, 3000);
 	}
 
 	function resetUpload() {
 		file = undefined;
-		uploader.value = '';
+		if (uploader) uploader.value = '';
 	}
+
+	function setUploadedBy() {
+		uploadedBy = guestName;
+		window.localStorage.setItem('uploadedBy', uploadedBy);
+	}
+
+	onMount(() => {
+		const localData = window.localStorage.getItem('uploadedBy');
+		if (localData) {
+			uploadedBy = localData;
+		}
+	});
 </script>
 
 <svelte:head>
@@ -43,10 +93,22 @@
 	<Section>
 		<p>Sorry, we couldn't find the gallery you were looking for.</p>
 	</Section>
+{:else if uploadedBy === undefined}
+	<Headline>Who are you?</Headline>
+	<Section>
+		<p>Megan and Mike would love for you to share your photos form todays event.</p>
+		<p>Please enter your name below to get started.</p>
+		<form on:submit|preventDefault={setUploadedBy} class="flex flex-col lg:flex-row gap-4">
+			<Input label="Full Name" id="name" type="text" bind:value={guestName} />
+			<Button type="submit">Submit</Button>
+		</form>
+	</Section>
 {:else}
 	<Headline>Add a photo to todays event</Headline>
 
 	<Section>
+		<p>Hey <span class="font-bold">{uploadedBy}</span> please add any photos you want to share</p>
+
 		{#if file}
 			<h2>Uploading {file.name}</h2>
 			<UploadTask ref={`${data.id}/${file.name}`} data={file} let:progress let:snapshot>
@@ -81,38 +143,34 @@
 			<img src={image} alt="" />
 		{/if}
 
-		<StorageList ref={data.id} let:list>
-			{#if list === null}
-				<p>Loading...</p>
-			{:else if list.prefixes.length === 0 && list.items.length === 0}
-				<li>Empty</li>
-			{:else}
-				<ul class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-					<!-- Listing the prefixes -->
-					{#each list.prefixes as prefix}
-						<li>
-							{prefix.name}
-						</li>
-					{/each}
-					<!-- Listing the objects in the given folder -->
-					{#each list.items as item}
-						<li class="flex flex-col gap-2">
-							<DownloadURL ref={`${data.id}/${item.name}`} let:link let:ref>
-								<!-- show img -->
-								{#if link}
-									<button on:click={() => (image = link)}>
-										<img src={link} alt={item.name} class="aspect-square object-cover" />
-									</button>
+		<ul class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+			<!-- Listing the objects in the given folder -->
+			{#each g.photos as item}
+				<li class="flex flex-col gap-2">
+					<DownloadURL ref={`${data.id}/${item.name}`} let:link let:ref>
+						<!-- show img -->
+						{#if link}
+							<button on:click={() => (image = link)}>
+								<img src={link} alt={item.name} class="aspect-square object-cover" />
+							</button>
 
-									<!-- or download via link -->
-									<Button size="small" href={link} download>Download</Button>
-								{/if}
-							</DownloadURL>
-						</li>
-					{/each}
-				</ul>
-			{/if}
-		</StorageList>
+							<p>{item.uploadedBy}</p>
+							<p>{new Date(item.date).toLocaleTimeString()}</p>
+
+							<!-- or download via link -->
+							<Button size="small" href={link} download>Download</Button>
+						{/if}
+					</DownloadURL>
+				</li>
+			{/each}
+		</ul>
+
+		<Button
+			on:click={() => {
+				window.localStorage.removeItem('uploadedBy');
+				uploadedBy = undefined;
+			}}>Log out</Button
+		>
 	</Section>
 {/if}
 
