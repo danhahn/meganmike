@@ -52,9 +52,9 @@
 		{#each data as gallery}
 			<div>
 				<p>{gallery.name} (Photos {gallery.photos.length})</p>
-				<Button class="whitespace-nowrap" on:click={() => goto(`/${galleryUrl}/${gallery.name}`)}
-					>View</Button
-				>
+				<Button class="whitespace-nowrap" on:click={() => goto(`/${galleryUrl}/${gallery.name}`)}>
+					View
+				</Button>
 			</div>
 		{/each}
 
