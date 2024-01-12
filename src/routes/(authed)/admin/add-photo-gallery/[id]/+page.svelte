@@ -9,7 +9,7 @@
 
 	let baseUrl = 'https://www.meganandmike2024.com';
 
-	if (browser && dev) {
+	if (browser) {
 		// get just the domain and protocol from the current turl
 		const url = window.location.origin;
 
