@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser, dev } from '$app/environment';
 	import type { PageData } from './$types';
+	import Button from '$lib/components/forms/Button.svelte';
 
 	export let data: PageData;
 
@@ -19,7 +20,7 @@
 </script>
 
 <div class="printable grid gap-4 justify-center text-center max-w-[1000px]">
-	<h2 class="text-6xl">Scan to add to the Gallery {data.id}</h2>
+	<h2 class="text-3xl">Scan to add to the Gallery {data.id}</h2>
 	<img
 		alt=""
 		src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${baseUrl}/gallery/${data.id}`}
@@ -28,6 +29,8 @@
 	<p>Or type this address in to your web browser</p>
 	<a class="text-2xl" href={`${baseUrl}/gallery/${data.id}`}>{baseUrl}/gallery/{data.id}</a>
 </div>
+
+<Button on:click={() => window.print()}>Print</Button>
 
 <style lang="postcss">
 	@media print {
