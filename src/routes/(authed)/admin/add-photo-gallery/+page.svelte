@@ -4,6 +4,7 @@
 	import Button from '$lib/components/forms/Button.svelte';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { db } from '$lib/firebase/firebase';
+	import { DownloadURL } from 'sveltefire';
 
 	import { addDoc, collection } from 'firebase/firestore';
 	import { Collection } from 'sveltefire';
@@ -45,18 +46,33 @@
 	</form>
 </div>
 
-<div class="mt-4">
+<div class="mt-4 grid gap-4">
 	<Collection ref={firebaseDoc} let:data let:count>
 		<h3 class="text-2xl text-megan-600">Found {count} Gallery</h3>
 
-		{#each data as gallery}
-			<div>
-				<p>{gallery.name} (Photos {gallery.photos.length})</p>
-				<Button class="whitespace-nowrap" on:click={() => goto(`/${galleryUrl}/${gallery.name}`)}>
-					View
-				</Button>
-			</div>
-		{/each}
+		<div class="grid lg:grid-cols-2">
+			{#each data as gallery}
+				<div class="grid gap-4 bg-white border border-megan-800 p-4">
+					<p>Name: <span class="text-megan-600 font-extrabold">{gallery.name}</span></p>
+					{#if gallery.photos.length > 0}
+						<DownloadURL ref={`${gallery.name}/${gallery.photos[0].name}`} let:link let:ref>
+							<!-- show img -->
+
+							<img src={link} class="aspect-square object-cover" alt="" />
+
+							<!-- or download via link -->
+						</DownloadURL>
+					{/if}
+					<p>(Photos {gallery.photos.length})</p>
+					<Button class="whitespace-nowrap" on:click={() => goto(`/${galleryUrl}/${gallery.name}`)}>
+						View
+					</Button>
+					<Button on:click={() => goto(`/admin/add-photo-gallery/${gallery.name}`)}
+						>Print QR Code</Button
+					>
+				</div>
+			{/each}
+		</div>
 
 		<p slot="loading">Loading...</p>
 	</Collection>
