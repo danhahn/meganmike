@@ -9,14 +9,14 @@
 	import type { PageData } from './$types';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { goto } from '$app/navigation';
-	import { docStore } from 'sveltefire';
+	import { getDoc } from 'firebase/firestore';
+
 	import { title } from '$lib/utils';
+	import { onMount } from 'svelte';
 	export let data: PageData;
 
 	const firebaseDoc = 'guests';
 	const ref = doc(db, firebaseDoc, data.id);
-
-	const guest = docStore<Guest>(firestore, `${firebaseDoc}/${data.id}`);
 
 	let msg = '';
 
@@ -26,16 +26,16 @@
 
 	let dialog: HTMLDialogElement;
 
-	$: firstName = $guest?.firstName || '';
-	$: lastName = $guest?.lastName || '';
-	$: address1 = $guest?.address || '';
-	$: address2 = $guest?.address2 || '';
-	$: city = $guest?.city || '';
-	$: state = $guest?.state || '';
-	$: zipCode = $guest?.zipCode || '';
-	$: phoneNumber = $guest?.phone || '';
-	$: email = $guest?.email || '';
-	$: guests = $guest?.guests || [];
+	let firstName = '';
+	let lastName = '';
+	let address1 = '';
+	let address2 = '';
+	let city = '';
+	let state = '';
+	let zipCode = '';
+	let phoneNumber = '';
+	let email = '';
+	let guests: Guest['guests'] = [];
 
 	let status: LoadingProps = 'loading';
 
@@ -120,6 +120,24 @@
 			}
 		}
 	}
+
+	onMount(async () => {
+		const docSnap = await getDoc(ref);
+		if (docSnap.exists()) {
+			const data = docSnap.data();
+			firstName = data.firstName;
+			lastName = data.lastName;
+			address1 = data.address;
+			address2 = data.address2;
+			city = data.city;
+			state = data.state;
+			zipCode = data.zipCode;
+			phoneNumber = data.phone;
+			email = data.email;
+			guests = data.guests;
+			status = 'idle';
+		}
+	});
 </script>
 
 <svelte:head>
