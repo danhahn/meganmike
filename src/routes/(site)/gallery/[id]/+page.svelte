@@ -113,8 +113,10 @@
 			<h2>Uploading {file.name}</h2>
 			<UploadTask ref={`${data.id}/${file.name}`} data={file} let:progress let:snapshot>
 				{#if snapshot?.state === 'running'}
-					<progress value={progress} max="100">{progress}%</progress>
-					{progress.toFixed(2)}% uploaded
+					<div class="flex gap-4">
+						<progress class="flex-1 progress" value={progress} max="100">{progress}%</progress>
+						<p class="text-sm">{progress.toFixed(2)}% uploaded</p>
+					</div>
 				{/if}
 
 				{#if snapshot?.state === 'success'}
@@ -143,22 +145,35 @@
 			<img src={image} alt="" />
 		{/if}
 
-		<ul class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+		<ul class="grid grid-cols-2 lg:grid-cols-4 gap-2">
 			<!-- Listing the objects in the given folder -->
 			{#each g.photos as item}
 				<li class="flex flex-col gap-2">
 					<DownloadURL ref={`${data.id}/${item.name}`} let:link let:ref>
 						<!-- show img -->
 						{#if link}
-							<button on:click={() => (image = link)}>
-								<img src={link} alt={item.name} class="aspect-square object-cover" />
-							</button>
+							<div class="border grid gap-2 border-megan-300 rounded-lg p-2 bg-megan-100">
+								<button class="grid" on:click={() => (image = link)}>
+									<img
+										src={link}
+										alt={item.name}
+										class="col-start-1 row-start-1 aspect-square object-cover"
+									/>
+									<p
+										class="text-sm col-start-1 bg-megan-50/80 self-start justify-self-center rounded-full px-4 mt-2 row-start-1"
+									>
+										{new Date(item.date).toLocaleTimeString()}
+									</p>
+									<p
+										class="text-sm col-start-1 bg-megan-50/80 font-bold self-end justify-self-center rounded-full px-4 mb-2 row-start-1"
+									>
+										{item.uploadedBy}
+									</p>
+								</button>
 
-							<p>{item.uploadedBy}</p>
-							<p>{new Date(item.date).toLocaleTimeString()}</p>
-
-							<!-- or download via link -->
-							<Button size="small" href={link} download>Download</Button>
+								<!-- or download via link -->
+								<Button size="small" href={link} download>Download</Button>
+							</div>
 						{/if}
 					</DownloadURL>
 				</li>
@@ -188,5 +203,15 @@
 
 	.file-input::file-selector-button:hover {
 		@apply bg-megan-400 border-megan-400;
+	}
+
+	.progress {
+		@apply w-full rounded-full h-4 overflow-hidden;
+	}
+	.progress::-webkit-progress-bar {
+		@apply bg-gray-700;
+	}
+	.progress::-webkit-progress-value {
+		@apply bg-megan-400;
 	}
 </style>
