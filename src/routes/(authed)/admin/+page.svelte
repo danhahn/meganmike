@@ -3,10 +3,12 @@
 	import Pagination from '$lib/components/admin/Pagination.svelte';
 	import Table from '$lib/components/admin/table/Table.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
+	import Input from '$lib/components/forms/Input.svelte';
 	import { firestore } from '$lib/firebase/firebase';
 	import { pageIndex } from '$lib/stores/navigation';
 	import type { Guest } from '$lib/types';
 	import { title } from '$lib/utils';
+	import { debounce } from '$lib/utils';
 
 	import { collection, orderBy, query } from 'firebase/firestore';
 
@@ -43,6 +45,30 @@
 		itemsPerPage = numberOfItems;
 		pageIndex.set(0);
 	}
+
+	let search = '';
+	$: searchData = $testGuest as Guest[];
+
+	function handleSearch() {
+		const debouncedSearch = debounce(() => {
+			if (search) {
+				const searchQuery = search.toLowerCase();
+				searchData = searchData.filter((guest) => {
+					const fullName = `${guest.firstName} ${guest.lastName}`.toLowerCase();
+					return fullName.includes(searchQuery);
+				});
+			} else {
+				searchData = $testGuest as Guest[];
+			}
+		}, 300);
+
+		debouncedSearch();
+	}
+
+	function resetSearch() {
+		search = '';
+		searchData = $testGuest as Guest[];
+	}
 </script>
 
 <svelte:head>
@@ -64,6 +90,16 @@
 		</h2>
 		<p>{totalNumberOfRsvp}</p>
 	</div>
+</div>
+
+<div class="mt-4 grid gap-2">
+	<Input id="search" label="Search" type="text" bind:value={search} on:input={handleSearch} />
+	{#if search}
+		<div class="flex gap-4 items-center">
+			<Button size="small" on:click={resetSearch}>reset</Button>
+			<p class="text-sm">Showing {searchData.length} results</p>
+		</div>
+	{/if}
 </div>
 
 {#if totalNumberOfDocs > 10}
@@ -112,7 +148,7 @@
 							/></svg
 						></div>`
 		]}
-		data={currentPageData}
+		data={searchData}
 	/>
 	<Pagination current={$pageIndex} docsPerPage={itemsPerPage} total={totalNumberOfDocs} />
 </div>
