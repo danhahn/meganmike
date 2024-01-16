@@ -47,7 +47,7 @@
 	}
 
 	let search = '';
-	$: searchData = $testGuest as Guest[];
+	$: searchData = $testGuest.slice(pageOffset, pageOffset + itemsPerPage) as Guest[];
 
 	function handleSearch() {
 		const debouncedSearch = debounce(() => {
@@ -58,7 +58,7 @@
 					return fullName.includes(searchQuery);
 				});
 			} else {
-				searchData = $testGuest as Guest[];
+				searchData = $testGuest.slice(pageOffset, pageOffset + itemsPerPage) as Guest[];
 			}
 		}, 300);
 
