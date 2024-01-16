@@ -47,12 +47,14 @@
 	}
 
 	let search = '';
-	$: searchData = $testGuest.slice(pageOffset, pageOffset + itemsPerPage) as Guest[];
+	let searchData = $testGuest as Guest[];
 
 	function handleSearch() {
+		searchData = $testGuest as Guest[];
 		const debouncedSearch = debounce(() => {
 			if (search) {
 				const searchQuery = search.toLowerCase();
+				if (searchData === undefined) return;
 				searchData = searchData.filter((guest) => {
 					const fullName = `${guest.firstName} ${guest.lastName}`.toLowerCase();
 					return fullName.includes(searchQuery);
@@ -102,7 +104,7 @@
 	{/if}
 </div>
 
-{#if totalNumberOfDocs > 10}
+{#if totalNumberOfDocs > 10 && !search}
 	<div class="flex gap-2 mt-4">
 		<p>View Guest Per Page</p>
 		<Button
@@ -148,9 +150,11 @@
 							/></svg
 						></div>`
 		]}
-		data={searchData}
+		data={search && searchData ? searchData : currentPageData}
 	/>
-	<Pagination current={$pageIndex} docsPerPage={itemsPerPage} total={totalNumberOfDocs} />
+	{#if !search}
+		<Pagination current={$pageIndex} docsPerPage={itemsPerPage} total={totalNumberOfDocs} />
+	{/if}
 </div>
 
 <style lang="postcss">
