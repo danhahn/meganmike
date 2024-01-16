@@ -9,9 +9,12 @@
 	import { title } from '$lib/utils';
 
 	import { collection, orderBy, query, where } from 'firebase/firestore';
+
 	import { collectionStore } from 'sveltefire';
 
-	const testGuest = collectionStore<Guest>(firestore, 'guests');
+	const postsRef = collection(firestore, 'guests');
+	const q = query(postsRef, orderBy('lastName', 'asc'));
+	const testGuest = collectionStore(firestore, q);
 
 	type ItemsPerPage = 10 | 20 | 1000;
 	let itemsPerPage: ItemsPerPage = 10;
@@ -28,7 +31,7 @@
 		totalNumberOfDocs = $testGuest.length;
 		let countGuests = 0;
 		let countRsvp = 0;
-		$testGuest.map((guest: Guest) => {
+		$testGuest.map((guest) => {
 			countGuests = countGuests + guest.guests.length + 1;
 			countRsvp = countRsvp + (guest.totalGuests ?? 0);
 			totalNumberOfGuests = countGuests;
