@@ -17,7 +17,10 @@
 				size="small"
 				variant="naked"
 				disabled={$pageIndex === 0}
-				on:click={() => pageIndex.set($pageIndex - 1)}
+				on:click={() => {
+					window.scrollTo(0, 0);
+					pageIndex.set($pageIndex - 1);
+				}}
 				><svg xmlns="http://www.w3.org/2000/svg" class="w-4 fill-current" viewBox="0 -960 960 960"
 					><path d="M561-240 320-481l241-241 43 43-198 198 198 198-43 43Z" /></svg
 				></Button
@@ -26,7 +29,10 @@
 				<Button
 					size="small"
 					class="w-8 font-sans"
-					on:click={() => pageIndex.set(index)}
+					on:click={() => {
+						window.scrollTo(0, 0);
+						pageIndex.set(index);
+					}}
 					variant={current === index ? 'primary' : 'naked'}>{index + 1}</Button
 				>
 			{/each}
@@ -34,7 +40,10 @@
 				size="small"
 				variant="naked"
 				disabled={$pageIndex === pages.length - 1}
-				on:click={() => pageIndex.set($pageIndex + 1)}
+				on:click={() => {
+					window.scrollTo(0, 0);
+					pageIndex.set($pageIndex + 1);
+				}}
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" class="w-4 fill-current" viewBox="0 -960 960 960"
 					><path d="m375-240-43-43 198-198-198-198 43-43 241 241-241 241Z" /></svg
