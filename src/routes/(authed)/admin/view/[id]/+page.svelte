@@ -98,7 +98,7 @@
 		<Button
 			size="small"
 			variant="secondary"
-			on:click={() => goto(`/admin/update-guest/${data.id}`)}
+			on:click={() => goto(`/admin/update-guest/${id}`)}
 			class="flex gap-2"
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" class="w-4 fill-current" viewBox="0 -960 960 960"
