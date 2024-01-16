@@ -3,12 +3,12 @@
 	import Pagination from '$lib/components/admin/Pagination.svelte';
 	import Table from '$lib/components/admin/table/Table.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
-	import { db, firestore } from '$lib/firebase/firebase';
+	import { firestore } from '$lib/firebase/firebase';
 	import { pageIndex } from '$lib/stores/navigation';
 	import type { Guest } from '$lib/types';
 	import { title } from '$lib/utils';
 
-	import { collection, orderBy, query, where } from 'firebase/firestore';
+	import { collection, orderBy, query } from 'firebase/firestore';
 
 	import { collectionStore } from 'sveltefire';
 
@@ -21,7 +21,7 @@
 
 	$: pageOffset = $pageIndex * itemsPerPage;
 
-	$: currentPageData = $testGuest.slice(pageOffset, pageOffset + itemsPerPage);
+	$: currentPageData = $testGuest.slice(pageOffset, pageOffset + itemsPerPage) as Guest[];
 
 	let totalNumberOfDocs: number = 0;
 	let totalNumberOfGuests: number = 0;
