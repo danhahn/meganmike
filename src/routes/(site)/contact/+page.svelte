@@ -10,7 +10,7 @@
 </svelte:head>
 
 <Headline>Contact</Headline>
-<Img src="together.jpg" alt="All smiles" gravity="faces" size="small" />
+<Img src="beach.jpg" alt="All smiles" gravity="faces" size="small" />
 
 <Section>
 	<p>
