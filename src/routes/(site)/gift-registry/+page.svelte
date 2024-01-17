@@ -42,7 +42,7 @@
 			class="my-10 w-1/4 text-center block mx-auto"
 		/>
 		<Button target="_blank" rel="noreferrer" href="https://shop.water.com/smart-touch"
-			>Shop Create and Barrel</Button
+			>Shop Here</Button
 		>
 		<p class="text-sm mt-4 flex gap-2 mx-4">
 			<span class="translate-y-1">*</span>
