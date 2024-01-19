@@ -126,7 +126,7 @@
 		</div>
 		<div class="mt-auto">
 			<p class="my-4 text-xs text-center text-megan-700">
-				<span>© 2023</span>
+				<span>© {new Date().getFullYear()} Megan and Mike</span>
 			</p>
 		</div>
 	</aside>
@@ -167,11 +167,11 @@
 
 	.sideNav li {
 		@apply -translate-x-full transition-all ease-in-out;
-		transition-timing-function: cubic-bezier(0.17, 0.67, 1, 1.23);
+		/* transition-timing-function: cubic-bezier(0.17, 0.67, 1, 1.23); */
 	}
 
 	.sideNav li.isOpen {
-		@apply translate-x-0;
-		transition-delay: calc((75ms * var(--index)) / 2);
+		@apply translate-x-0 duration-200;
+		transition-delay: calc((100ms * var(--index)) / 2);
 	}
 </style>
