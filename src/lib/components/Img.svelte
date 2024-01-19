@@ -40,6 +40,6 @@
 
 <style lang="postcss">
 	img {
-		@apply w-full shadow-md shadow-megan-400;
+		@apply w-full shadow-md shadow-megan-200;
 	}
 </style>

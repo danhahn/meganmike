@@ -31,7 +31,7 @@
 
 	<div class="flex flex-col gap-6 mt-11">
 		<div
-			class="bg-white max-w-3xl mx-auto lg:mt-16 overflow-hidden lg:rounded-2xl shadow-2xl shadow-megan-800 lg:p-4"
+			class="bg-white max-w-3xl mx-auto lg:mt-16 overflow-hidden lg:rounded-2xl shadow-lg shadow-megan-300/30 lg:p-4"
 		>
 			<Stack class="overflow-hidden shadow-xl lg:rounded-xl">
 				<Img alt="" src="engagment/love.jpg" size="square" />
