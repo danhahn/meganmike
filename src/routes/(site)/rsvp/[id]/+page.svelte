@@ -71,10 +71,12 @@
 	<title>RSVP | {title}</title>
 </svelte:head>
 
-<div class="my-6 mx-4 lg:mt-0 lg:h-full grid place-content-center">
-	<section class="bg-white p-6 max-w-96 mx-auto rounded-2xl shadow-2xl shadow-black/50">
+<div class="my-6 mx-4 lg:h-full grid place-content-center lg:block">
+	<section
+		class="bg-white p-6 max-w-96 md:max-w-3xl mx-auto rounded-2xl shadow-2xl shadow-black/50"
+	>
 		{#if $guest}
-			<h1 class="text-8xl text-center mb-4 text-megan-900">RSVP</h1>
+			<h1 class="text-8xl lg:text-5xl text-center mb-4 text-megan-900">RSVP</h1>
 			<hr class="mb-4" />
 			<h2 class="text-2xl text-center text-megan-700 mb-4">
 				{$guest.firstName}
