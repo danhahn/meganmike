@@ -12,7 +12,7 @@
 
 <Headline>Gift Registry</Headline>
 
-<Img src="gifts.jpg" gravity="north" alt="Wedding Gifts" size="small" />
+<Img src="gifts2.jpg" gravity="center" alt="Wedding Gifts" size="small" />
 
 <Section>
 	<h2>We are registered at</h2>
