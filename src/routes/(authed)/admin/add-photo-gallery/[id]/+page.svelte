@@ -21,10 +21,13 @@
 
 <div class="printable grid gap-4 justify-center text-center max-w-[1000px]">
 	<h2 class="text-3xl">Scan to add to the Gallery {data.id}</h2>
-	<img
-		alt=""
-		src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${baseUrl}/gallery/${data.id}`}
-	/>
+	<div class="border border-black bg-white p-7 aspect-square grid place-content-center">
+		<img
+			class="max-w-[80%] w-full text-center mx-auto"
+			alt=""
+			src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${baseUrl}/gallery/${data.id}`}
+		/>
+	</div>
 
 	<p>Or type this address in to your web browser</p>
 	<a class="text-2xl" href={`${baseUrl}/gallery/${data.id}`}>{baseUrl}/gallery/{data.id}</a>
