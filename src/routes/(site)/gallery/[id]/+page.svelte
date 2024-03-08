@@ -230,7 +230,7 @@
 			{/each}
 		</ul>
 
-		<div class="absolute top-5 right-16">
+		<div class="absolute top-6 right-16">
 			<Button
 				size="small"
 				variant="secondary"
