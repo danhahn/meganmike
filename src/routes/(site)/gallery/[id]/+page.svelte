@@ -163,7 +163,10 @@
 			</p>
 
 			<div class="upload-btn-wrapper">
-				<button class="btn">Upload a file</button>
+				<button class="btn"
+					>{'Upload a file'.toLocaleUpperCase()}
+					<span class="material-symbols-outlined"> upload_file </span></button
+				>
 				<input
 					type="file"
 					id="file_input"
@@ -216,7 +219,10 @@
 								</button>
 
 								<!-- or download via link -->
-								<Button size="small" href={link} download>Download</Button>
+								<Button size="small" href={link} download
+									>Download
+									<span class="material-symbols-outlined"> download </span>
+								</Button>
 							</div>
 						{/if}
 					</DownloadURL>
@@ -224,8 +230,9 @@
 			{/each}
 		</ul>
 
-		<div class="flex justify-end">
+		<div class="absolute top-5 right-16">
 			<Button
+				size="small"
 				variant="secondary"
 				on:click={() => {
 					window.localStorage.removeItem('uploadedBy');
@@ -263,6 +270,11 @@
 		border-radius: 8px;
 		font-size: 20px;
 		font-weight: bold;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		cursor: pointer;
 		@apply w-full border-megan-400 text-megan-600;
 	}
 
