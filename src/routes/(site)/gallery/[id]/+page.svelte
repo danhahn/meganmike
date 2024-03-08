@@ -2,10 +2,9 @@
 	import Headline from '$lib/components/Headline.svelte';
 	import Section from '$lib/components/Section.svelte';
 	import type { PageData } from './$types';
-	import { DownloadURL, StorageList, UploadTask, collectionStore } from 'sveltefire';
-
+	import { DownloadURL, UploadTask, collectionStore } from 'sveltefire';
 	import { collection, where, query, doc, arrayUnion, updateDoc } from 'firebase/firestore';
-	import { firestore } from '$lib/firebase/firebase';
+	import { firestore, storage } from '$lib/firebase/firebase';
 	import Button from '$lib/components/forms/Button.svelte';
 	import { onMount } from 'svelte';
 	import Input from '$lib/components/forms/Input.svelte';
@@ -31,7 +30,7 @@
 
 	$: g = $gallery[0] as Gallery;
 
-	$: console.log(g);
+	$: images = g?.photos.map((photo) => `${data.id}/${photo.name}`);
 
 	let image = '';
 
@@ -82,10 +81,40 @@
 			uploadedBy = localData;
 		}
 	});
+
+	let currentIndex: number | undefined = undefined;
+
+	function next() {
+		if (currentIndex === undefined) {
+			currentIndex = 0;
+		}
+		// check if we are at the end of the array
+		if (currentIndex === images.length - 1) {
+			currentIndex = 0;
+		} else {
+			currentIndex = currentIndex + 1;
+		}
+	}
+
+	function previous() {
+		if (currentIndex === undefined) {
+			currentIndex = 0;
+		}
+		// check if we are at the start of the array
+		if (currentIndex === 0) {
+			currentIndex = images.length - 1;
+		} else {
+			currentIndex = currentIndex - 1;
+		}
+	}
 </script>
 
 <svelte:head>
 	<title>Gallery | {data.id}</title>
+	<link
+		rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+	/>
 </svelte:head>
 
 {#if !isValidGallery}
@@ -129,31 +158,49 @@
 				{/if}
 			</UploadTask>
 		{:else}
-			<p>Please upload a any photos you have from todays event to share with Megan and Mike.</p>
+			<p class="border border-megan-600 text-xs bg-white p-2 rounded-lg text-gray-500 text-center">
+				Please upload a any photos you have from todays event to share with Megan and Mike.
+			</p>
 
-			<input
-				class="file-input"
-				id="file_input"
-				bind:this={uploader}
-				type="file"
-				accept="image/*"
-				on:change={chooseFile}
-			/>
+			<div class="upload-btn-wrapper">
+				<button class="btn"
+					>{'Upload a file'.toLocaleUpperCase()}
+					<span class="material-symbols-outlined"> upload_file </span></button
+				>
+				<input
+					type="file"
+					id="file_input"
+					bind:this={uploader}
+					accept="image/*"
+					on:change={chooseFile}
+				/>
+			</div>
 		{/if}
 
-		{#if image}
-			<img src={image} alt="" />
-		{/if}
+		{#each images as photo, index}
+			{#if index === currentIndex}
+				<DownloadURL ref={`${photo}`} let:link let:ref>
+					<!-- show img -->
+					<div class="border-2 border-megan-200 p-2 bg-white grid place-items-center shadow-lg">
+						<img src={link} alt={link} />
+					</div>
+				</DownloadURL>
+				<div class="grid gap-4 grid-cols-2">
+					<Button on:click={previous}>PREVIOUS</Button>
+					<Button class="btn" on:click={next}>NEXT</Button>
+				</div>
+			{/if}
+		{/each}
 
 		<ul class="grid grid-cols-2 lg:grid-cols-4 gap-2">
 			<!-- Listing the objects in the given folder -->
-			{#each g.photos as item}
+			{#each g.photos as item, index}
 				<li class="flex flex-col gap-2">
 					<DownloadURL ref={`${data.id}/${item.name}`} let:link let:ref>
 						<!-- show img -->
 						{#if link}
 							<div class="border grid gap-2 border-megan-300 rounded-lg p-2 bg-megan-100">
-								<button class="grid" on:click={() => (image = link)}>
+								<button class="grid" on:click={() => (currentIndex = index)}>
 									<img
 										src={link}
 										alt={item.name}
@@ -172,7 +219,10 @@
 								</button>
 
 								<!-- or download via link -->
-								<Button size="small" href={link} download>Download</Button>
+								<Button size="small" href={link} download
+									>Download
+									<span class="material-symbols-outlined"> download </span>
+								</Button>
 							</div>
 						{/if}
 					</DownloadURL>
@@ -180,31 +230,22 @@
 			{/each}
 		</ul>
 
-		<Button
-			on:click={() => {
-				window.localStorage.removeItem('uploadedBy');
-				uploadedBy = undefined;
-			}}>Log out</Button
-		>
+		<div class="absolute top-6 right-16">
+			<Button
+				size="small"
+				variant="secondary"
+				on:click={() => {
+					window.localStorage.removeItem('uploadedBy');
+					uploadedBy = undefined;
+				}}
+				>Log out
+				<span class="material-symbols-outlined"> logout </span>
+			</Button>
+		</div>
 	</Section>
 {/if}
 
 <style lang="postcss">
-	.file-input {
-		@apply border-megan-400 bg-megan-100 rounded-xl overflow-hidden border border-opacity-0 text-base;
-	}
-
-	.file-input::file-selector-button {
-		border-style: solid;
-		@apply p-4 px-8 mr-4 border-megan-300 bg-megan-300 text-megan-800 font-semibold  no-underline;
-		border-width: var(--border-btn, 1px);
-		animation: button-pop var(--animation-btn, 0.25s) ease-out;
-	}
-
-	.file-input::file-selector-button:hover {
-		@apply bg-megan-400 border-megan-400;
-	}
-
 	.progress {
 		@apply w-full rounded-full h-4 overflow-hidden;
 	}
@@ -213,5 +254,35 @@
 	}
 	.progress::-webkit-progress-value {
 		@apply bg-megan-400;
+	}
+
+	.upload-btn-wrapper {
+		position: relative;
+		overflow: hidden;
+		display: inline-block;
+	}
+
+	.btn {
+		border: 2px solid;
+		color: gray;
+		background-color: white;
+		padding: 8px 20px;
+		border-radius: 8px;
+		font-size: 20px;
+		font-weight: bold;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		cursor: pointer;
+		@apply w-full border-megan-400 text-megan-600;
+	}
+
+	.upload-btn-wrapper input[type='file'] {
+		font-size: 100px;
+		position: absolute;
+		left: 0;
+		top: 0;
+		opacity: 0;
 	}
 </style>

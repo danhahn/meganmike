@@ -100,7 +100,7 @@
 	}
 
 	.isSmall {
-		@apply p-1 text-sm;
+		@apply py-0.5 px-2 text-sm;
 	}
 
 	.isTiny {
