@@ -111,6 +111,10 @@
 
 <svelte:head>
 	<title>Gallery | {data.id}</title>
+	<link
+		rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+	/>
 </svelte:head>
 
 {#if !isValidGallery}
@@ -220,12 +224,17 @@
 			{/each}
 		</ul>
 
-		<Button
-			on:click={() => {
-				window.localStorage.removeItem('uploadedBy');
-				uploadedBy = undefined;
-			}}>Log out</Button
-		>
+		<div class="flex justify-end">
+			<Button
+				variant="secondary"
+				on:click={() => {
+					window.localStorage.removeItem('uploadedBy');
+					uploadedBy = undefined;
+				}}
+				>Log out
+				<span class="material-symbols-outlined"> logout </span>
+			</Button>
+		</div>
 	</Section>
 {/if}
 
