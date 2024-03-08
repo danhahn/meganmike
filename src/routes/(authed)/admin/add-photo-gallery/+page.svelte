@@ -50,7 +50,7 @@
 	<Collection ref={firebaseDoc} let:data let:count>
 		<h3 class="text-2xl text-megan-600">Found {count} Gallery</h3>
 
-		<div class="grid lg:grid-cols-2">
+		<div class="grid lg:grid-cols-2 gap-4">
 			{#each data as gallery}
 				<div class="grid gap-4 bg-white border border-megan-800 p-4">
 					<p>Name: <span class="text-megan-600 font-extrabold">{gallery.name}</span></p>
