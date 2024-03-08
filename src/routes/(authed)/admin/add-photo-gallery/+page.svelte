@@ -34,7 +34,7 @@
 
 <div class="border border-black rounded-lg bg-megan-100 p-4 grid gap-4">
 	<h3 class="text-2xl text-megan-600">Add New Gallery</h3>
-	<form class="flex gap-4" on:submit|preventDefault={handleSubmit}>
+	<form class="flex gap-4 flex-col lg:flex-row" on:submit|preventDefault={handleSubmit}>
 		<Input
 			{errorMessage}
 			type="text"
@@ -42,7 +42,9 @@
 			id="gallery-name"
 			bind:value={galleryName}
 		/>
-		<Button type="submit" class="whitespace-nowrap self-start h-[52px]">Add Gallery</Button>
+		<div class=" mx-auto">
+			<Button type="submit" class="whitespace-nowrap self-start h-[52px]">Add Gallery</Button>
+		</div>
 	</form>
 </div>
 
