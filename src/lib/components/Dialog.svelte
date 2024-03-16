@@ -29,7 +29,7 @@
 				{disabled}
 				on:click={() => {
 					dialog.close('success');
-				}}>{confirm}</Button
+				}}>{@html confirm}</Button
 			>
 		</div>
 	</form>
