@@ -87,9 +87,7 @@
 		{:else if list.prefixes.length === 0 && list.items.length === 0}
 			<li>Empty</li>
 		{:else}
-			<!-- <ul class="grid grid-cols-3 lg:grid-cols-8">
-				 -->
-			<ul class="grid gap-4">
+			<ul class="grid grid-cols-3 lg:grid-cols-8">
 				{#each list.items as item}
 					<li>
 						<DownloadURL ref={`${data.id}/${item.name}`} let:link let:ref>
