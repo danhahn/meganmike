@@ -4,7 +4,7 @@
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { dev } from '$app/environment';
 
-	const imageUrl = 'https://ik.imagekit.io/hahnster/';
+	const imageUrl = 'https://ik.imagekit.io/hahnster';
 
 	export let data: PageData;
 
@@ -44,9 +44,13 @@
 		// 	return url;
 		// }
 
-		const [_, path] = url.split('.com/');
+		// https://firebasestorage.googleapis.com/v0/b/hahnster-dd647.appspot.com/o/test%2FIMG_3207.jpeg?alt=media&token=a630a006-bf52-46a7-ac9b-1f4c20907baa
 
-		const newUrl = imageUrl + path + '?tr=w-300,h-300';
+		const splitString = '/o/';
+
+		const [_, path] = url.split(splitString);
+
+		const newUrl = imageUrl + splitString + path + '?tr=w-300,h-300';
 
 		console.log(newUrl);
 
