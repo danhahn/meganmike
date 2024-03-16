@@ -40,13 +40,15 @@
 	function rewriteUrl(url: string | null) {
 		if (!url) return;
 
-		if (dev) {
-			return url;
-		}
+		// if (dev) {
+		// 	return url;
+		// }
 
 		const [_, path] = url.split('.com/');
 
 		const newUrl = imageUrl + path + '?tr=w-300,h-300';
+
+		console.log(newUrl);
 
 		return newUrl;
 	}
@@ -90,14 +92,19 @@
 		{:else if list.prefixes.length === 0 && list.items.length === 0}
 			<li>Empty</li>
 		{:else}
-			<ul class="grid grid-cols-3 lg:grid-cols-8">
+			<!-- <ul class="grid grid-cols-3 lg:grid-cols-8">
+				 -->
+			<ul class="grid gap-4">
 				{#each list.items as item}
 					<li>
 						<DownloadURL ref={`${data.id}/${item.name}`} let:link let:ref>
 							{@const test = rewriteUrl(link)}
-							<a href={link} download
+							{#if test}
+								{test}
+							{/if}
+							<!-- <a href={link} download
 								><img src={test} alt="" class="aspect-square overflow-hidden object-cover" /></a
-							>
+							> -->
 						</DownloadURL>
 					</li>
 				{/each}
