@@ -1,3 +1,5 @@
+import type { Timestamp } from 'firebase/firestore';
+
 export type LoadingProps = 'loading' | 'error' | 'idle' | 'submitting';
 export type RsvpProps = 'yes' | 'no' | null;
 
@@ -27,4 +29,14 @@ export type Table = {
 export type Gallery = {
 	name: string;
 	photos: string[];
+};
+
+export type Image = {
+	name: string;
+	dateTaken: Timestamp;
+	dateAdded: Timestamp;
+	uploadedBy: string;
+	likes: number;
+	size: string;
+	gallery: string;
 };
