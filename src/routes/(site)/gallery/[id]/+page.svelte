@@ -39,21 +39,12 @@
 
 	function rewriteUrl(url: string | null) {
 		if (!url) return;
-
-		// if (dev) {
-		// 	return url;
-		// }
-
-		// https://firebasestorage.googleapis.com/v0/b/hahnster-dd647.appspot.com/o/test%2FIMG_3207.jpeg?alt=media&token=a630a006-bf52-46a7-ac9b-1f4c20907baa
-
+		if (dev) {
+			return url;
+		}
 		const splitString = '/o/';
-
 		const [_, path] = url.split(splitString);
-
-		const newUrl = imageUrl + splitString + path + '?tr=w-300,h-300';
-
-		console.log(newUrl);
-
+		const newUrl = imageUrl + splitString + path;
 		return newUrl;
 	}
 </script>
@@ -102,13 +93,14 @@
 				{#each list.items as item}
 					<li>
 						<DownloadURL ref={`${data.id}/${item.name}`} let:link let:ref>
-							{@const test = rewriteUrl(link)}
-							{#if test}
-								{test}
-							{/if}
-							<!-- <a href={link} download
-								><img src={test} alt="" class="aspect-square overflow-hidden object-cover" /></a
-							> -->
+							{@const optimizedUrl = rewriteUrl(link)}
+							<a href={link} download
+								><img
+									src={`${optimizedUrl}&tr=w-300,h-300`}
+									alt=""
+									class="aspect-square overflow-hidden object-cover"
+								/></a
+							>
 						</DownloadURL>
 					</li>
 				{/each}
