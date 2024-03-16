@@ -1,4 +1,4 @@
-import { collection, where, query, getDocs } from 'firebase/firestore';
+import { collection, where, query, getDocs, getCountFromServer } from 'firebase/firestore';
 
 import { db } from '$lib/firebase/firebase';
 import type { PageLoad } from './$types';
@@ -11,5 +11,12 @@ export const load = (async ({ params }) => {
 
 	const gallery = await getDocs(galleryRef);
 
-	return { id, status: !gallery.empty ? 'idle' : 'error' };
+	const imagesRef = collection(db, 'photos');
+	// get count of images in the gallery
+	const q = query(imagesRef, where('gallery', '==', id));
+
+	const snapshot = await getCountFromServer(q);
+	const imageCount = snapshot.data().count;
+
+	return { id, status: !gallery.empty ? 'idle' : 'error', imageCount };
 }) satisfies PageLoad;
