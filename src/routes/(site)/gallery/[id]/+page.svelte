@@ -20,6 +20,8 @@
 	let displayName: string;
 	$: status = data.status;
 
+	console.log(data);
+
 	const imagesRef = collection(db, 'photos');
 	const q = query(imagesRef, where('gallery', '==', data.id), orderBy('dateAdded', 'desc'));
 	const images = collectionStore<Image>(firestore, q as any);
