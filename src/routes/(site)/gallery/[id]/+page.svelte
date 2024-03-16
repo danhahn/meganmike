@@ -92,7 +92,7 @@
 					<li>
 						<DownloadURL ref={`${data.id}/${item.name}`} let:link let:ref>
 							{@const optimizedUrl = rewriteUrl(link)}
-							<a href={link} download
+							<a href={optimizedUrl} download
 								><img
 									src={`${optimizedUrl}&tr=w-300,h-300`}
 									alt=""
