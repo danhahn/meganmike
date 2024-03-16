@@ -1,17 +1,28 @@
 <script lang="ts">
-	import { DownloadURL, StorageList, UploadTask } from 'sveltefire';
+	import { DownloadURL, UploadTask, collectionStore } from 'sveltefire';
 	import type { PageData } from './$types';
 	import Dialog from '$lib/components/Dialog.svelte';
+	import { rewriteUrl } from '$lib/utils';
+	import { db, firestore } from '$lib/firebase/firebase';
 	import { dev } from '$app/environment';
-
-	const imageUrl = 'https://ik.imagekit.io/hahnster';
+	import { Timestamp, addDoc, collection, orderBy, query, where } from 'firebase/firestore';
+	import Input from '$lib/components/forms/Input.svelte';
+	import { onMount } from 'svelte';
+	import type { Image } from '$lib/types';
 
 	export let data: PageData;
 
 	let dialog: HTMLDialogElement;
 	let input: HTMLInputElement;
-
+	let status: 'loading' | PageData['status'] = 'loading';
 	let files: FileList | null = null;
+	let displayNameInput: string;
+	let displayName: string;
+	$: status = data.status;
+
+	const imagesRef = collection(db, 'photos');
+	const q = query(imagesRef, where('gallery', '==', data.id), orderBy('dateAdded', 'desc'));
+	const images = collectionStore<Image>(firestore, q as any);
 
 	const handleFileChange = (event: Event) => {
 		const input = event.target as HTMLInputElement;
@@ -22,31 +33,62 @@
 		}
 	};
 
-	let status: 'loading' | PageData['status'] = 'loading';
-
-	$: status = data.status;
-
 	function handleDialogClose() {
 		if (dialog.returnValue === 'success') {
-			console.log('success');
 			files = null;
 		}
 		if (dialog.returnValue === 'cancel') {
 			files = null;
 		}
-		window.location.reload();
 	}
 
-	function rewriteUrl(url: string | null) {
-		if (!url) return;
-		if (dev) {
-			return url;
+	function updateDisplayName() {
+		if (!displayNameInput) return;
+		// check if displayname is in local storage
+		const isInLocalStage = localStorage.getItem('displayName');
+		if (isInLocalStage) {
+			displayName = isInLocalStage;
+		} else {
+			localStorage.setItem('displayName', displayNameInput);
+			displayName = displayNameInput;
 		}
-		const splitString = '/o/';
-		const [_, path] = url.split(splitString);
-		const newUrl = imageUrl + splitString + path;
-		return newUrl;
+		dialog.close();
+		input.click();
 	}
+
+	async function imageAddedToGallery(file: File) {
+		// add to firebase firestore collection
+		const docRef = await addDoc(collection(db, 'photos'), {
+			name: file.name,
+			dateTaken: Timestamp.fromDate(new Date(file.lastModified)),
+			dateAdded: Timestamp.now(),
+			uploadedBy: displayName,
+			size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
+			likes: 0,
+			gallery: data.id
+		} as Image);
+		if (dev) {
+			console.log('Document written with ID: ', docRef.id);
+		}
+
+		return true;
+	}
+
+	function checkIfCanUpload() {
+		if (displayName) {
+			input.click();
+		} else {
+			dialog.showModal();
+		}
+	}
+
+	onMount(() => {
+		// check if displayname is in local storage
+		const isInLocalStage = localStorage.getItem('displayName');
+		if (isInLocalStage) {
+			displayName = isInLocalStage;
+		}
+	});
 </script>
 
 <svelte:head>
@@ -68,12 +110,11 @@
 		on:change={handleFileChange}
 		bind:this={input}
 		class="hidden invisible"
+		accept="image/*"
 	/>
 
 	<button
-		on:click={() => {
-			input.click();
-		}}
+		on:click={checkIfCanUpload}
 		class="bg-megan-600 hover:bg-megan-800 w-14 aspect-square grid place-content-center rounded-full fixed bottom-8 lg:bottom-20 right-4"
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-8 h-8 fill-white"
@@ -81,35 +122,48 @@
 		>
 	</button>
 
-	<StorageList ref={data.id} let:list>
-		{#if list === null}
-			<li>Loading...</li>
-		{:else if list.prefixes.length === 0 && list.items.length === 0}
-			<li>Empty</li>
-		{:else}
-			<ul class="grid grid-cols-3 lg:grid-cols-8">
-				{#each list.items as item}
-					<li>
-						<DownloadURL ref={`${data.id}/${item.name}`} let:link let:ref>
-							{@const optimizedUrl = rewriteUrl(link)}
-							<a href={optimizedUrl} download
-								><img
-									src={`${optimizedUrl}&tr=w-300,h-300`}
-									alt=""
-									class="aspect-square overflow-hidden object-cover"
-								/></a
-							>
-						</DownloadURL>
-					</li>
-				{/each}
-			</ul>
-		{/if}
-	</StorageList>
+	{#if data.imageCount === 0 && status === 'idle'}
+		<p>Be the first to add a memory</p>
+	{:else}
+		<ul class="grid grid-cols-3 lg:grid-cols-8">
+			{#each $images as item (item.name)}
+				<li>
+					<DownloadURL ref={`${data.id}/${item.name}`} let:link let:ref>
+						{@const optimizedUrl = rewriteUrl(link)}
+						<a href={optimizedUrl} download
+							><img
+								src={`${optimizedUrl}&tr=w-300,h-300`}
+								alt=""
+								class="aspect-square overflow-hidden object-cover"
+							/></a
+						>
+					</DownloadURL>
+				</li>
+			{/each}
+		</ul>
+	{/if}
 {:else if status === 'error'}
 	<p>Invalid gallery ID</p>
 {/if}
 
-<Dialog id="addGuest" bind:dialog on:close={handleDialogClose} cancel="Cancel" confirm="Done">
+<Dialog
+	id="addGuest"
+	bind:dialog
+	on:close={() => (displayName ? handleDialogClose() : updateDisplayName())}
+	cancel={displayName ? 'Cancel' : null}
+	confirm={displayName
+		? 'Close'
+		: `<div class="flex gap-2">Next
+		<svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 -960 960 960" class="fill-current w-4"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/></svg>
+		</div>`}
+>
+	{#if !displayName}
+		<div class="grid gap-4 w-3/4 mx-auto">
+			<p>Please enter your name to upload your memories</p>
+			<Input id="diplayName" label="Your Name" bind:value={displayNameInput} />
+		</div>
+	{/if}
+
 	{#if files}
 		<ul class="grid gap-1 overflow-scroll">
 			{#each Array.from(files) as file}
@@ -124,6 +178,7 @@
 						{/if}
 
 						{#if snapshot?.state === 'success'}
+							{@const updated = imageAddedToGallery(file)}
 							<p class="text-xs mb-2 text-left font-bold">{file.name}</p>
 
 							<div class="flex items-center gap-4">
