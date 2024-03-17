@@ -89,7 +89,7 @@
 					<div class="min-h-screen w-full overflow-hidden">
 						<div
 							class="image-view min-h-screen w-full bg-white"
-							style={`--image: url('${currentImage.url}&tr=w-1000,h-1000,c-force')`}
+							style={`--image: url('${currentImage.url}&tr=w-1000,h-1000,c-at_least')`}
 						/>
 					</div>
 
@@ -97,7 +97,7 @@
 						<a href={currentImage.url}>
 							<img
 								class="max-h-screen shadow-lg shadow-black/40"
-								src={`${currentImage.url}tr=w-1000,h-1000,c-force`}
+								src={`${currentImage.url}&tr=w-1000,h-1000,c-at_least`}
 								alt=""
 							/>
 						</a>
