@@ -33,7 +33,9 @@
 	$: nextUrl = $images.find((_, index) => index === nextImageIndex)?.name;
 	$: prevUrl = $images.find((_, index) => index === prevImageIndex)?.name;
 
-	let imageElement: HTMLImageElement;
+	$: innerWidth = 1000;
+
+	$: imageSize = innerWidth > 768 ? 1000 : innerWidth;
 
 	async function handleKeyPress(event: KeyboardEvent) {
 		if (event.key === 'ArrowRight' || event.key === 'ArrowDown' || event.key === 'j') {
@@ -65,6 +67,7 @@
 </svelte:head>
 
 <svelte:body on:keydown|preventDefault={handleKeyPress} />
+<svelte:window bind:innerWidth />
 
 {#if status === 'loading'}
 	<p>Loading...</p>
@@ -89,7 +92,7 @@
 					<div class="min-h-screen w-full overflow-hidden">
 						<div
 							class="image-view min-h-screen w-full bg-white"
-							style={`--image: url('${currentImage.url}&tr=w-1000,h-1000,c-at_least')`}
+							style={`--image: url('${currentImage.url}&tr=w-${imageSize},h-${imageSize},c-at_least')`}
 						/>
 					</div>
 
@@ -97,7 +100,7 @@
 						<a href={currentImage.url}>
 							<img
 								class="max-h-screen shadow-lg shadow-black/40"
-								src={`${currentImage.url}&tr=w-1000,h-1000,c-at_least`}
+								src={`${currentImage.url}&tr=w-${imageSize},h-${imageSize},c-at_least`}
 								alt=""
 							/>
 						</a>
@@ -159,7 +162,7 @@
 								}}
 							>
 								<img
-									src={`${item.url}&tr=w-180,h-180`}
+									src={`${item.url}&tr=w-180,h-180,fo-auto`}
 									alt=""
 									class="aspect-square overflow-hidden object-cover w-mobile-icon lg:w-icon lg:h-icon"
 								/>
