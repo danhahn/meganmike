@@ -14,6 +14,7 @@
 	let status: 'loading' | PageData['status'] = 'loading';
 
 	let photo: HTMLDivElement;
+	let photoIcons: HTMLDivElement;
 
 	$: status = data.status;
 	$: photoId = data.photo;
@@ -73,7 +74,16 @@
 	{#if count === 0 && status === 'idle'}
 		<p>Be the first to add a memory</p>
 	{:else}
-		<div class="page-layout" bind:this={photo}>
+		<button class="fixed z-50 top-6 left-2" on:click={() => goto(`/gallery/${data.id}`)}>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 -960 960 960"
+				class="w-6 h-6 fill-white translate-x-1"
+			>
+				<path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+			</svg>
+		</button>
+		<div class="page-layout absolute inset-0 lg:block" bind:this={photo}>
 			<div class="grid image-stack col-start-1 row-start-1">
 				{#if currentImage}
 					<div class="min-h-screen w-full overflow-hidden">
@@ -83,7 +93,7 @@
 						/>
 					</div>
 
-					<div class="z-10 grid place-content-center -translate-y-16">
+					<div class="z-10 grid place-content-center -translate-y-16 lg:translate-y-0">
 						<a href={currentImage.url}>
 							<img
 								class="max-h-screen shadow-lg shadow-black/40"
@@ -95,46 +105,38 @@
 
 					<div class="col-start-1 row-start-1 self-center flex justify-between px-6 z-50">
 						{#if prevUrl !== undefined}
-							<div
-								class="bg-megan-600 aspect-square w-12 grid place-content-center text-white rounded-full"
+							<button
+								on:click={() => {
+									gotoAndScroll(prevUrl, photo, photoIcons, `icon-${prevImageIndex}`);
+								}}
+								class="bg-megan-600/60 aspect-square w-12 grid place-content-center text-white rounded-full"
 							>
-								<button
-									on:click={() => {
-										gotoAndScroll(prevUrl, photo);
-									}}
-									class="bg-megan-600 aspect-square w-12 grid place-content-center text-white rounded-full"
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 -960 960 960"
+									class="w-6 h-6 fill-current translate-x-1"
 								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 -960 960 960"
-										class="w-6 h-6 fill-current translate-x-1"
-									>
-										<path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
-									</svg>
-								</button>
-							</div>
+									<path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+								</svg>
+							</button>
 						{:else}
 							<div />
 						{/if}
 						{#if nextUrl}
-							<div
-								class="bg-megan-600 aspect-square w-12 grid place-content-center text-white rounded-full"
+							<button
+								on:click={() => {
+									gotoAndScroll(nextUrl, photo, photoIcons, `icon-${nextImageIndex}`);
+								}}
+								class="bg-megan-600/60 aspect-square w-12 grid place-content-center text-white rounded-full"
 							>
-								<button
-									on:click={() => {
-										gotoAndScroll(nextUrl, photo);
-									}}
-									class="bg-megan-600 aspect-square w-12 grid place-content-center text-white rounded-full"
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 -960 960 960"
+									class="w-6 h-6 fill-current translate-x-[1px]"
 								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 -960 960 960"
-										class="w-6 h-6 fill-current translate-x-[1px]"
-									>
-										<path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
-									</svg>
-								</button>
-							</div>
+									<path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
+								</svg>
+							</button>
 						{:else}
 							<div />
 						{/if}
@@ -142,13 +144,18 @@
 				{/if}
 			</div>
 
-			<div class="scroll">
+			<div class="scroll fixed bottom-0 left-0 right-0" bind:this={photoIcons}>
 				<ul class="gallery-view">
-					{#each $images as item (item.id)}
-						<li class="w-mobile-icon lg:w-icon" id={item.name}>
+					{#each $images as item, index (item.id)}
+						<li class="w-mobile-icon lg:w-icon" id={`icon-${index}`}>
 							<button
 								on:click={() => {
-									gotoAndScroll(`/gallery/${data.id}/${item.name}`, photo);
+									gotoAndScroll(
+										`/gallery/${data.id}/${item.name}`,
+										photo,
+										photoIcons,
+										`icon-${index}`
+									);
 								}}
 							>
 								<img
@@ -173,7 +180,6 @@
 		overflow-x: auto;
 		overflow-y: hidden;
 		white-space: nowrap;
-		@apply -translate-y-28;
 		z-index: 100;
 	}
 
