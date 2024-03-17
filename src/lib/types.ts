@@ -39,4 +39,5 @@ export type Image = {
 	likes: number;
 	size: string;
 	gallery: string;
+	id: string;
 };
