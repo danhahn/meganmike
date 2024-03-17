@@ -1,8 +1,10 @@
 import { addDoc, collection, deleteDoc, doc } from 'firebase/firestore';
 import { db } from './firebase/firebase';
 import { dev } from '$app/environment';
+import { goto } from '$app/navigation';
 
 export const title = '❤️ Megan and Mike 2024 ❤️';
+const imageUrl = 'https://ik.imagekit.io/hahnster';
 
 export function getNextValue(currentValue: number, direction: 'prev' | 'next') {
 	let nextValue = direction === 'next' ? currentValue + 1 : currentValue - 1;
@@ -209,3 +211,34 @@ export const debounce = (fn: (...args: unknown[]) => void, ms = 300) => {
 		timeoutId = setTimeout(() => fn.apply(this, args), ms);
 	};
 };
+
+export function rewriteUrl(url: string | null) {
+	if (!url) return;
+	if (dev) {
+		return url;
+	}
+	const splitString = '/o/';
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [_, path] = url.split(splitString);
+	const newUrl = imageUrl + splitString + path;
+	return newUrl;
+}
+
+let fullscreen: boolean;
+
+export async function gotoAndScroll(
+	url: string | undefined,
+	photo?: HTMLDivElement,
+	icons?: HTMLDivElement,
+	selectedIcon?: string
+) {
+	if (!url) return;
+	if (fullscreen) document.documentElement.requestFullscreen();
+	await goto(url);
+	if (icons) {
+		const currentIcon = icons.querySelector(`#${selectedIcon}`);
+
+		currentIcon?.scrollIntoView({ block: 'start' });
+	}
+	if (photo) window.scrollTo({ top: photo.getBoundingClientRect().top, left: 0, behavior: 'auto' });
+}

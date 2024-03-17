@@ -1,12 +1,10 @@
-import { collection, where, query, getDocs, getCountFromServer } from 'firebase/firestore';
-
 import { db } from '$lib/firebase/firebase';
+import { query, collection, where, getDocs, getCountFromServer } from 'firebase/firestore';
 import type { PageLoad } from './$types';
 
 export const load = (async ({ params }) => {
-	const { id } = params;
+	const { id, photo } = params;
 
-	// check if the id is a valid gallery from firestore
 	const galleryRef = query(collection(db, 'galleries'), where('name', '==', id));
 
 	const gallery = await getDocs(galleryRef);
@@ -18,5 +16,5 @@ export const load = (async ({ params }) => {
 	const snapshot = await getCountFromServer(q);
 	const imageCount = snapshot.data().count;
 
-	return { id, status: !gallery.empty ? 'idle' : 'error', imageCount };
+	return { id, status: !gallery.empty ? 'idle' : 'error', imageCount, photo };
 }) satisfies PageLoad;

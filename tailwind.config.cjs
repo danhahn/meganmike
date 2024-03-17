@@ -18,6 +18,10 @@ module.exports = {
 					950: 'hsl(344, 73%, 16%)'
 				}
 			},
+			width: {
+				icon: '150px',
+				'mobile-icon': '112px'
+			},
 			gridTemplateColumns: {
 				desktop: '1fr',
 				mobile: '1fr 1fr'

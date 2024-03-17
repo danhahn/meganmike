@@ -1,112 +1,113 @@
 <script lang="ts">
-	import Headline from '$lib/components/Headline.svelte';
-	import Section from '$lib/components/Section.svelte';
-	import type { PageData } from './$types';
 	import { DownloadURL, UploadTask, collectionStore } from 'sveltefire';
-	import { collection, where, query, doc, arrayUnion, updateDoc } from 'firebase/firestore';
-	import { firestore, storage } from '$lib/firebase/firebase';
-	import Button from '$lib/components/forms/Button.svelte';
-	import { onMount } from 'svelte';
+	import type { PageData } from './$types';
+	import Dialog from '$lib/components/Dialog.svelte';
+	import { rewriteUrl } from '$lib/utils';
+	import { db, firestore, storage } from '$lib/firebase/firebase';
+	import { dev } from '$app/environment';
+	import { Timestamp, addDoc, collection, orderBy, query, where } from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
+	import { onMount } from 'svelte';
+	import type { Image } from '$lib/types';
+	import { getDownloadURL, ref } from 'firebase/storage';
+
 	export let data: PageData;
 
-	const postsRef = collection(firestore, 'galleries');
-	type Gallery = {
-		id: string;
-		name: string;
-		photos: {
-			name: string;
-			date: string;
-			uploadedBy: string;
-		}[];
-	};
-	const q = query(postsRef, where('name', '==', data.id));
+	let dialog: HTMLDialogElement;
+	let input: HTMLInputElement;
+	let status: 'loading' | PageData['status'] = 'loading';
+	let files: FileList | null = null;
+	let displayNameInput: string;
+	let displayName: string;
 
-	const gallery = collectionStore(firestore, q);
+	let selectedIndex: number | undefined = undefined;
 
-	$: isValidGallery = $gallery && $gallery.length === 1;
+	let download: false;
 
-	$: id = $gallery[0]?.id;
+	$: status = data.status;
 
-	$: g = $gallery[0] as Gallery;
+	let count = data.imageCount;
 
-	$: images = g?.photos.map((photo) => `${data.id}/${photo.name}`);
+	const imagesRef = collection(db, 'photos');
+	const q = query(imagesRef, where('gallery', '==', data.id), orderBy('dateAdded', 'desc'));
+	const images = collectionStore<Image>(firestore, q as any);
 
-	let image = '';
-
-	let file: File | undefined;
-
-	let guestName: string = '';
-	let uploadedBy: string | undefined;
-
-	let uploader: HTMLInputElement;
-
-	type Photo = {
-		name: string;
-		date: string;
-		uploadedBy: string;
+	const handleFileChange = (event: Event) => {
+		const input = event.target as HTMLInputElement;
+		files = input.files;
+		// check if files is not null
+		if (files) {
+			dialog.showModal();
+		}
 	};
 
-	async function chooseFile(e: Event) {
-		file = (e.target as HTMLInputElement).files?.[0];
-		if (!file) return;
-		if (!uploadedBy) return;
+	function handleDialogClose() {
+		if (dialog.returnValue === 'success') {
+			if (count === 0) {
+				window.location.reload();
+			}
+			files = null;
+		}
+		if (dialog.returnValue === 'cancel') {
+			files = null;
+		}
+	}
 
-		const photoData: Photo = {
+	function updateDisplayName() {
+		if (!displayNameInput) return;
+		// check if displayname is in local storage
+		const isInLocalStage = localStorage.getItem('displayName');
+		if (isInLocalStage) {
+			displayName = isInLocalStage;
+		} else {
+			localStorage.setItem('displayName', displayNameInput);
+			displayName = displayNameInput;
+		}
+		dialog.close();
+		input.click();
+	}
+
+	async function imageAddedToGallery(file: File) {
+		// add to firebase firestore collection
+		const exists = $images.find((image) => image.name === file.name);
+		if (exists) {
+			return false;
+		}
+
+		const rawUrl = await getDownloadURL(ref(storage, `${data.id}/${file.name}`));
+		const url = rewriteUrl(rawUrl);
+
+		const docRef = await addDoc(collection(db, 'photos'), {
 			name: file.name,
-			date: new Date().toISOString(),
-			uploadedBy
-		};
+			dateTaken: Timestamp.fromDate(new Date(file.lastModified)),
+			dateAdded: Timestamp.now(),
+			uploadedBy: displayName,
+			size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
+			likes: 0,
+			gallery: data.id,
+			url
+		} as Image);
+		if (dev) {
+			console.log('Document written with ID: ', docRef.id);
+		}
 
-		setTimeout(async () => {
-			await updateDoc(doc(firestore, 'galleries', id), { photos: arrayUnion(photoData) });
-			console.log('uploaded');
-			resetUpload();
-		}, 3000);
+		return true;
 	}
 
-	function resetUpload() {
-		file = undefined;
-		if (uploader) uploader.value = '';
-	}
-
-	function setUploadedBy() {
-		uploadedBy = guestName;
-		window.localStorage.setItem('uploadedBy', uploadedBy);
+	function checkIfCanUpload() {
+		if (displayName) {
+			input.click();
+		} else {
+			dialog.showModal();
+		}
 	}
 
 	onMount(() => {
-		const localData = window.localStorage.getItem('uploadedBy');
-		if (localData) {
-			uploadedBy = localData;
+		const isInLocalStage = localStorage.getItem('displayName');
+		if (isInLocalStage) {
+			displayName = isInLocalStage;
 		}
 	});
-
-	let currentIndex: number | undefined = undefined;
-
-	function next() {
-		if (currentIndex === undefined) {
-			currentIndex = 0;
-		}
-		// check if we are at the end of the array
-		if (currentIndex === images.length - 1) {
-			currentIndex = 0;
-		} else {
-			currentIndex = currentIndex + 1;
-		}
-	}
-
-	function previous() {
-		if (currentIndex === undefined) {
-			currentIndex = 0;
-		}
-		// check if we are at the start of the array
-		if (currentIndex === 0) {
-			currentIndex = images.length - 1;
-		} else {
-			currentIndex = currentIndex - 1;
-		}
-	}
 </script>
 
 <svelte:head>
@@ -117,172 +118,151 @@
 	/>
 </svelte:head>
 
-{#if !isValidGallery}
-	<Headline>Gallery not found</Headline>
-	<Section>
-		<p>Sorry, we couldn't find the gallery you were looking for.</p>
-	</Section>
-{:else if uploadedBy === undefined}
-	<Headline>Who are you?</Headline>
-	<Section>
-		<p>Megan and Mike would love for you to share your photos form todays event.</p>
-		<p>Please enter your name below to get started.</p>
-		<form on:submit|preventDefault={setUploadedBy} class="flex flex-col lg:flex-row gap-4">
-			<Input label="Full Name" id="name" type="text" bind:value={guestName} />
-			<Button type="submit">Submit</Button>
-		</form>
-	</Section>
-{:else}
-	<Headline>Add a photo to todays event</Headline>
+{#if status === 'loading'}
+	<p>Loading...</p>
+{:else if status === 'idle'}
+	<h3 class="p-4 uppercase bg-megan-300/35 text-center text-megan-700">{data.id}</h3>
 
-	<Section>
-		<p>Hey <span class="font-bold">{uploadedBy}</span> please add any photos you want to share</p>
+	<input
+		type="file"
+		multiple
+		on:change={handleFileChange}
+		bind:this={input}
+		class="hidden invisible"
+		accept="image/*"
+	/>
 
-		{#if file}
-			<h2>Uploading {file.name}</h2>
-			<UploadTask ref={`${data.id}/${file.name}`} data={file} let:progress let:snapshot>
-				{#if snapshot?.state === 'running'}
-					<div class="flex gap-4">
-						<progress class="flex-1 progress" value={progress} max="100">{progress}%</progress>
-						<p class="text-sm">{progress.toFixed(2)}% uploaded</p>
-					</div>
-				{/if}
+	<button
+		on:click={checkIfCanUpload}
+		class="add-btn bg-megan-600 hover:bg-megan-800 w-14 aspect-square grid place-content-center rounded-full fixed bottom-8 lg:bottom-20 right-4"
+	>
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-8 h-8 fill-white"
+			><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg
+		>
+	</button>
 
-				{#if snapshot?.state === 'success'}
-					<DownloadURL ref={snapshot?.ref} let:link>
-						<a href={link} download>
-							<img src={link} alt="" />
+	{#if count === 0 && status === 'idle'}
+		<p>Be the first to add a memory</p>
+	{:else}
+		<ul class="grid grid-cols-3 lg:grid-cols-8">
+			{#each $images as item, index (item.id)}
+				<li>
+					{#if download}
+						<a href={item.url} download
+							><img
+								src={`${item.url}&tr=w-300,h-300`}
+								alt=""
+								class="aspect-square overflow-hidden object-cover"
+							/></a
+						>
+					{:else}
+						<a href={`/gallery/${data.id}/${item.name}`}>
+							<img
+								src={`${item.url}&tr=w-300,h-300`}
+								alt=""
+								class="aspect-square overflow-hidden object-cover"
+							/>
 						</a>
-					</DownloadURL>
-					<Button on:click={resetUpload}>Upload an other photo</Button>
-				{/if}
-			</UploadTask>
-		{:else}
-			<p class="border border-megan-600 text-xs bg-white p-2 rounded-lg text-gray-500 text-center">
-				Please upload a any photos you have from todays event to share with Megan and Mike.
-			</p>
-
-			<div class="upload-btn-wrapper">
-				<button class="btn"
-					>{'Upload a file'.toLocaleUpperCase()}
-					<span class="material-symbols-outlined"> upload_file </span></button
-				>
-				<input
-					type="file"
-					id="file_input"
-					bind:this={uploader}
-					accept="image/*"
-					on:change={chooseFile}
-				/>
-			</div>
-		{/if}
-
-		{#each images as photo, index}
-			{#if index === currentIndex}
-				<DownloadURL ref={`${photo}`} let:link let:ref>
-					<!-- show img -->
-					<div class="border-2 border-megan-200 p-2 bg-white grid place-items-center shadow-lg">
-						<img src={link} alt={link} />
-					</div>
-				</DownloadURL>
-				<div class="grid gap-4 grid-cols-2">
-					<Button on:click={previous}>PREVIOUS</Button>
-					<Button class="btn" on:click={next}>NEXT</Button>
-				</div>
-			{/if}
-		{/each}
-
-		<ul class="grid grid-cols-2 lg:grid-cols-4 gap-2">
-			<!-- Listing the objects in the given folder -->
-			{#each g.photos as item, index}
-				<li class="flex flex-col gap-2">
-					<DownloadURL ref={`${data.id}/${item.name}`} let:link let:ref>
-						<!-- show img -->
-						{#if link}
-							<div class="border grid gap-2 border-megan-300 rounded-lg p-2 bg-megan-100">
-								<button class="grid" on:click={() => (currentIndex = index)}>
-									<img
-										src={link}
-										alt={item.name}
-										class="col-start-1 row-start-1 aspect-square object-cover"
-									/>
-									<p
-										class="text-sm col-start-1 bg-megan-50/80 self-start justify-self-center rounded-full px-4 mt-2 row-start-1"
-									>
-										{new Date(item.date).toLocaleTimeString()}
-									</p>
-									<p
-										class="text-sm col-start-1 bg-megan-50/80 font-bold self-end justify-self-center rounded-full px-4 mb-2 row-start-1"
-									>
-										{item.uploadedBy}
-									</p>
-								</button>
-
-								<!-- or download via link -->
-								<Button size="small" href={link} download
-									>Download
-									<span class="material-symbols-outlined"> download </span>
-								</Button>
-							</div>
-						{/if}
-					</DownloadURL>
+					{/if}
 				</li>
 			{/each}
 		</ul>
-
-		<div class="absolute top-6 right-16">
-			<Button
-				size="small"
-				variant="secondary"
-				on:click={() => {
-					window.localStorage.removeItem('uploadedBy');
-					uploadedBy = undefined;
-				}}
-				>Log out
-				<span class="material-symbols-outlined"> logout </span>
-			</Button>
-		</div>
-	</Section>
+	{/if}
+{:else if status === 'error'}
+	<p>Invalid gallery ID</p>
 {/if}
 
+<Dialog
+	id="gallryUpload"
+	bind:dialog
+	on:close={() => (displayName ? handleDialogClose() : updateDisplayName())}
+	cancel={displayName ? 'Cancel' : null}
+	confirm={displayName
+		? 'Close'
+		: `<div class="flex gap-2">Next
+		<svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 -960 960 960" class="fill-current w-4"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/></svg>
+		</div>`}
+>
+	{#if !displayName}
+		<div class="grid gap-4 w-3/4 mx-auto">
+			<p>Please enter your name to upload your memories</p>
+			<Input id="diplayName" label="Your Name" bind:value={displayNameInput} />
+		</div>
+	{/if}
+
+	{#if files}
+		<ul class="grid gap-1 overflow-scroll">
+			{#each Array.from(files) as file}
+				<li class="bg-megan-50 p-4">
+					<UploadTask ref={`${data.id}/${file.name}`} data={file} let:progress let:snapshot>
+						{#if snapshot?.state === 'running'}
+							<p class="text-xs mb-2 text-left font-bold">{file.name}</p>
+							<div class="flex items-center gap-4">
+								<progress value={progress.toFixed(2)} max="100" class="flex-1" />
+								<p class="text-lg">{progress.toFixed(2)}%</p>
+							</div>
+						{/if}
+
+						{#if snapshot?.state === 'success'}
+							{@const updated = imageAddedToGallery(file)}
+							<p class="text-xs mb-2 text-left font-bold">{file.name}</p>
+
+							<div class="flex items-center gap-4">
+								<progress value={progress.toFixed(2)} max="100" class="flex-1" />
+
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 -960 960 960"
+									class="w-8 h-8 fill-green-800"
+									><path
+										d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
+									/></svg
+								>
+							</div>
+						{/if}
+
+						{#if snapshot?.state === 'error'}
+							<p>Error: {file.name} did not upload</p>
+						{/if}
+					</UploadTask>
+				</li>
+			{/each}
+		</ul>
+	{/if}
+</Dialog>
+
 <style lang="postcss">
-	.progress {
-		@apply w-full rounded-full h-4 overflow-hidden;
+	progress[value] {
+		--color: rgb(147, 31, 62); /* the progress color */
+		--background: rgb(255, 255, 255); /* the background color */
+
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		height: 20px;
+		border: 1px solid var(--color);
+		border-radius: 10em;
+		background: var(--background);
 	}
-	.progress::-webkit-progress-bar {
-		@apply bg-gray-700;
+	progress[value]::-webkit-progress-bar {
+		border-radius: 10em;
+		background: var(--background);
 	}
-	.progress::-webkit-progress-value {
-		@apply bg-megan-400;
+	progress[value]::-webkit-progress-value {
+		border-radius: 10em;
+		background: var(--color);
+	}
+	progress[value]::-moz-progress-bar {
+		border-radius: 10em;
+		background: var(--color);
 	}
 
-	.upload-btn-wrapper {
-		position: relative;
-		overflow: hidden;
-		display: inline-block;
+	.add-btn {
+		box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.5);
 	}
 
-	.btn {
-		border: 2px solid;
-		color: gray;
-		background-color: white;
-		padding: 8px 20px;
-		border-radius: 8px;
-		font-size: 20px;
-		font-weight: bold;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 8px;
-		cursor: pointer;
-		@apply w-full border-megan-400 text-megan-600;
-	}
-
-	.upload-btn-wrapper input[type='file'] {
-		font-size: 100px;
-		position: absolute;
-		left: 0;
-		top: 0;
-		opacity: 0;
+	.add-btn:active {
+		translate: 1px 1px;
+		box-shadow: none;
 	}
 </style>
