@@ -33,6 +33,7 @@ export type Gallery = {
 
 export type Image = {
 	name: string;
+	url: string;
 	dateTaken: Timestamp;
 	dateAdded: Timestamp;
 	uploadedBy: string;
