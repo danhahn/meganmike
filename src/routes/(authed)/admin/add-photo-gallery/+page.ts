@@ -21,32 +21,37 @@ type GalleryData = {
 
 export const load = (async () => {
 	// get all galleries from firebase firestore
-	const q = query(collection(db, 'galleries'), orderBy('date', 'desc'));
+	const q = query(collection(db, 'galleries'), orderBy('date', 'asc'));
 
 	const galleries: GalleryData[] = [];
 
 	const querySnapshot = await getDocs(q);
-	querySnapshot.forEach(async (doc) => {
-		// get count of images in the gallery
-		const q1 = query(collection(db, 'photos'), where('gallery', '==', doc.data().name), limit(1));
-		const q2 = query(collection(db, 'photos'), where('gallery', '==', doc.data().name));
 
-		// get the first image from the gallery
-		const snapshot = await getDocs(q1);
-		const urlDoc = snapshot.docs[0];
+	// wait until this is done
 
-		const url = urlDoc ? urlDoc.data().url + `&tr=w-400,h-400,c-at_least` : '';
+	await Promise.all(
+		querySnapshot.docs.map(async (doc) => {
+			// get count of images in the gallery
+			const q1 = query(collection(db, 'photos'), where('gallery', '==', doc.data().name), limit(1));
+			const q2 = query(collection(db, 'photos'), where('gallery', '==', doc.data().name));
 
-		const imageCount = await getCountFromServer(q2);
+			// get the first image from the gallery
+			const snapshot = await getDocs(q1);
+			const urlDoc = snapshot.docs[0];
 
-		galleries.push({
-			name: doc.data().name,
-			imageCount: imageCount.data().count,
-			path: doc.data().path,
-			url,
-			date: doc.data().date
-		} as GalleryData);
-	});
+			const url = urlDoc ? urlDoc.data().url + `&tr=w-400,h-400,c-at_least` : '';
+
+			const imageCount = await getCountFromServer(q2);
+
+			galleries.push({
+				name: doc.data().name,
+				imageCount: imageCount.data().count,
+				path: doc.data().path,
+				url,
+				date: doc.data().date
+			} as GalleryData);
+		})
+	);
 
 	return { galleries };
 }) satisfies PageLoad;
