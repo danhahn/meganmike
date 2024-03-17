@@ -1,6 +1,7 @@
 import { addDoc, collection, deleteDoc, doc } from 'firebase/firestore';
 import { db } from './firebase/firebase';
 import { dev } from '$app/environment';
+import { goto } from '$app/navigation';
 
 export const title = '❤️ Megan and Mike 2024 ❤️';
 const imageUrl = 'https://ik.imagekit.io/hahnster';
@@ -221,4 +222,13 @@ export function rewriteUrl(url: string | null) {
 	const [_, path] = url.split(splitString);
 	const newUrl = imageUrl + splitString + path;
 	return newUrl;
+}
+
+let fullscreen: boolean;
+
+export async function gotoAndScroll(url: string | undefined, photo?: HTMLDivElement) {
+	if (!url) return;
+	if (fullscreen) document.documentElement.requestFullscreen();
+	await goto(url);
+	if (photo) window.scrollTo({ top: photo.getBoundingClientRect().top, left: 0, behavior: 'auto' });
 }
