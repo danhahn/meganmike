@@ -34,14 +34,6 @@
 		});
 		galleryName = '';
 	}
-
-	onMount(() => {
-		console.log('mounted');
-		setTimeout(() => {
-			console.log(data);
-			galleries = data.galleries;
-		}, 100);
-	});
 </script>
 
 <Headline>Add A Photo Gallery</Headline>
@@ -72,6 +64,15 @@
 			{#each galleries as gallery}
 				<div class="grid gap-4 bg-white border border-megan-800 p-4">
 					<p>Name: <span class="text-megan-600 font-extrabold">{gallery.name}</span></p>
+
+					<p>
+						Date Created: <span class="text-megan-600 font-extrabold"
+							>{new Date(gallery.date.seconds * 1000).toLocaleDateString()}</span
+						>
+						<span>
+							{new Date(gallery.date.seconds * 1000).toLocaleTimeString()}
+						</span>
+					</p>
 
 					{#if gallery.url}
 						<img src={gallery.url} class="aspect-square object-cover" alt="" />
