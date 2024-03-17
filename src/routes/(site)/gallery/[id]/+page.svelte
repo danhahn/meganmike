@@ -3,12 +3,13 @@
 	import type { PageData } from './$types';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { rewriteUrl } from '$lib/utils';
-	import { db, firestore } from '$lib/firebase/firebase';
-	import { dev } from '$app/environment';
+	import { db, firestore, storage } from '$lib/firebase/firebase';
+	import { browser, dev } from '$app/environment';
 	import { Timestamp, addDoc, collection, orderBy, query, where } from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { onMount } from 'svelte';
 	import type { Image } from '$lib/types';
+	import { getDownloadURL, ref } from 'firebase/storage';
 
 	export let data: PageData;
 
@@ -18,9 +19,11 @@
 	let files: FileList | null = null;
 	let displayNameInput: string;
 	let displayName: string;
+
+	let download: false;
 	$: status = data.status;
 
-	console.log(data);
+	let count = data.imageCount;
 
 	const imagesRef = collection(db, 'photos');
 	const q = query(imagesRef, where('gallery', '==', data.id), orderBy('dateAdded', 'desc'));
@@ -37,6 +40,9 @@
 
 	function handleDialogClose() {
 		if (dialog.returnValue === 'success') {
+			if (count === 0) {
+				window.location.reload();
+			}
 			files = null;
 		}
 		if (dialog.returnValue === 'cancel') {
@@ -85,7 +91,6 @@
 	}
 
 	onMount(() => {
-		// check if displayname is in local storage
 		const isInLocalStage = localStorage.getItem('displayName');
 		if (isInLocalStage) {
 			displayName = isInLocalStage;
@@ -117,28 +122,38 @@
 
 	<button
 		on:click={checkIfCanUpload}
-		class="bg-megan-600 hover:bg-megan-800 w-14 aspect-square grid place-content-center rounded-full fixed bottom-8 lg:bottom-20 right-4"
+		class="add-btn bg-megan-600 hover:bg-megan-800 w-14 aspect-square grid place-content-center rounded-full fixed bottom-8 lg:bottom-20 right-4"
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-8 h-8 fill-white"
 			><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg
 		>
 	</button>
 
-	{#if data.imageCount === 0 && status === 'idle'}
+	{#if count === 0 && status === 'idle'}
 		<p>Be the first to add a memory</p>
 	{:else}
 		<ul class="grid grid-cols-3 lg:grid-cols-8">
-			{#each $images as item (item.name)}
+			{#each $images as item, index (item.name)}
 				<li>
 					<DownloadURL ref={`${data.id}/${item.name}`} let:link let:ref>
 						{@const optimizedUrl = rewriteUrl(link)}
-						<a href={optimizedUrl} download
-							><img
-								src={`${optimizedUrl}&tr=w-300,h-300`}
-								alt=""
-								class="aspect-square overflow-hidden object-cover"
-							/></a
-						>
+						{#if download}
+							<a href={optimizedUrl} download
+								><img
+									src={`${optimizedUrl}&tr=w-300,h-300`}
+									alt=""
+									class="aspect-square overflow-hidden object-cover"
+								/></a
+							>
+						{:else}
+							<button class="reset-btn block">
+								<img
+									src={`${optimizedUrl}&tr=w-300,h-300`}
+									alt=""
+									class="aspect-square overflow-hidden object-cover"
+								/>
+							</button>
+						{/if}
 					</DownloadURL>
 				</li>
 			{/each}
@@ -149,7 +164,7 @@
 {/if}
 
 <Dialog
-	id="addGuest"
+	id="gallryUpload"
 	bind:dialog
 	on:close={() => (displayName ? handleDialogClose() : updateDisplayName())}
 	cancel={displayName ? 'Cancel' : null}
@@ -233,11 +248,11 @@
 		background: var(--color);
 	}
 
-	button {
+	.add-btn {
 		box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.5);
 	}
 
-	button:active {
+	.add-btn:active {
 		translate: 1px 1px;
 		box-shadow: none;
 	}
