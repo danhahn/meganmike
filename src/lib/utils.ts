@@ -226,9 +226,19 @@ export function rewriteUrl(url: string | null) {
 
 let fullscreen: boolean;
 
-export async function gotoAndScroll(url: string | undefined, photo?: HTMLDivElement) {
+export async function gotoAndScroll(
+	url: string | undefined,
+	photo?: HTMLDivElement,
+	icons?: HTMLDivElement,
+	selectedIcon?: string
+) {
 	if (!url) return;
 	if (fullscreen) document.documentElement.requestFullscreen();
 	await goto(url);
+	if (icons) {
+		const currentIcon = icons.querySelector(`#${selectedIcon}`);
+
+		currentIcon?.scrollIntoView({ block: 'start' });
+	}
 	if (photo) window.scrollTo({ top: photo.getBoundingClientRect().top, left: 0, behavior: 'auto' });
 }
