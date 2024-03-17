@@ -83,7 +83,7 @@
 						/>
 					</div>
 
-					<div class="z-10 grid place-content-center">
+					<div class="z-10 grid place-content-center -translate-y-16">
 						<a href={currentImage.url}>
 							<img
 								class="max-h-screen shadow-lg shadow-black/40"
@@ -145,7 +145,7 @@
 			<div class="scroll">
 				<ul class="gallery-view">
 					{#each $images as item (item.id)}
-						<li class="w-icon" id={item.name}>
+						<li class="w-mobile-icon lg:w-icon" id={item.name}>
 							<button
 								on:click={() => {
 									gotoAndScroll(`/gallery/${data.id}/${item.name}`, photo);
@@ -154,7 +154,7 @@
 								<img
 									src={`${item.url}&tr=w-300,h-300`}
 									alt=""
-									class="aspect-square overflow-hidden object-cover w-icon h-icon"
+									class="aspect-square overflow-hidden object-cover w-mobile-icon lg:w-icon lg:h-icon"
 								/>
 							</button>
 						</li>
@@ -173,13 +173,20 @@
 		overflow-x: auto;
 		overflow-y: hidden;
 		white-space: nowrap;
+		@apply -translate-y-28;
+		z-index: 100;
 	}
 
 	.gallery-view {
 		display: grid;
-		grid-template-columns: 180px;
-		grid-template-rows: 180px;
+		grid-template-columns: 112px;
+		grid-template-rows: 112px;
 		grid-auto-flow: column;
+
+		@media (min-width: 768px) {
+			grid-template-columns: 180px;
+			grid-template-rows: 180px;
+		}
 	}
 
 	.page-layout {
