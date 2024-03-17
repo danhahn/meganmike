@@ -88,8 +88,8 @@
 				{#if currentImage}
 					<div class="min-h-screen w-full overflow-hidden">
 						<div
-							class="image-view min-h-screen w-full"
-							style={`--image: url('${currentImage.url}')`}
+							class="image-view min-h-screen w-full bg-white"
+							style={`--image: url('${currentImage.url}&tr=w-1000,h-1000,c-force')`}
 						/>
 					</div>
 
@@ -97,7 +97,7 @@
 						<a href={currentImage.url}>
 							<img
 								class="max-h-screen shadow-lg shadow-black/40"
-								src={`${currentImage.url}`}
+								src={`${currentImage.url}tr=w-1000,h-1000,c-force`}
 								alt=""
 							/>
 						</a>
@@ -159,7 +159,7 @@
 								}}
 							>
 								<img
-									src={`${item.url}&tr=w-300,h-300`}
+									src={`${item.url}&tr=w-180,h-180`}
 									alt=""
 									class="aspect-square overflow-hidden object-cover w-mobile-icon lg:w-icon lg:h-icon"
 								/>
@@ -190,8 +190,8 @@
 		grid-auto-flow: column;
 
 		@media (min-width: 768px) {
-			grid-template-columns: 180px;
-			grid-template-rows: 180px;
+			grid-template-columns: 150px;
+			grid-template-rows: 150px;
 		}
 	}
 
