@@ -6,8 +6,12 @@ import type { PageLoad } from './$types';
 export const load = (async ({ params }) => {
 	const { id } = params;
 
+	console.log('id', id);
+
+	const slug = encodeURIComponent(id);
+
 	// check if the id is a valid gallery from firestore
-	const galleryRef = query(collection(db, 'galleries'), where('name', '==', id));
+	const galleryRef = query(collection(db, 'galleries'), where('name', '==', slug));
 
 	const gallery = await getDocs(galleryRef);
 

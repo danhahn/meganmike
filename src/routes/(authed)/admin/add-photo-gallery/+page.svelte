@@ -28,11 +28,15 @@
 		errorMessage = '';
 		// write to the firestore
 		await addDoc(collection(db, firebaseDoc), {
-			name: galleryName,
+			name: encodeURIComponent(galleryName.replaceAll("'", '').replaceAll(' ', '-').toLowerCase()),
+			title: galleryName,
 			photos: [],
 			date: Timestamp.now()
 		});
 		galleryName = '';
+
+		// reload page
+		window.location.reload();
 	}
 </script>
 
@@ -63,7 +67,7 @@
 		<div class="grid lg:grid-cols-2 gap-4">
 			{#each galleries as gallery}
 				<div class="grid gap-4 bg-white border border-megan-800 p-4">
-					<p>Name: <span class="text-megan-600 font-extrabold">{gallery.name}</span></p>
+					<p>Name: <span class="text-megan-600 font-extrabold">{gallery.title}</span></p>
 
 					<p>
 						Date Created: <span class="text-megan-600 font-extrabold"
