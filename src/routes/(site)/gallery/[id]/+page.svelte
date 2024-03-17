@@ -3,12 +3,13 @@
 	import type { PageData } from './$types';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { rewriteUrl } from '$lib/utils';
-	import { db, firestore } from '$lib/firebase/firebase';
+	import { db, firestore, storage } from '$lib/firebase/firebase';
 	import { dev } from '$app/environment';
 	import { Timestamp, addDoc, collection, orderBy, query, where } from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { onMount } from 'svelte';
 	import type { Image } from '$lib/types';
+	import { getDownloadURL, ref } from 'firebase/storage';
 
 	export let data: PageData;
 
@@ -18,9 +19,11 @@
 	let files: FileList | null = null;
 	let displayNameInput: string;
 	let displayName: string;
+
 	let selectedIndex: number | undefined = undefined;
 
 	let download: false;
+
 	$: status = data.status;
 
 	let count = data.imageCount;
@@ -28,8 +31,6 @@
 	const imagesRef = collection(db, 'photos');
 	const q = query(imagesRef, where('gallery', '==', data.id), orderBy('dateAdded', 'desc'));
 	const images = collectionStore<Image>(firestore, q as any);
-
-	$: console.log($images);
 
 	const handleFileChange = (event: Event) => {
 		const input = event.target as HTMLInputElement;
@@ -73,6 +74,9 @@
 			return false;
 		}
 
+		const rawUrl = await getDownloadURL(ref(storage, `${data.id}/${file.name}`));
+		const url = rewriteUrl(rawUrl);
+
 		const docRef = await addDoc(collection(db, 'photos'), {
 			name: file.name,
 			dateTaken: Timestamp.fromDate(new Date(file.lastModified)),
@@ -80,7 +84,8 @@
 			uploadedBy: displayName,
 			size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
 			likes: 0,
-			gallery: data.id
+			gallery: data.id,
+			url
 		} as Image);
 		if (dev) {
 			console.log('Document written with ID: ', docRef.id);
@@ -103,9 +108,6 @@
 			displayName = isInLocalStage;
 		}
 	});
-
-	$: galleryStyles = !selectedIndex ? `grid grid-cols-3 lg:grid-cols-8` : `flex`;
-	$: containerStyles = !selectedIndex ? `block` : `overflow-x-scroll`;
 </script>
 
 <svelte:head>
@@ -139,52 +141,32 @@
 		>
 	</button>
 
-	{#if selectedIndex !== undefined}
-		<DownloadURL ref={`${data.id}/${$images[selectedIndex].name}`} let:link>
-			{@const optimizedUrl = rewriteUrl(link)}
-
-			<img src={optimizedUrl} alt="" class="w-full" />
-		</DownloadURL>
-		<button
-			on:click={() => {
-				selectedIndex = undefined;
-			}}
-		>
-			next
-		</button>
-	{/if}
-
 	{#if count === 0 && status === 'idle'}
 		<p>Be the first to add a memory</p>
 	{:else}
-		<div class={containerStyles}>
-			<ul class={galleryStyles}>
-				{#each $images as item, index (item.id)}
-					<li class="w-[120px]">
-						<DownloadURL ref={`${data.id}/${item.name}`} let:link let:ref>
-							{@const optimizedUrl = rewriteUrl(link)}
-							{#if download}
-								<a href={optimizedUrl} download
-									><img
-										src={`${optimizedUrl}&tr=w-300,h-300`}
-										alt=""
-										class="aspect-square overflow-hidden object-cover"
-									/></a
-								>
-							{:else}
-								<button class="reset-btn block" on:click={() => (selectedIndex = index)}>
-									<img
-										src={`${optimizedUrl}&tr=w-300,h-300`}
-										alt=""
-										class="aspect-square overflow-hidden object-cover"
-									/>
-								</button>
-							{/if}
-						</DownloadURL>
-					</li>
-				{/each}
-			</ul>
-		</div>
+		<ul class="grid grid-cols-3 lg:grid-cols-8">
+			{#each $images as item, index (item.id)}
+				<li>
+					{#if download}
+						<a href={item.url} download
+							><img
+								src={`${item.url}&tr=w-300,h-300`}
+								alt=""
+								class="aspect-square overflow-hidden object-cover"
+							/></a
+						>
+					{:else}
+						<a href={`/gallery/${data.id}/${item.name}`}>
+							<img
+								src={`${item.url}&tr=w-300,h-300`}
+								alt=""
+								class="aspect-square overflow-hidden object-cover"
+							/>
+						</a>
+					{/if}
+				</li>
+			{/each}
+		</ul>
 	{/if}
 {:else if status === 'error'}
 	<p>Invalid gallery ID</p>
