@@ -17,6 +17,7 @@ type GalleryData = {
 	path: string;
 	url: string;
 	date: Timestamp;
+	title: string;
 };
 
 export const load = (async () => {
@@ -48,7 +49,8 @@ export const load = (async () => {
 				imageCount: imageCount.data().count,
 				path: doc.data().path,
 				url,
-				date: doc.data().date
+				date: doc.data().date,
+				title: doc.data().title
 			} as GalleryData);
 		})
 	);
