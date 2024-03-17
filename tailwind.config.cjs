@@ -19,7 +19,7 @@ module.exports = {
 				}
 			},
 			width: {
-				icon: '180px',
+				icon: '150px',
 				'mobile-icon': '112px'
 			},
 			gridTemplateColumns: {
