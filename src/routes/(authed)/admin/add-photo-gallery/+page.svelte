@@ -4,10 +4,15 @@
 	import Button from '$lib/components/forms/Button.svelte';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { db } from '$lib/firebase/firebase';
-	import { DownloadURL } from 'sveltefire';
+	import { onMount } from 'svelte';
+	import type { PageData } from './$types';
+	import { Timestamp, addDoc, collection } from 'firebase/firestore';
 
-	import { addDoc, collection } from 'firebase/firestore';
-	import { Collection } from 'sveltefire';
+	export let data: PageData;
+
+	$: galleries = data.galleries;
+
+	$: console.log(galleries);
 
 	let galleryName = '';
 	let errorMessage = '';
@@ -24,10 +29,19 @@
 		// write to the firestore
 		await addDoc(collection(db, firebaseDoc), {
 			name: galleryName,
-			photos: []
+			photos: [],
+			date: Timestamp.now()
 		});
 		galleryName = '';
 	}
+
+	onMount(() => {
+		console.log('mounted');
+		setTimeout(() => {
+			console.log(data);
+			galleries = data.galleries;
+		}, 100);
+	});
 </script>
 
 <Headline>Add A Photo Gallery</Headline>
@@ -48,24 +62,23 @@
 	</form>
 </div>
 
-<div class="mt-4 grid gap-4">
-	<Collection ref={firebaseDoc} let:data let:count>
-		<h3 class="text-2xl text-megan-600">Found {count} Gallery</h3>
+{#if galleries.length === 0}
+	<p>No galleries found</p>
+{:else}
+	<div class="mt-4 grid gap-4">
+		<h3 class="text-2xl text-megan-600">Found {data.galleries.length} Gallery</h3>
 
 		<div class="grid lg:grid-cols-2 gap-4">
-			{#each data as gallery}
+			{#each galleries as gallery}
 				<div class="grid gap-4 bg-white border border-megan-800 p-4">
 					<p>Name: <span class="text-megan-600 font-extrabold">{gallery.name}</span></p>
-					{#if gallery.photos.length > 0}
-						<DownloadURL ref={`${gallery.name}/${gallery.photos[0].name}`} let:link let:ref>
-							<!-- show img -->
 
-							<img src={link} class="aspect-square object-cover" alt="" />
-
-							<!-- or download via link -->
-						</DownloadURL>
+					{#if gallery.url}
+						<img src={gallery.url} class="aspect-square object-cover" alt="" />
+					{:else}
+						<p class="aspect-square grid place-content-center bg-slate-300/45">No photos found</p>
 					{/if}
-					<p>(Photos {gallery.photos.length})</p>
+					<p>(Photos {gallery.imageCount})</p>
 					<Button class="whitespace-nowrap" on:click={() => goto(`/${galleryUrl}/${gallery.name}`)}>
 						View
 					</Button>
@@ -75,7 +88,5 @@
 				</div>
 			{/each}
 		</div>
-
-		<p slot="loading">Loading...</p>
-	</Collection>
-</div>
+	</div>
+{/if}
