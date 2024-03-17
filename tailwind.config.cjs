@@ -19,7 +19,8 @@ module.exports = {
 				}
 			},
 			width: {
-				icon: '180px'
+				icon: '180px',
+				'mobile-icon': '112px'
 			},
 			gridTemplateColumns: {
 				desktop: '1fr',
