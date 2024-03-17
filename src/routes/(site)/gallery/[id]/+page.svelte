@@ -121,7 +121,7 @@
 {#if status === 'loading'}
 	<p>Loading...</p>
 {:else if status === 'idle'}
-	<h3 class="p-4 uppercase bg-megan-300/35 text-center text-megan-700">{data.id}</h3>
+	<h3 class="p-4 uppercase bg-megan-300/35 text-center text-megan-700">{data.title}</h3>
 
 	<input
 		type="file"

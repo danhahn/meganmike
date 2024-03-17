@@ -14,6 +14,8 @@ export const load = (async ({ params }) => {
 	const galleryRef = query(collection(db, 'galleries'), where('name', '==', slug));
 
 	const gallery = await getDocs(galleryRef);
+	// get the title from the first document in the query snapshot
+	const title = gallery.docs[0].data().title;
 
 	const imagesRef = collection(db, 'photos');
 	// get count of images in the gallery
@@ -22,5 +24,5 @@ export const load = (async ({ params }) => {
 	const snapshot = await getCountFromServer(q);
 	const imageCount = snapshot.data().count;
 
-	return { id, status: !gallery.empty ? 'idle' : 'error', imageCount };
+	return { id, status: !gallery.empty ? 'idle' : 'error', imageCount, title };
 }) satisfies PageLoad;
