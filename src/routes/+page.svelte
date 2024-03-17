@@ -2,7 +2,6 @@
 	import Background from '$lib/components/Background.svelte';
 	import Headline from '$lib/components/Headline.svelte';
 	import Img from '$lib/components/Img.svelte';
-	import Logo from '$lib/components/Logo.svelte';
 	import Navigation from '$lib/components/Navigation.svelte';
 	import Section from '$lib/components/Section.svelte';
 	import Stack from '$lib/components/Stack.svelte';
