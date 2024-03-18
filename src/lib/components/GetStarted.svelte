@@ -36,7 +36,11 @@
 		<li>
 			You will need to enter your name and press "Next"
 
-			<img src="https://ik.imagekit.io/hahnster/set-name.png?tr=w-100,h-100,c-at_least" alt="" />
+			<img
+				class="rounded shadow-lg"
+				src="https://ik.imagekit.io/hahnster/set-name.png?updatedAt=1710797522768&tr=w-100,h-100,c-at_least"
+				alt=""
+			/>
 
 			<ul class="list-disc ml-4">
 				<li>
@@ -54,8 +58,9 @@
 				</li>
 				<li>
 					<img
-						src="https://ik.imagekit.io/hahnster/ios-choose.png?tr=w-50,h-50,c-at_least"
+						src="https://ik.imagekit.io/hahnster/ios-choose.png?updatedAt=1710797406195&tr=w-50,h-50,c-at_least"
 						alt=""
+						class="rounded-lg shadow-lg"
 					/>
 				</li>
 			</ul>
@@ -67,7 +72,11 @@
 			<ul class="list-disc ml-4">
 				<li>Note: if you are on iOS you will need to click the "add" button at the top right</li>
 				<li>
-					<img src="https://ik.imagekit.io/hahnster/ios-add.png?tr=w-150,h-150,c-at_least" alt="" />
+					<img
+						class="rounded-lg shadow-lg"
+						src="https://ik.imagekit.io/hahnster/ios-add.png?tr=w-150,h-150,c-at_least"
+						alt=""
+					/>
 				</li>
 			</ul>
 		</li>
