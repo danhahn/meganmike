@@ -4,7 +4,7 @@
 </script>
 
 <div
-	class="mt-4 p-4 border shadow-xl border-megan-400 rounded-lg bg-megan-50 mb-7 max-w-96 mx-auto relative"
+	class="mt-4 p-4 borderborder: 1px solid bg-megan-50/50 border border-megan-300/50 rounded-lg z-50 shadow-xl bg-megan-50 mb-7 max-w-96 mx-auto relative"
 >
 	{#if showCloseButton}
 		<button on:click={close} class="absolute top-4 right-4">
