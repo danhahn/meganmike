@@ -268,7 +268,6 @@
 		return {
 			update(options: Options) {
 				// update options
-				console.log(options);
 				tooltip.setProps(options);
 			},
 			destroy() {
