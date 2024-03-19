@@ -25,7 +25,7 @@
 	<h3 class="font-bold text-megan-700 text-3xl">Get started</h3>
 
 	<hr class="my-5" />
-	<ol class="list-decimal text-left ml-4">
+	<ol class="list-decimal text-left ml-4 grid gap-2">
 		<li>
 			Just click the
 			<div
@@ -87,7 +87,7 @@
 	</ol>
 
 	{#if showCloseButton}
-		<Button on:click={close}>Get Started</Button>But
+		<div class="grid mt-2"><Button on:click={close}>Get Started</Button></div>
 	{/if}
 </div>
 
