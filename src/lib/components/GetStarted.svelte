@@ -1,10 +1,14 @@
 <script lang="ts">
+	import Button from './forms/Button.svelte';
+
 	export let close: () => void = () => {};
 	export let showCloseButton: boolean = false;
 </script>
 
 <div
-	class="mt-4 p-4 borderborder: 1px solid bg-megan-50/50 border border-megan-300/50 rounded-lg z-50 shadow-xl bg-megan-50 mb-7 max-w-96 mx-auto relative"
+	class={`mt-4 p-4 bg-megan-50 border border-megan-300/50 rounded-lg z-50 shadow-xl mb-7 max-w-96 lg:w-1/3 lg:max-w-none mx-auto relative ${
+		showCloseButton ? 'lg:w-2/3' : ''
+	}`}
 >
 	{#if showCloseButton}
 		<button on:click={close} class="absolute top-4 right-4">
@@ -81,6 +85,10 @@
 			</ul>
 		</li>
 	</ol>
+
+	{#if showCloseButton}
+		<Button on:click={close}>Get Started</Button>But
+	{/if}
 </div>
 
 <style lang="postcss">
