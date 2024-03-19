@@ -12,8 +12,6 @@
 
 	$: galleries = data.galleries;
 
-	$: console.log(galleries);
-
 	let galleryName = '';
 	let errorMessage = '';
 

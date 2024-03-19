@@ -4,7 +4,12 @@
 </script>
 
 <Background>
-	<Navigation />
-
-	<slot />
+	<div class="grid grid-rows-[auto_1fr] h-full 💒">
+		<div>
+			<Navigation />
+		</div>
+		<div>
+			<slot />
+		</div>
+	</div>
 </Background>

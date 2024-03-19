@@ -10,10 +10,15 @@
 	import { onMount } from 'svelte';
 	import type { Image } from '$lib/types';
 	import { getDownloadURL, ref } from 'firebase/storage';
+	import GalleryIntro from '$lib/components/GalleryIntro.svelte';
+	import GetStarted from '$lib/components/GetStarted.svelte';
 
 	export let data: PageData;
 
 	let dialog: HTMLDialogElement;
+
+	let helpDialog: HTMLDialogElement;
+
 	let input: HTMLInputElement;
 	let status: 'loading' | PageData['status'] = 'loading';
 	let files: FileList | null = null;
@@ -111,18 +116,72 @@
 </script>
 
 <svelte:head>
-	<title>Gallery | {data.id}</title>
+	<title>Gallery | {data.title}</title>
 	<link
 		rel="stylesheet"
 		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
 	/>
 </svelte:head>
+<div class=" h-full grid 🔥">
+	{#if status === 'loading'}
+		<p>Loading...</p>
+	{:else if status === 'idle'}
+		<div class="grid grid-rows-[auto_1fr]">
+			<div
+				class="p-4 uppercase bg-megan-300/35 text-center text-megan-700 grid grid-cols-[32px_1fr_32px]"
+			>
+				<div></div>
+				<h3 class="text-2xl">{data.title}</h3>
+				<button on:click={() => helpDialog.showModal()}>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 -960 960 960"
+						class="w-8 h-8 fill-megan-700"
+						><path
+							d="M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
+						/></svg
+					>
+				</button>
+			</div>
 
-{#if status === 'loading'}
-	<p>Loading...</p>
-{:else if status === 'idle'}
-	<h3 class="p-4 uppercase bg-megan-300/35 text-center text-megan-700">{data.title}</h3>
+			<dialog bind:this={helpDialog} class="bg-transparent">
+				<GetStarted close={() => helpDialog.close()} showCloseButton />
+			</dialog>
 
+			{#if count === 0 && status === 'idle'}
+				<GalleryIntro />
+			{:else}
+				<ul class="grid grid-cols-3 lg:grid-cols-8">
+					{#each $images as item, index (item.id)}
+						<li>
+							{#if download}
+								<a href={item.url} download
+									><img
+										src={`${item.url}&tr=w-300,h-300`}
+										alt=""
+										class="aspect-square overflow-hidden object-cover"
+									/></a
+								>
+							{:else}
+								<a href={`/gallery/${data.id}/${item.name}`}>
+									<img
+										src={`${item.url}&tr=w-300,h-300`}
+										alt=""
+										class="aspect-square overflow-hidden object-cover"
+									/>
+								</a>
+							{/if}
+						</li>
+					{/each}
+				</ul>
+			{/if}
+		</div>
+	{:else if status === 'error'}
+		<p>Invalid gallery ID</p>
+	{/if}
+</div>
+
+<div>
 	<input
 		type="file"
 		multiple
@@ -131,46 +190,15 @@
 		class="hidden invisible"
 		accept="image/*"
 	/>
-
 	<button
 		on:click={checkIfCanUpload}
-		class="add-btn bg-megan-600 hover:bg-megan-800 w-14 aspect-square grid place-content-center rounded-full fixed bottom-8 lg:bottom-20 right-4"
+		class="add-btn z-50 bg-megan-600 hover:bg-megan-800 w-14 aspect-square grid place-content-center rounded-full fixed bottom-8 lg:bottom-20 right-4"
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-8 h-8 fill-white"
 			><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg
 		>
 	</button>
-
-	{#if count === 0 && status === 'idle'}
-		<p>Be the first to add a memory</p>
-	{:else}
-		<ul class="grid grid-cols-3 lg:grid-cols-8">
-			{#each $images as item, index (item.id)}
-				<li>
-					{#if download}
-						<a href={item.url} download
-							><img
-								src={`${item.url}&tr=w-300,h-300`}
-								alt=""
-								class="aspect-square overflow-hidden object-cover"
-							/></a
-						>
-					{:else}
-						<a href={`/gallery/${data.id}/${item.name}`}>
-							<img
-								src={`${item.url}&tr=w-300,h-300`}
-								alt=""
-								class="aspect-square overflow-hidden object-cover"
-							/>
-						</a>
-					{/if}
-				</li>
-			{/each}
-		</ul>
-	{/if}
-{:else if status === 'error'}
-	<p>Invalid gallery ID</p>
-{/if}
+</div>
 
 <Dialog
 	id="gallryUpload"

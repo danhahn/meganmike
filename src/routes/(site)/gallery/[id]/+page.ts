@@ -6,8 +6,6 @@ import type { PageLoad } from './$types';
 export const load = (async ({ params }) => {
 	const { id } = params;
 
-	console.log('id', id);
-
 	const slug = encodeURIComponent(id);
 
 	// check if the id is a valid gallery from firestore
