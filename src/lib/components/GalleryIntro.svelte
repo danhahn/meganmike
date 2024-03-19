@@ -80,7 +80,7 @@
 				>
 			</div>
 			<article
-				class="max-w-96 grid gap-4 text-center p-4 border: 1px solid bg-megan-50/50 border border-megan-300/50 rounded-lg z-50 shadow-xl"
+				class="max-w-96 grid gap-4 text-center p-4 border: 1px solid bg-megan-50 border border-megan-300/50 rounded-lg z-50 shadow-xl"
 			>
 				<h1 class="mt-8 text-xl text-megan-500">Be the first to add a memory</h1>
 				<p class="text-balance">
