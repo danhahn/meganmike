@@ -1,17 +1,30 @@
 <script lang="ts">
-	import { DownloadURL, UploadTask, collectionStore } from 'sveltefire';
+	import { UploadTask } from 'sveltefire';
 	import type { PageData } from './$types';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { rewriteUrl } from '$lib/utils';
 	import { db, firestore, storage } from '$lib/firebase/firebase';
 	import { dev } from '$app/environment';
-	import { Timestamp, addDoc, collection, orderBy, query, where } from 'firebase/firestore';
+	import {
+		Timestamp,
+		addDoc,
+		collection,
+		getDocs,
+		limit,
+		onSnapshot,
+		orderBy,
+		query,
+		where,
+		type Unsubscribe,
+		startAfter
+	} from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import type { Image } from '$lib/types';
 	import { getDownloadURL, ref } from 'firebase/storage';
 	import GalleryIntro from '$lib/components/GalleryIntro.svelte';
 	import GetStarted from '$lib/components/GetStarted.svelte';
+	import Button from '$lib/components/forms/Button.svelte';
 
 	export let data: PageData;
 
@@ -25,17 +38,66 @@
 	let displayNameInput: string;
 	let displayName: string;
 
-	let selectedIndex: number | undefined = undefined;
-
 	let download: false;
 
 	$: status = data.status;
 
 	let count = data.imageCount;
 
+	let page = 1;
+	let itemsPerPage = 12;
+
+	$: totalNumberRequested = page * itemsPerPage;
+
+	let images: Image[] = [];
+
+	let unsubscribe: Unsubscribe = () => null;
+
 	const imagesRef = collection(db, 'photos');
-	const q = query(imagesRef, where('gallery', '==', data.id), orderBy('dateAdded', 'desc'));
-	const images = collectionStore<Image>(firestore, q as any);
+
+	$: console.log({ totalNumberRequested });
+
+	async function getDocuments(doNext: boolean = false) {
+		const first = query(
+			imagesRef,
+			where('gallery', '==', data.id),
+			orderBy('dateAdded', 'desc'),
+			limit(itemsPerPage)
+		);
+
+		const documentSnapshots = await getDocs(first);
+
+		const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length - 1];
+
+		const next = query(
+			imagesRef,
+			where('gallery', '==', data.id),
+			orderBy('dateAdded', 'desc'),
+			startAfter(lastVisible),
+			limit(itemsPerPage)
+		);
+
+		const currentQuery = doNext ? next : first;
+
+		unsubscribe = onSnapshot(currentQuery, (querySnapshot) => {
+			querySnapshot.forEach((doc) => {
+				images.push({
+					id: doc.id,
+					...doc.data()
+				} as Image);
+			});
+
+			images = images;
+		});
+	}
+
+	$: console.log('images', images);
+
+	// on unmount
+	onDestroy(() => {
+		// unsubscribe from the collection
+		unsubscribe();
+	});
 
 	const handleFileChange = (event: Event) => {
 		const input = event.target as HTMLInputElement;
@@ -74,7 +136,7 @@
 
 	async function imageAddedToGallery(file: File) {
 		// add to firebase firestore collection
-		const exists = $images.find((image) => image.name === file.name);
+		const exists = images.find((image) => image.name === file.name);
 		if (exists) {
 			return false;
 		}
@@ -112,6 +174,7 @@
 		if (isInLocalStage) {
 			displayName = isInLocalStage;
 		}
+		getDocuments();
 	});
 </script>
 
@@ -130,7 +193,9 @@
 			<div
 				class="p-4 uppercase bg-megan-300/35 text-center text-megan-700 grid grid-cols-[32px_1fr_32px]"
 			>
-				<div></div>
+				<div>
+					{totalNumberRequested} of {count}
+				</div>
 				<h3 class="text-2xl">{data.title}</h3>
 				<button on:click={() => helpDialog.showModal()}>
 					<svg
@@ -151,8 +216,8 @@
 			{#if count === 0 && status === 'idle'}
 				<GalleryIntro />
 			{:else}
-				<ul class="grid grid-cols-3 lg:grid-cols-8">
-					{#each $images as item, index (item.id)}
+				<ul class="grid grid-cols-3 lg:grid-cols-6">
+					{#each images as item, index}
 						<li>
 							{#if download}
 								<a href={item.url} download
@@ -175,6 +240,13 @@
 					{/each}
 				</ul>
 			{/if}
+
+			<Button
+				on:click={() => {
+					page++;
+					getDocuments(true);
+				}}>get more</Button
+			>
 		</div>
 	{:else if status === 'error'}
 		<p>Invalid gallery ID</p>
@@ -259,7 +331,7 @@
 	{/if}
 </Dialog>
 
-<style lang="postcss">
+<style lang="postcs gcgasds">
 	progress[value] {
 		--color: rgb(147, 31, 62); /* the progress color */
 		--background: rgb(255, 255, 255); /* the background color */
