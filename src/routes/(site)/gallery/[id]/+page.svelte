@@ -15,9 +15,10 @@
 
 	export let data: PageData;
 
-	let showGetStarted = false;
-
 	let dialog: HTMLDialogElement;
+
+	let helpDialog: HTMLDialogElement;
+
 	let input: HTMLInputElement;
 	let status: 'loading' | PageData['status'] = 'loading';
 	let files: FileList | null = null;
@@ -99,7 +100,6 @@
 	}
 
 	function checkIfCanUpload() {
-		showGetStarted = false;
 		if (displayName) {
 			input.click();
 		} else {
@@ -132,7 +132,7 @@
 			>
 				<div></div>
 				<h3 class="text-2xl">{data.title}</h3>
-				<button on:click={() => (showGetStarted = true)}>
+				<button on:click={() => helpDialog.showModal()}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 -960 960 960"
@@ -144,11 +144,9 @@
 				</button>
 			</div>
 
-			{#if showGetStarted}
-				<div class="absolute inset-4 top-32">
-					<GetStarted close={() => (showGetStarted = false)} showCloseButton />
-				</div>
-			{/if}
+			<dialog bind:this={helpDialog} class="bg-transparent">
+				<GetStarted close={() => helpDialog.close()} showCloseButton />
+			</dialog>
 
 			{#if count === 0 && status === 'idle'}
 				<GalleryIntro />
