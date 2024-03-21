@@ -185,6 +185,7 @@
 		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
 	/>
 </svelte:head>
+
 <div class=" h-full grid 🔥">
 	{#if status === 'loading'}
 		<p>Loading...</p>
@@ -228,7 +229,7 @@
 									/></a
 								>
 							{:else}
-								<a href={`/gallery/${data.id}/${item.name}`}>
+								<a href={`/gallery/${data.id}/${item.id}`}>
 									<img
 										src={`${item.url}&tr=w-300,h-300`}
 										alt=""
