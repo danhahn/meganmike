@@ -1,17 +1,19 @@
 <script lang="ts">
-	import { DownloadURL, UploadTask, collectionStore } from 'sveltefire';
+	import { UploadTask } from 'sveltefire';
 	import type { PageData } from './$types';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { rewriteUrl } from '$lib/utils';
-	import { db, firestore, storage } from '$lib/firebase/firebase';
+	import { db, storage } from '$lib/firebase/firebase';
 	import { dev } from '$app/environment';
-	import { Timestamp, addDoc, collection, orderBy, query, where } from 'firebase/firestore';
+	import { Timestamp, addDoc, collection } from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { onMount } from 'svelte';
 	import type { Image } from '$lib/types';
 	import { getDownloadURL, ref } from 'firebase/storage';
 	import GalleryIntro from '$lib/components/GalleryIntro.svelte';
 	import GetStarted from '$lib/components/GetStarted.svelte';
+	import Button from '$lib/components/forms/Button.svelte';
+	import { gallery, galleryId } from '$lib/stores/galleryStore';
 
 	export let data: PageData;
 
@@ -25,17 +27,16 @@
 	let displayNameInput: string;
 	let displayName: string;
 
-	let selectedIndex: number | undefined = undefined;
-
-	let download: false;
-
 	$: status = data.status;
 
 	let count = data.imageCount;
 
-	const imagesRef = collection(db, 'photos');
-	const q = query(imagesRef, where('gallery', '==', data.id), orderBy('dateAdded', 'desc'));
-	const images = collectionStore<Image>(firestore, q as any);
+	let page = 1;
+	let itemsPerPage = 2;
+
+	let images: Image[] = [];
+
+	$: images = $gallery.slice(0, totalNumberRequested);
 
 	const handleFileChange = (event: Event) => {
 		const input = event.target as HTMLInputElement;
@@ -74,7 +75,7 @@
 
 	async function imageAddedToGallery(file: File) {
 		// add to firebase firestore collection
-		const exists = $images.find((image) => image.name === file.name);
+		const exists = images.find((image) => image.name === file.name);
 		if (exists) {
 			return false;
 		}
@@ -113,6 +114,26 @@
 			displayName = isInLocalStage;
 		}
 	});
+
+	let innerWidth = 1000;
+	let innerHeight = 1000;
+
+	const breakpoint = 1024;
+
+	// calculate the number image pre row
+	$: iconsPerRow = innerWidth > breakpoint ? 5 : 3;
+	$: iconSize = Math.ceil(innerWidth / iconsPerRow);
+
+	$: numberOfRow = Math.round(innerHeight / iconSize);
+
+	$: totalNumberRequested =
+		numberOfRow * iconsPerRow * page * 1.4 -
+		((numberOfRow * iconsPerRow * page * 1.4) % iconsPerRow);
+
+	const loadMore = () => {
+		page += 1;
+		totalNumberRequested = page * itemsPerPage;
+	};
 </script>
 
 <svelte:head>
@@ -122,21 +143,24 @@
 		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
 	/>
 </svelte:head>
+
+<svelte:window bind:innerWidth bind:innerHeight />
+
 <div class=" h-full grid 🔥">
 	{#if status === 'loading'}
 		<p>Loading...</p>
 	{:else if status === 'idle'}
-		<div class="grid grid-rows-[auto_1fr]">
+		<div class="grid grid-rows-[auto_1fr] relative">
 			<div
 				class="p-4 uppercase bg-megan-300/35 text-center text-megan-700 grid grid-cols-[32px_1fr_32px]"
 			>
-				<div></div>
+				<div class="whitespace-nowrap"></div>
 				<h3 class="text-2xl">{data.title}</h3>
 				<button on:click={() => helpDialog.showModal()}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 -960 960 960"
-						class="w-8 h-8 fill-megan-700"
+						class="w-6 h-6 fill-megan-700"
 						><path
 							d="M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
 						/></svg
@@ -151,30 +175,24 @@
 			{#if count === 0 && status === 'idle'}
 				<GalleryIntro />
 			{:else}
-				<ul class="grid grid-cols-3 lg:grid-cols-8">
-					{#each $images as item, index (item.id)}
+				<ul class="grid grid-cols-3 lg:grid-cols-5 bg-slate-50">
+					{#each images as item}
 						<li>
-							{#if download}
-								<a href={item.url} download
-									><img
-										src={`${item.url}&tr=w-300,h-300`}
-										alt=""
-										class="aspect-square overflow-hidden object-cover"
-									/></a
-								>
-							{:else}
-								<a href={`/gallery/${data.id}/${item.name}`}>
-									<img
-										src={`${item.url}&tr=w-300,h-300`}
-										alt=""
-										class="aspect-square overflow-hidden object-cover"
-									/>
-								</a>
-							{/if}
+							<a href={`/gallery/${data.id}/${item.id}`}>
+								<img
+									src={`${item.url}&tr=w-${iconSize},h-${iconSize}`}
+									alt=""
+									class="aspect-square overflow-hidden object-cover"
+								/>
+							</a>
 						</li>
 					{/each}
 				</ul>
 			{/if}
+
+			<div class="absolute bottom-2 left-2 right-2 flex justify-center">
+				<Button on:click={loadMore}>View More</Button>
+			</div>
 		</div>
 	{:else if status === 'error'}
 		<p>Invalid gallery ID</p>
@@ -259,7 +277,7 @@
 	{/if}
 </Dialog>
 
-<style lang="postcss">
+<style lang="postcs gcgasds">
 	progress[value] {
 		--color: rgb(147, 31, 62); /* the progress color */
 		--background: rgb(255, 255, 255); /* the background color */
