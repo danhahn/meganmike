@@ -5,23 +5,15 @@
 	import { rewriteUrl } from '$lib/utils';
 	import { db, storage } from '$lib/firebase/firebase';
 	import { dev } from '$app/environment';
-	import {
-		Timestamp,
-		addDoc,
-		collection,
-		getDocs,
-		orderBy,
-		query,
-		where,
-		type Unsubscribe
-	} from 'firebase/firestore';
+	import { Timestamp, addDoc, collection } from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import type { Image } from '$lib/types';
 	import { getDownloadURL, ref } from 'firebase/storage';
 	import GalleryIntro from '$lib/components/GalleryIntro.svelte';
 	import GetStarted from '$lib/components/GetStarted.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
+	import { gallery, galleryId } from '$lib/stores/galleryStore';
 
 	export let data: PageData;
 
@@ -35,8 +27,6 @@
 	let displayNameInput: string;
 	let displayName: string;
 
-	let download: false;
-
 	$: status = data.status;
 
 	let count = data.imageCount;
@@ -44,37 +34,9 @@
 	let page = 1;
 	let itemsPerPage = 2;
 
-	$: totalNumberRequested = page * itemsPerPage;
-
 	let images: Image[] = [];
 
-	let unsubscribe: Unsubscribe = () => null;
-
-	const imagesRef = collection(db, 'photos');
-
-	async function getDocuments() {
-		// Query the first page of docs
-		const first = query(imagesRef, where('gallery', '==', data.id), orderBy('dateTaken', 'desc'));
-
-		const nextDocumentSnapshots = await getDocs(first);
-
-		nextDocumentSnapshots.forEach((doc) => {
-			images = [
-				...images,
-				{
-					id: doc.id,
-					...doc.data()
-				} as Image
-			];
-		});
-	}
-
-	$: console.log('images', images);
-	// on unmount
-	onDestroy(() => {
-		// unsubscribe from the collection
-		unsubscribe();
-	});
+	$: images = $gallery.slice(0, totalNumberRequested);
 
 	const handleFileChange = (event: Event) => {
 		const input = event.target as HTMLInputElement;
@@ -151,8 +113,27 @@
 		if (isInLocalStage) {
 			displayName = isInLocalStage;
 		}
-		getDocuments();
 	});
+
+	let innerWidth = 1000;
+	let innerHeight = 1000;
+
+	const breakpoint = 1024;
+
+	// calculate the number image pre row
+	$: iconsPerRow = innerWidth > breakpoint ? 5 : 3;
+	$: iconSize = Math.ceil(innerWidth / iconsPerRow);
+
+	$: numberOfRow = Math.round(innerHeight / iconSize);
+
+	$: totalNumberRequested =
+		numberOfRow * iconsPerRow * page * 1.4 -
+		((numberOfRow * iconsPerRow * page * 1.4) % iconsPerRow);
+
+	const loadMore = () => {
+		page += 1;
+		totalNumberRequested = page * itemsPerPage;
+	};
 </script>
 
 <svelte:head>
@@ -163,16 +144,19 @@
 	/>
 </svelte:head>
 
+<svelte:window bind:innerWidth bind:innerHeight />
+
 <div class=" h-full grid 🔥">
 	{#if status === 'loading'}
 		<p>Loading...</p>
 	{:else if status === 'idle'}
-		<div class="grid grid-rows-[auto_1fr]">
+		<div class="grid grid-rows-[auto_1fr] relative">
 			<div
 				class="p-4 uppercase bg-megan-300/35 text-center text-megan-700 grid grid-cols-[32px_1fr_32px]"
 			>
 				<div class="whitespace-nowrap">
 					{totalNumberRequested} of {count}
+					{innerWidth}
 				</div>
 				<h3 class="text-2xl">{data.title}</h3>
 				<button on:click={() => helpDialog.showModal()}>
@@ -194,36 +178,24 @@
 			{#if count === 0 && status === 'idle'}
 				<GalleryIntro />
 			{:else}
-				<ul class="grid grid-cols-3 lg:grid-cols-6">
-					{#each images as item, index}
+				<ul class="grid grid-cols-3 lg:grid-cols-5 bg-slate-50">
+					{#each images as item}
 						<li>
-							{#if download}
-								<a href={item.url} download
-									><img
-										src={`${item.url}&tr=w-300,h-300`}
-										alt=""
-										class="aspect-square overflow-hidden object-cover"
-									/></a
-								>
-							{:else}
-								<a href={`/gallery/${data.id}/${item.id}`}>
-									<img
-										src={`${item.url}&tr=w-300,h-300`}
-										alt=""
-										class="aspect-square overflow-hidden object-cover"
-									/>
-								</a>
-							{/if}
+							<a href={`/gallery/${data.id}/${item.id}`}>
+								<img
+									src={`${item.url}&tr=w-${iconSize},h-${iconSize}`}
+									alt=""
+									class="aspect-square overflow-hidden object-cover"
+								/>
+							</a>
 						</li>
 					{/each}
 				</ul>
 			{/if}
 
-			<Button
-				on:click={() => {
-					getDocuments();
-				}}>get more</Button
-			>
+			<div class="absolute bottom-2 left-2 right-2 flex justify-center">
+				<Button on:click={loadMore}>View More</Button>
+			</div>
 		</div>
 	{:else if status === 'error'}
 		<p>Invalid gallery ID</p>
