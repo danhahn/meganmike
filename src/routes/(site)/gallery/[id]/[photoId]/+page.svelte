@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import Button from '$lib/components/forms/Button.svelte';
 	import type { PageData } from './$types';
 	export let data: PageData;
 
@@ -34,8 +35,7 @@
 			<img
 				src={`${data.currentPhoto?.url}&tr=w-${imageSize},h-${imageSize},c-at_least`}
 				alt=""
-				width={imageSize}
-				class="max-h-screen object-cover shadow-lg shadow-black/40"
+				class="max-h-screen shadow-lg shadow-black/40"
 			/>
 			{#if data.nextPhoto}
 				<div class="self-center flex justify-end px-6 z-50">
@@ -54,8 +54,11 @@
 						</svg>
 					</button>
 				</div>
-			{:else}
-				<div />
+			{/if}
+			{#if data.currentPhoto !== undefined}
+				<Button class="fixed inset-4 top-auto" on:click={() => goto(data.currentPhoto?.url || '')}
+					>View Larger</Button
+				>
 			{/if}
 		</div>
 	</div>
