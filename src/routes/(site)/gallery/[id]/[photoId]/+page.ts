@@ -1,5 +1,14 @@
 import { db } from '$lib/firebase/firebase';
-import { query, collection, getDocs, doc, getDoc, startAt, limit } from 'firebase/firestore';
+import {
+	query,
+	collection,
+	getDocs,
+	doc,
+	getDoc,
+	startAt,
+	limit,
+	orderBy
+} from 'firebase/firestore';
 import type { PageLoad } from './$types';
 
 type Photo = {
@@ -25,7 +34,7 @@ export const load = (async ({ params }) => {
 		};
 	}
 
-	const test = query(imagesRef, startAt(photoRef), limit(2));
+	const test = query(imagesRef, orderBy('dateAdded', 'desc'), startAt(photoRef), limit(2));
 
 	const nextSnap = await getDocs(test);
 
