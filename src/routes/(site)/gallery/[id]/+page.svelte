@@ -3,20 +3,17 @@
 	import type { PageData } from './$types';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { rewriteUrl } from '$lib/utils';
-	import { db, firestore, storage } from '$lib/firebase/firebase';
+	import { db, storage } from '$lib/firebase/firebase';
 	import { dev } from '$app/environment';
 	import {
 		Timestamp,
 		addDoc,
 		collection,
 		getDocs,
-		limit,
-		onSnapshot,
 		orderBy,
 		query,
 		where,
-		type Unsubscribe,
-		startAfter
+		type Unsubscribe
 	} from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { onDestroy, onMount } from 'svelte';
@@ -45,7 +42,7 @@
 	let count = data.imageCount;
 
 	let page = 1;
-	let itemsPerPage = 12;
+	let itemsPerPage = 2;
 
 	$: totalNumberRequested = page * itemsPerPage;
 
@@ -55,44 +52,24 @@
 
 	const imagesRef = collection(db, 'photos');
 
-	$: console.log({ totalNumberRequested });
+	async function getDocuments() {
+		// Query the first page of docs
+		const first = query(imagesRef, where('gallery', '==', data.id), orderBy('dateTaken', 'desc'));
 
-	async function getDocuments(doNext: boolean = false) {
-		const first = query(
-			imagesRef,
-			where('gallery', '==', data.id),
-			orderBy('dateAdded', 'desc'),
-			limit(itemsPerPage)
-		);
+		const nextDocumentSnapshots = await getDocs(first);
 
-		const documentSnapshots = await getDocs(first);
-
-		const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length - 1];
-
-		const next = query(
-			imagesRef,
-			where('gallery', '==', data.id),
-			orderBy('dateAdded', 'desc'),
-			startAfter(lastVisible),
-			limit(itemsPerPage)
-		);
-
-		const currentQuery = doNext ? next : first;
-
-		unsubscribe = onSnapshot(currentQuery, (querySnapshot) => {
-			querySnapshot.forEach((doc) => {
-				images.push({
+		nextDocumentSnapshots.forEach((doc) => {
+			images = [
+				...images,
+				{
 					id: doc.id,
 					...doc.data()
-				} as Image);
-			});
-
-			images = images;
+				} as Image
+			];
 		});
 	}
 
 	$: console.log('images', images);
-
 	// on unmount
 	onDestroy(() => {
 		// unsubscribe from the collection
@@ -194,7 +171,7 @@
 			<div
 				class="p-4 uppercase bg-megan-300/35 text-center text-megan-700 grid grid-cols-[32px_1fr_32px]"
 			>
-				<div>
+				<div class="whitespace-nowrap">
 					{totalNumberRequested} of {count}
 				</div>
 				<h3 class="text-2xl">{data.title}</h3>
@@ -244,8 +221,7 @@
 
 			<Button
 				on:click={() => {
-					page++;
-					getDocuments(true);
+					getDocuments();
 				}}>get more</Button
 			>
 		</div>
