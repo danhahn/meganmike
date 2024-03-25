@@ -48,11 +48,13 @@
 		</svg>
 	</button>
 	<div class="h-full grid place-content-center fixed bg-megan-400 inset-0">
-		<img
-			src={`${currentPhoto?.url}&tr=w-${imageSize},h-${imageSize},c-at_least`}
-			alt=""
-			class="max-h-screen shadow-lg shadow-black/40"
-		/>
+		{#if currentPhoto !== undefined}
+			<img
+				src={`${currentPhoto.url}&tr=w-${imageSize},h-${imageSize},c-at_least`}
+				alt=""
+				class="max-h-screen shadow-lg shadow-black/40"
+			/>
+		{/if}
 
 		{#if currentPhoto !== undefined}
 			<Button class="fixed inset-4 top-auto" on:click={() => goto(currentPhoto?.url || '')}

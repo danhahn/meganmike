@@ -14,12 +14,14 @@
 	import GetStarted from '$lib/components/GetStarted.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
 	import { gallery } from '$lib/stores/galleryStore';
+	import { sortDirectionStore, sortFieldStore } from '$lib/stores/sortStore';
 
 	export let data: PageData;
 
 	let dialog: HTMLDialogElement;
 
 	let helpDialog: HTMLDialogElement;
+	let mainContainer: HTMLDivElement;
 
 	let input: HTMLInputElement;
 	let status: 'loading' | PageData['status'] = 'loading';
@@ -134,16 +136,19 @@
 		totalNumberRequested = page * itemsPerPage;
 	};
 
-	if (browser) {
-		window.addEventListener('scroll', () => {
-			if (
-				window.innerHeight + window.scrollY >= document.body.offsetHeight &&
-				data.imageCount !== 0 &&
-				totalNumberRequested < $gallery.length
-			) {
-				loadMore();
-			}
-		});
+	let sortButton: HTMLButtonElement;
+	let dropdown: HTMLDivElement;
+
+	let isDropdownOpen = false;
+
+	function toggleDropdown() {
+		isDropdownOpen = !isDropdownOpen;
+		if (isDropdownOpen) {
+			sortButton.setAttribute('aria-expanded', 'true');
+			dropdown.focus();
+		} else {
+			sortButton.setAttribute('aria-expanded', 'false');
+		}
 	}
 </script>
 
@@ -157,13 +162,82 @@
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
-<div class="min-h-full grid 🔥">
+<div class="min-h-full grid 🔥" bind:this={mainContainer}>
 	{#if status === 'loading'}
 		<p>Loading...</p>
 	{:else if status === 'idle'}
 		<div class="grid grid-rows-[auto_1fr] relative">
 			<div class="p-4 bg-megan-300/35 text-center text-megan-700 grid grid-cols-[32px_1fr_32px]">
-				<div class="whitespace-nowrap"></div>
+				<div class="whitespace-nowrap">
+					<button bind:this={sortButton} on:click={toggleDropdown}>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 -960 960 960"
+							class="w-6 h-6 fill-megan-700"
+							><path
+								d="M400-240v-80h160v80H400ZM240-440v-80h480v80H240ZM120-640v-80h720v80H120Z"
+							/></svg
+						>
+					</button>
+					<button
+						class="bg-black/5 fixed inset-0 z-[1000]"
+						class:hidden={!isDropdownOpen}
+						on:click={toggleDropdown}
+					/>
+
+					<div
+						class="absolute bg-white text-left p-4 rounded-md shadow-lg z-[1001] lg:flex lg:gap-4 items-center"
+						class:hidden={!isDropdownOpen}
+						bind:this={dropdown}
+					>
+						<p class="text-md text-gray-600">Sort By</p>
+						<div class="bg-gray-100 grid grid-cols-2 gap-2 p-1">
+							<button
+								on:click={() => {
+									if ($sortFieldStore !== 'dateAdded') {
+										sortFieldStore.set('dateAdded');
+										toggleDropdown();
+									}
+								}}
+								class="bg-gray-300 rounded-md py-2 px-4 text-black"
+								class:selected={$sortFieldStore === 'dateAdded'}>Date Added</button
+							>
+							<button
+								on:click={() => {
+									if ($sortFieldStore !== 'dateTaken') {
+										sortFieldStore.set('dateTaken');
+										toggleDropdown();
+									}
+								}}
+								class="bg-gray-300 rounded-md py-2 px-4 text-black"
+								class:selected={$sortFieldStore === 'dateTaken'}>Date Taken</button
+							>
+						</div>
+						<p class="text-md mt-4 lg:mt-0 text-gray-600">Direction</p>
+						<div class="bg-gray-100 grid grid-cols-2 gap-2 p-1">
+							<button
+								on:click={() => {
+									if ($sortDirectionStore !== 'desc') {
+										sortDirectionStore.set('desc');
+										toggleDropdown();
+									}
+								}}
+								class="bg-gray-300 rounded-md py-2 px-4 text-black"
+								class:selected={$sortDirectionStore === 'desc'}>Newest</button
+							>
+							<button
+								on:click={() => {
+									if ($sortDirectionStore !== 'asc') {
+										sortDirectionStore.set('asc');
+										toggleDropdown();
+									}
+								}}
+								class="bg-gray-300 rounded-md py-2 px-4 text-black"
+								class:selected={$sortDirectionStore === 'asc'}>Oldest</button
+							>
+						</div>
+					</div>
+				</div>
 				<h3 class="text-2xl">{data.title}</h3>
 				<button on:click={() => helpDialog.showModal()}>
 					<svg
@@ -186,15 +260,17 @@
 			{:else}
 				<ul class="grid grid-cols-3 lg:grid-cols-5 bg-slate-50 gap-[2px] border-2 border-slate-50">
 					{#each images as item}
-						<li>
-							<a href={`/gallery/${data.id}/${item.id}`}>
-								<img
-									src={`${item.url}&tr=w-${iconSize},h-${iconSize}`}
-									alt=""
-									class="aspect-square overflow-hidden object-cover"
-								/>
-							</a>
-						</li>
+						{#if item.url}
+							<li>
+								<a href={`/gallery/${data.id}/${item.id}`}>
+									<img
+										src={`${item.url}&tr=w-${iconSize},h-${iconSize}`}
+										alt=""
+										class="aspect-square overflow-hidden object-cover"
+									/>
+								</a>
+							</li>
+						{/if}
 					{/each}
 				</ul>
 			{/if}
@@ -320,5 +396,9 @@
 	.add-btn:active {
 		translate: 1px 1px;
 		box-shadow: none;
+	}
+
+	.selected {
+		@apply bg-gray-500 text-white;
 	}
 </style>
