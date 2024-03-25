@@ -4,7 +4,7 @@
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { rewriteUrl } from '$lib/utils';
 	import { db, storage } from '$lib/firebase/firebase';
-	import { dev } from '$app/environment';
+	import { browser, dev } from '$app/environment';
 	import { Timestamp, addDoc, collection } from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { onMount } from 'svelte';
@@ -13,7 +13,7 @@
 	import GalleryIntro from '$lib/components/GalleryIntro.svelte';
 	import GetStarted from '$lib/components/GetStarted.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
-	import { gallery, galleryId } from '$lib/stores/galleryStore';
+	import { gallery } from '$lib/stores/galleryStore';
 
 	export let data: PageData;
 
@@ -41,7 +41,6 @@
 	const handleFileChange = (event: Event) => {
 		const input = event.target as HTMLInputElement;
 		files = input.files;
-		// check if files is not null
 		if (files) {
 			dialog.showModal();
 		}
@@ -115,14 +114,14 @@
 		}
 	});
 
-	let innerWidth = 1000;
-	let innerHeight = 1000;
+	let innerWidth = 0;
+	let innerHeight = 0;
 
 	const breakpoint = 1024;
 
 	// calculate the number image pre row
 	$: iconsPerRow = innerWidth > breakpoint ? 5 : 3;
-	$: iconSize = Math.ceil(innerWidth / iconsPerRow);
+	$: iconSize = Math.ceil(innerWidth / iconsPerRow) - 2;
 
 	$: numberOfRow = Math.round(innerHeight / iconSize);
 
@@ -134,6 +133,18 @@
 		page += 1;
 		totalNumberRequested = page * itemsPerPage;
 	};
+
+	if (browser) {
+		window.addEventListener('scroll', () => {
+			if (
+				window.innerHeight + window.scrollY >= document.body.offsetHeight &&
+				data.imageCount !== 0 &&
+				totalNumberRequested < $gallery.length
+			) {
+				loadMore();
+			}
+		});
+	}
 </script>
 
 <svelte:head>
@@ -146,14 +157,12 @@
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
-<div class=" h-full grid 🔥">
+<div class="min-h-full grid 🔥">
 	{#if status === 'loading'}
 		<p>Loading...</p>
 	{:else if status === 'idle'}
 		<div class="grid grid-rows-[auto_1fr] relative">
-			<div
-				class="p-4 uppercase bg-megan-300/35 text-center text-megan-700 grid grid-cols-[32px_1fr_32px]"
-			>
+			<div class="p-4 bg-megan-300/35 text-center text-megan-700 grid grid-cols-[32px_1fr_32px]">
 				<div class="whitespace-nowrap"></div>
 				<h3 class="text-2xl">{data.title}</h3>
 				<button on:click={() => helpDialog.showModal()}>
@@ -175,7 +184,7 @@
 			{#if count === 0 && status === 'idle'}
 				<GalleryIntro />
 			{:else}
-				<ul class="grid grid-cols-3 lg:grid-cols-5 bg-slate-50">
+				<ul class="grid grid-cols-3 lg:grid-cols-5 bg-slate-50 gap-[2px] border-2 border-slate-50">
 					{#each images as item}
 						<li>
 							<a href={`/gallery/${data.id}/${item.id}`}>
@@ -189,10 +198,11 @@
 					{/each}
 				</ul>
 			{/if}
-
-			<div class="absolute bottom-2 left-2 right-2 flex justify-center">
-				<Button on:click={loadMore}>View More</Button>
-			</div>
+			{#if data.imageCount !== 0 && totalNumberRequested < $gallery.length}
+				<div class="absolute bottom-2 left-2 right-2 flex justify-center">
+					<Button on:click={loadMore}>View More</Button>
+				</div>
+			{/if}
 		</div>
 	{:else if status === 'error'}
 		<p>Invalid gallery ID</p>
