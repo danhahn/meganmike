@@ -7,7 +7,7 @@
 	import { browser, dev } from '$app/environment';
 	import { Timestamp, addDoc, collection } from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import type { Image } from '$lib/types';
 	import { getDownloadURL, ref } from 'firebase/storage';
 	import GalleryIntro from '$lib/components/GalleryIntro.svelte';
