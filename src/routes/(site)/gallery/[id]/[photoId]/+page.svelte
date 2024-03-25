@@ -100,10 +100,3 @@
 		</div>
 	</div>
 {/if}
-
-<style lang="postcss">
-	.image-stack > * {
-		grid-column: 1 / -1;
-		grid-row: 1 / -1;
-	}
-</style>
