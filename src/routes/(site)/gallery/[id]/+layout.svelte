@@ -9,13 +9,21 @@
 
 	export let data: LayoutData;
 
-	const photosQuery = query(
+	let photosQuery = query(
 		collection(firestore, 'photos'),
 		where('gallery', '==', data.id),
 		orderBy($sortFieldStore, $sortDirectionStore)
 	);
 
-	const photos = collectionStore<Image>(firestore, photosQuery as any);
+	$: {
+		photosQuery = query(
+			collection(firestore, 'photos'),
+			where('gallery', '==', data.id),
+			orderBy($sortFieldStore, $sortDirectionStore)
+		);
+	}
+
+	$: photos = collectionStore<Image>(firestore, photosQuery as any);
 
 	$: gallery.set($photos);
 	$: galleryId.set(data.id);
