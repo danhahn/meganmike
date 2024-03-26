@@ -15,6 +15,7 @@
 	import Button from '$lib/components/forms/Button.svelte';
 	import { gallery } from '$lib/stores/galleryStore';
 	import { sortDirectionStore, sortFieldStore } from '$lib/stores/sortStore';
+	import viewport from '$lib/useViewportAction';
 
 	export let data: PageData;
 
@@ -275,7 +276,7 @@
 				</ul>
 			{/if}
 			{#if data.imageCount !== 0 && totalNumberRequested < $gallery.length}
-				<div class="absolute bottom-2 left-2 right-2 flex justify-center">
+				<div class="absolute bottom-2 left-2 right-2 flex justify-center" use:viewport={loadMore}>
 					<Button on:click={loadMore}>View More</Button>
 				</div>
 			{/if}
