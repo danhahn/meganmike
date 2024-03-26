@@ -4,7 +4,7 @@
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { rewriteUrl } from '$lib/utils';
 	import { db, storage } from '$lib/firebase/firebase';
-	import { browser, dev } from '$app/environment';
+	import { dev } from '$app/environment';
 	import { Timestamp, addDoc, collection } from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { onMount } from 'svelte';
