@@ -12,8 +12,12 @@ export const load = (async ({ params }) => {
 	const galleryRef = query(collection(db, 'galleries'), where('name', '==', slug));
 
 	const gallery = await getDocs(galleryRef);
+
+	if (gallery.empty) {
+		return { status: 'error', message: 'Gallery not found' };
+	}
 	// get the title from the first document in the query snapshot
-	const title = gallery.docs[0].data().title;
+	const title = gallery.docs[0].data().title || 'Untitled Gallery';
 
 	const imagesRef = collection(db, 'photos');
 	// get count of images in the gallery
