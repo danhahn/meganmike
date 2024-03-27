@@ -22,7 +22,6 @@
 	let dialog: HTMLDialogElement;
 
 	let helpDialog: HTMLDialogElement;
-	let mainContainer: HTMLDivElement;
 
 	let input: HTMLInputElement;
 	let status: 'loading' | PageData['status'] = 'loading';
@@ -143,7 +142,8 @@
 	let isDropdownOpen = false;
 
 	function toggleDropdown() {
-		isDropdownOpen = !isDropdownOpen;
+		sortDialog.showModal();
+
 		if (isDropdownOpen) {
 			sortButton.setAttribute('aria-expanded', 'true');
 			dropdown.focus();
@@ -151,6 +151,8 @@
 			sortButton.setAttribute('aria-expanded', 'false');
 		}
 	}
+
+	let sortDialog: HTMLDialogElement;
 </script>
 
 <svelte:head>
@@ -163,7 +165,7 @@
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
-<div class="min-h-full grid 🔥" bind:this={mainContainer}>
+<div class="min-h-full grid 🔥">
 	{#if status === 'loading'}
 		<p>Loading...</p>
 	{:else if status === 'idle'}
@@ -180,64 +182,72 @@
 							/></svg
 						>
 					</button>
-					<button
-						class="bg-black/5 fixed inset-0 z-[1000]"
-						class:hidden={!isDropdownOpen}
-						on:click={toggleDropdown}
-					/>
 
-					<div
-						class="absolute bg-white text-left p-4 rounded-md shadow-lg z-[1001] lg:flex lg:gap-4 items-center"
-						class:hidden={!isDropdownOpen}
-						bind:this={dropdown}
-					>
-						<p class="text-md text-gray-600">Sort By</p>
-						<div class="bg-gray-100 grid grid-cols-2 gap-2 p-1">
+					<dialog bind:this={sortDialog} class="absolute">
+						<div
+							class="relative bg-white text-left p-4 rounded-md shadow-lg z-[1001] lg:flex lg:gap-4 items-center"
+						>
+							<p class="text-md text-gray-600">Sort By</p>
+							<div class="bg-gray-100 grid grid-cols-2 gap-2 p-1">
+								<button
+									on:click={() => {
+										if ($sortFieldStore !== 'dateAdded') {
+											sortFieldStore.set('dateAdded');
+											sortDialog.close();
+										}
+									}}
+									class="bg-gray-300 rounded-md py-2 px-4 text-black"
+									class:selected={$sortFieldStore === 'dateAdded'}>Date Added</button
+								>
+								<button
+									on:click={() => {
+										if ($sortFieldStore !== 'dateTaken') {
+											sortFieldStore.set('dateTaken');
+											sortDialog.close();
+										}
+									}}
+									class="bg-gray-300 rounded-md py-2 px-4 text-black"
+									class:selected={$sortFieldStore === 'dateTaken'}>Date Taken</button
+								>
+							</div>
+							<p class="text-md mt-4 lg:mt-0 text-gray-600">Direction</p>
+							<div class="bg-gray-100 grid grid-cols-2 gap-2 p-1">
+								<button
+									on:click={() => {
+										if ($sortDirectionStore !== 'desc') {
+											sortDirectionStore.set('desc');
+											sortDialog.close();
+										}
+									}}
+									class="bg-gray-300 rounded-md py-2 px-4 text-black"
+									class:selected={$sortDirectionStore === 'desc'}>Newest</button
+								>
+								<button
+									on:click={() => {
+										if ($sortDirectionStore !== 'asc') {
+											sortDirectionStore.set('asc');
+											sortDialog.close();
+										}
+									}}
+									class="bg-gray-300 rounded-md py-2 px-4 text-black"
+									class:selected={$sortDirectionStore === 'asc'}>Oldest</button
+								>
+							</div>
 							<button
-								on:click={() => {
-									if ($sortFieldStore !== 'dateAdded') {
-										sortFieldStore.set('dateAdded');
-										toggleDropdown();
-									}
-								}}
-								class="bg-gray-300 rounded-md py-2 px-4 text-black"
-								class:selected={$sortFieldStore === 'dateAdded'}>Date Added</button
-							>
-							<button
-								on:click={() => {
-									if ($sortFieldStore !== 'dateTaken') {
-										sortFieldStore.set('dateTaken');
-										toggleDropdown();
-									}
-								}}
-								class="bg-gray-300 rounded-md py-2 px-4 text-black"
-								class:selected={$sortFieldStore === 'dateTaken'}>Date Taken</button
+								on:click={() => sortDialog.close()}
+								class="absolute top-2 right-2 lg:static lg:top-auto lg:right-auto"
+								><svg
+									xmlns="http://www.w3.org/2000/svg"
+									height="24"
+									viewBox="0 -960 960 960"
+									width="24"
+									><path
+										d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+									/></svg
+								></button
 							>
 						</div>
-						<p class="text-md mt-4 lg:mt-0 text-gray-600">Direction</p>
-						<div class="bg-gray-100 grid grid-cols-2 gap-2 p-1">
-							<button
-								on:click={() => {
-									if ($sortDirectionStore !== 'desc') {
-										sortDirectionStore.set('desc');
-										toggleDropdown();
-									}
-								}}
-								class="bg-gray-300 rounded-md py-2 px-4 text-black"
-								class:selected={$sortDirectionStore === 'desc'}>Newest</button
-							>
-							<button
-								on:click={() => {
-									if ($sortDirectionStore !== 'asc') {
-										sortDirectionStore.set('asc');
-										toggleDropdown();
-									}
-								}}
-								class="bg-gray-300 rounded-md py-2 px-4 text-black"
-								class:selected={$sortDirectionStore === 'asc'}>Oldest</button
-							>
-						</div>
-					</div>
+					</dialog>
 				</div>
 				<h3 class="text-2xl">{data.title}</h3>
 				<button on:click={() => helpDialog.showModal()}>
