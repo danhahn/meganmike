@@ -270,14 +270,17 @@
 				<GalleryIntro />
 			{:else}
 				<ul class="grid grid-cols-3 lg:grid-cols-5 bg-slate-50 gap-[2px] border-2 border-slate-50">
-					{#each images as item}
+					{#each images as item (item.id)}
 						{#if item.url}
 							<li>
 								<a href={`/gallery/${data.id}/${item.id}`}>
 									<img
 										src={`${item.url}&tr=w-${iconSize},h-${iconSize}`}
 										alt=""
-										class="aspect-square overflow-hidden object-cover"
+										class="aspect-square overflow-hidden object-cover bg-slate-100/60"
+										loading="lazy"
+										width={iconSize}
+										height={iconSize}
 									/>
 								</a>
 							</li>
