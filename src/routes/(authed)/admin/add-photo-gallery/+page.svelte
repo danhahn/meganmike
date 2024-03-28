@@ -4,7 +4,6 @@
 	import Button from '$lib/components/forms/Button.svelte';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { db } from '$lib/firebase/firebase';
-	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import { Timestamp, addDoc, collection } from 'firebase/firestore';
 
@@ -82,6 +81,12 @@
 						<p class="aspect-square grid place-content-center bg-slate-300/45">No photos found</p>
 					{/if}
 					<p>(Photos {gallery.imageCount})</p>
+					<Button
+						class="whitespace-nowrap"
+						on:click={() => goto(`/admin/add-photo-gallery/edit/${gallery.name}`)}
+					>
+						Edit
+					</Button>
 					<Button class="whitespace-nowrap" on:click={() => goto(`/${galleryUrl}/${gallery.name}`)}>
 						View
 					</Button>
