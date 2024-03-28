@@ -50,7 +50,8 @@ export const load = (async () => {
 				path: doc.data().path,
 				url,
 				date: doc.data().date,
-				title: doc.data().title
+				title: doc.data().title,
+				id: doc.id
 			} as GalleryData);
 		})
 	);

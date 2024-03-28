@@ -3,12 +3,13 @@
 
 	export let close: () => void = () => {};
 	export let showCloseButton: boolean = false;
+	export let isInline: boolean = false;
 </script>
 
 <div
-	class={`mt-4 p-4 bg-megan-50 border border-megan-300/50 rounded-lg z-50 shadow-xl mb-7 max-w-96 lg:w-1/3 lg:max-w-none mx-auto relative ${
+	class={`get-started mt-4 p-4 bg-megan-50 border border-megan-300/50 rounded-lg z-50 shadow-xl mb-7 max-w-96 lg:w-1/3 lg:max-w-none mx-auto relative ${
 		showCloseButton ? 'lg:w-2/3' : ''
-	}`}
+	} ${isInline ? 'lg:w-full lg:mt-0 print:mt-0' : ''}`}
 >
 	{#if showCloseButton}
 		<button on:click={close} class="absolute top-4 right-4">

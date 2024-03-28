@@ -85,7 +85,7 @@
 					<Button class="whitespace-nowrap" on:click={() => goto(`/${galleryUrl}/${gallery.name}`)}>
 						View
 					</Button>
-					<Button on:click={() => goto(`/admin/add-photo-gallery/${gallery.name}`)}
+					<Button on:click={() => goto(`/admin/add-photo-gallery/qr/${gallery.name}`)}
 						>Print QR Code</Button
 					>
 				</div>
