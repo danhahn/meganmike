@@ -30,8 +30,6 @@
 
 	$: photos = collectionStore<Image>(firestore, photosQuery as any);
 
-	$: console.log($photos);
-
 	$: gallery.set($photos.filter((photo) => photo.disabled !== true));
 	$: galleryId.set(data.id);
 </script>
