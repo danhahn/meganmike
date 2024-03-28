@@ -41,4 +41,5 @@ export type Image = {
 	size: string;
 	gallery: string;
 	id: string;
+	disabled?: boolean;
 };
