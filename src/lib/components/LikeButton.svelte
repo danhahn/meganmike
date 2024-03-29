@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { userId } from '$lib/stores/user';
+	import { userId, userLikes } from '$lib/stores/user';
 
 	export let toggleLike: (id: string) => void;
-	export let userLikes: string[];
 	export let id: string;
 	export let likes: number;
 </script>
@@ -14,7 +13,7 @@
 		}`}
 		on:click={() => toggleLike(id)}
 	>
-		{#if userLikes.includes(id)}
+		{#if $userLikes.includes(id)}
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 -960 960 960"
