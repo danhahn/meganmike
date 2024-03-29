@@ -2,18 +2,10 @@
 	import { UploadTask } from 'sveltefire';
 	import type { PageData } from './$types';
 	import Dialog from '$lib/components/Dialog.svelte';
-	import { rewriteUrl } from '$lib/utils';
+	import { rewriteUrl, toggleLike } from '$lib/utils';
 	import { db, storage } from '$lib/firebase/firebase';
 	import { dev } from '$app/environment';
-	import {
-		Timestamp,
-		addDoc,
-		collection,
-		doc,
-		getDoc,
-		increment,
-		setDoc
-	} from 'firebase/firestore';
+	import { Timestamp, addDoc, collection, doc, getDoc } from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { onMount } from 'svelte';
 	import type { Image } from '$lib/types';
@@ -25,7 +17,7 @@
 	import { sortDirectionStore, sortFieldStore } from '$lib/stores/sortStore';
 	import viewport from '$lib/useViewportAction';
 	import InfoHeader from '$lib/components/InfoHeader.svelte';
-	import { userId } from '$lib/stores/user';
+	import { userId, userLikes } from '$lib/stores/user';
 	import LikeButton from '$lib/components/LikeButton.svelte';
 
 	export let data: PageData;
@@ -49,15 +41,13 @@
 
 	let images: Image[] = [];
 
-	let userLikes: string[] = [];
-
 	$: docRef = doc(db, 'likes', $userId || 'anonymous');
 
 	// get the document
 	$: if ($userId) {
 		getDoc(docRef).then((doc) => {
 			if (doc.exists()) {
-				userLikes = doc.data().likes;
+				userLikes.set(doc.data().likes);
 			}
 		});
 	}
@@ -177,23 +167,6 @@
 	}
 
 	let sortDialog: HTMLDialogElement;
-
-	async function toggleLike(id: string) {
-		if (!$userId) {
-			return;
-		}
-		if (userLikes.includes(id)) {
-			userLikes = userLikes.filter((like) => like !== id);
-		} else {
-			userLikes = [...userLikes, id];
-		}
-		// update the document
-		const add = userLikes.includes(id);
-		await setDoc(docRef, { likes: userLikes });
-		// get the current document
-		const imageRef = doc(db, 'photos', id);
-		await setDoc(imageRef, { likes: increment(add ? 1 : -1) }, { merge: true });
-	}
 </script>
 
 <svelte:head>
@@ -273,7 +246,7 @@
 										height={iconSize}
 									/>
 								</a>
-								<LikeButton id={item.id} {userLikes} {toggleLike} likes={item.likes} />
+								<LikeButton id={item.id} {toggleLike} likes={item.likes} />
 							</li>
 						{/if}
 					{/each}
