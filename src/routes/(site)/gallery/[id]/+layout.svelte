@@ -20,10 +20,9 @@
 
 	auth.onAuthStateChanged((user) => {
 		if (user) {
-			console.log('User is signed in', user);
 			userId.set(user.uid);
 		} else {
-			console.log('User is signed out');
+			userId.set(undefined);
 		}
 	});
 
