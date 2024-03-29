@@ -181,6 +181,9 @@
 	let sortDialog: HTMLDialogElement;
 
 	async function toggleLike(id: string) {
+		if (!$userId) {
+			return;
+		}
 		if (userLikes.includes(id)) {
 			userLikes = userLikes.filter((like) => like !== id);
 		} else {
