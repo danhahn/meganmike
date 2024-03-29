@@ -1,7 +1,8 @@
-import { addDoc, collection, deleteDoc, doc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, increment, setDoc } from 'firebase/firestore';
 import { db } from './firebase/firebase';
 import { dev } from '$app/environment';
 import { goto } from '$app/navigation';
+import { userId, userLikes } from './stores/user';
 
 export const title = '❤️ Megan and Mike 2024 ❤️';
 const imageUrl = 'https://ik.imagekit.io/hahnster';
@@ -241,4 +242,33 @@ export async function gotoAndScroll(
 		currentIcon?.scrollIntoView({ block: 'start' });
 	}
 	if (photo) window.scrollTo({ top: photo.getBoundingClientRect().top, left: 0, behavior: 'auto' });
+}
+
+let uid = '';
+userId.subscribe((value) => {
+	uid = value || '';
+});
+
+let ulikes: string[] = [];
+userLikes.subscribe((value) => {
+	ulikes = value;
+});
+
+export async function toggleLike(id: string) {
+	if (!uid) {
+		return;
+	}
+	if (ulikes.includes(id)) {
+		userLikes.set(ulikes.filter((like) => like !== id));
+	} else {
+		userLikes.set([...ulikes, id]);
+	}
+	// update the document
+	const add = ulikes.includes(id);
+	const docRef = doc(db, 'likes', uid);
+
+	await setDoc(docRef, { likes: ulikes });
+	// get the current document
+	const imageRef = doc(db, 'photos', id);
+	await setDoc(imageRef, { likes: increment(add ? 1 : -1) }, { merge: true });
 }
