@@ -5,7 +5,15 @@
 	import { rewriteUrl } from '$lib/utils';
 	import { db, storage } from '$lib/firebase/firebase';
 	import { dev } from '$app/environment';
-	import { Timestamp, addDoc, collection } from 'firebase/firestore';
+	import {
+		Timestamp,
+		addDoc,
+		collection,
+		doc,
+		getDoc,
+		increment,
+		setDoc
+	} from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { onMount } from 'svelte';
 	import type { Image } from '$lib/types';
@@ -17,6 +25,8 @@
 	import { sortDirectionStore, sortFieldStore } from '$lib/stores/sortStore';
 	import viewport from '$lib/useViewportAction';
 	import InfoHeader from '$lib/components/InfoHeader.svelte';
+	import { userId } from '$lib/stores/user';
+	import LikeButton from '$lib/components/LikeButton.svelte';
 
 	export let data: PageData;
 
@@ -38,6 +48,21 @@
 	let itemsPerPage = 2;
 
 	let images: Image[] = [];
+
+	let userLikes: string[] = [];
+
+	$: docRef = doc(db, 'likes', $userId || 'anonymous');
+
+	// get the document
+	$: if ($userId) {
+		getDoc(docRef).then((doc) => {
+			if (doc.exists()) {
+				userLikes = doc.data().likes;
+			} else {
+				console.log('No such document!');
+			}
+		});
+	}
 
 	$: images = $gallery.slice(0, totalNumberRequested);
 
@@ -154,6 +179,20 @@
 	}
 
 	let sortDialog: HTMLDialogElement;
+
+	async function toggleLike(id: string) {
+		if (userLikes.includes(id)) {
+			userLikes = userLikes.filter((like) => like !== id);
+		} else {
+			userLikes = [...userLikes, id];
+		}
+		// update the document
+		const add = userLikes.includes(id);
+		await setDoc(docRef, { likes: userLikes });
+		// get the current document
+		const imageRef = doc(db, 'photos', id);
+		await setDoc(imageRef, { likes: increment(add ? 1 : -1) }, { merge: true });
+	}
 </script>
 
 <svelte:head>
@@ -222,8 +261,8 @@
 				<ul class="grid grid-cols-3 lg:grid-cols-5 bg-slate-50 gap-[2px] border-2 border-slate-50">
 					{#each images as item (item.id)}
 						{#if item.url}
-							<li>
-								<a href={`/gallery/${data.id}/${item.id}`}>
+							<li class="grid">
+								<a href={`/gallery/${data.id}/${item.id}`} class="col-start-1 row-start-1">
 									<img
 										src={`${item.url}&tr=w-${iconSize},h-${iconSize}`}
 										alt=""
@@ -233,6 +272,7 @@
 										height={iconSize}
 									/>
 								</a>
+								<LikeButton id={item.id} {userLikes} {toggleLike} likes={item.likes} />
 							</li>
 						{/if}
 					{/each}
