@@ -84,8 +84,8 @@
 				height={iconSize}
 				loading="lazy"
 			/>
-			<p>{photo.uploadedBy}</p>
-			<p>{photo.name}</p>
+			<p class="text-sm">{photo.uploadedBy}</p>
+			<p class="text-sm">{photo.name} ({photo.likes})</p>
 			<p class="text-xs">{formatDate(photo.dateTaken)}</p>
 			<p class="text-xs">{formatDate(photo.dateAdded)}</p>
 			{#if photo.disabled}
