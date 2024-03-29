@@ -8,8 +8,6 @@
 	import { sortDirectionStore, sortFieldStore } from '$lib/stores/sortStore';
 	import { signInAnonymously } from 'firebase/auth';
 	import { userId } from '$lib/stores/user';
-	import { dev } from '$app/environment';
-	import { user } from '$lib/firebase';
 	export let data: LayoutData;
 
 	let photosQuery: any;
