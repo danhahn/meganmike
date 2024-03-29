@@ -58,8 +58,6 @@
 		getDoc(docRef).then((doc) => {
 			if (doc.exists()) {
 				userLikes = doc.data().likes;
-			} else {
-				console.log('No such document!');
 			}
 		});
 	}
