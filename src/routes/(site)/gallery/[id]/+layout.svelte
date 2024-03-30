@@ -3,14 +3,28 @@
 	import { auth, firestore, storage } from '$lib/firebase/firebase';
 	import type { LayoutData } from './$types';
 	import { gallery, galleryId } from '$lib/stores/galleryStore';
-	import type { DocumentData } from 'firebase/firestore';
 	import { collection, orderBy, query, where } from 'firebase/firestore';
 	import type { Image } from '$lib/types';
 	import { sortDirectionStore, sortFieldStore } from '$lib/stores/sortStore';
-
+	import { signInAnonymously } from 'firebase/auth';
+	import { userId, userLikes } from '$lib/stores/user';
 	export let data: LayoutData;
 
 	let photosQuery: any;
+
+	// add firebase auth anonymous login
+
+	$: signInAnonymously(auth).catch((error) => {
+		console.error('Error signing in anonymously', error);
+	});
+
+	auth.onAuthStateChanged((user) => {
+		if (user) {
+			userId.set(user.uid);
+		} else {
+			userId.set(undefined);
+		}
+	});
 
 	if (data.id) {
 		photosQuery = query(
