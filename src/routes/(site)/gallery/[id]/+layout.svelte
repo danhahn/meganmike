@@ -46,8 +46,6 @@
 
 	$: gallery.set($photos.filter((photo) => photo.disabled !== true));
 	$: galleryId.set(data.id);
-
-	$: console.log($userLikes);
 </script>
 
 <FirebaseApp {auth} {firestore} {storage}>
