@@ -8,6 +8,8 @@ import type { SortField } from './stores/sortStore';
 export const title = '❤️ Megan and Mike 2024 ❤️';
 const imageUrl = 'https://ik.imagekit.io/hahnster';
 
+export const breakpoint = 1024;
+
 export function getNextValue(currentValue: number, direction: 'prev' | 'next') {
 	let nextValue = direction === 'next' ? currentValue + 1 : currentValue - 1;
 

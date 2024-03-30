@@ -2,7 +2,7 @@
 	import { UploadTask } from 'sveltefire';
 	import type { PageData } from './$types';
 	import Dialog from '$lib/components/Dialog.svelte';
-	import { rewriteUrl, toggleLike, toggleOptions } from '$lib/utils';
+	import { breakpoint, rewriteUrl, toggleLike, toggleOptions } from '$lib/utils';
 	import { db, storage } from '$lib/firebase/firebase';
 	import { dev } from '$app/environment';
 	import { Timestamp, addDoc, collection, doc, getDoc } from 'firebase/firestore';
@@ -14,19 +14,22 @@
 	import GetStarted from '$lib/components/GetStarted.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
 	import { gallery } from '$lib/stores/galleryStore';
-	import { sortDirectionStore, sortFieldStore } from '$lib/stores/sortStore';
 	import viewport from '$lib/useViewportAction';
 	import InfoHeader from '$lib/components/InfoHeader.svelte';
 	import { userId, userLikes } from '$lib/stores/user';
 	import LikeButton from '$lib/components/LikeButton.svelte';
+	import Sort from '$lib/components/Sort.svelte';
+	import { set } from 'firebase/database';
 
 	export let data: PageData;
 
 	let dialog: HTMLDialogElement;
-
 	let helpDialog: HTMLDialogElement;
-
+	let sortButton: HTMLButtonElement;
+	let dropdown: HTMLDivElement;
+	let sortDialog: HTMLDialogElement;
 	let input: HTMLInputElement;
+
 	let status: 'loading' | PageData['status'] = 'loading';
 	let files: FileList | null = null;
 	let displayNameInput: string;
@@ -133,8 +136,6 @@
 	let innerWidth = 0;
 	let innerHeight = 0;
 
-	const breakpoint = 1024;
-
 	// calculate the number image pre row
 	$: iconsPerRow = innerWidth > breakpoint ? 5 : 3;
 	$: iconSize = Math.ceil(innerWidth / iconsPerRow) - 2;
@@ -150,9 +151,6 @@
 		totalNumberRequested = page * itemsPerPage;
 	};
 
-	let sortButton: HTMLButtonElement;
-	let dropdown: HTMLDivElement;
-
 	let isDropdownOpen = false;
 
 	function toggleDropdown() {
@@ -166,14 +164,18 @@
 		}
 	}
 
-	let sortDialog: HTMLDialogElement;
+	let y: number;
+
+	$: hideButton = y > 100;
+
+	$: shrinkButton = y > 20;
 </script>
 
 <svelte:head>
 	<title>Gallery | {data.title || 'Not Found'}</title>
 </svelte:head>
 
-<svelte:window bind:innerWidth bind:innerHeight />
+<svelte:window bind:innerWidth bind:innerHeight bind:scrollY={y} />
 
 <div class=" 🔥">
 	{#if data.status === 'error'}
@@ -272,79 +274,23 @@
 			accept="image/*"
 		/>
 		<button
+			class:hide-button={hideButton}
 			on:click={checkIfCanUpload}
-			class="add-btn z-50 bg-megan-600 hover:bg-megan-800 w-14 aspect-square grid place-content-center rounded-full fixed bottom-8 lg:bottom-20 right-4"
+			class="translate-x-0 transition-all add-btn z-50 flex items-center bg-megan-600 hover:bg-megan-800 fixed bottom-8 rounded-full lg:bottom-20 right-4"
 		>
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-8 h-8 fill-white"
-				><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg
-			>
+			<div class="text-white overflow-hidden transition-all">
+				<div class="pl-6 whitespace-nowrap uppercase">Add Your Memories</div>
+			</div>
+			<div class="grid place-content-center rounded-full w-14 aspect-square">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-8 h-8 fill-white"
+					><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg
+				>
+			</div>
 		</button>
 	</div>
 {/if}
 <dialog bind:this={sortDialog} class="absolute">
-	<div
-		class="relative bg-white text-left p-4 rounded-md shadow-lg z-[1001] lg:flex lg:gap-4 items-center"
-	>
-		<p class="text-md text-gray-600">Sort By</p>
-		<div class="bg-gray-100 grid grid-cols-2 gap-2 p-1">
-			{#each toggleOptions as { field, label } (field)}
-				<button
-					on:click={() => {
-						if ($sortFieldStore !== field) {
-							sortFieldStore.set(field);
-							sortDialog.close();
-						}
-					}}
-					class="bg-gray-300 rounded-md py-2 px-4 text-black"
-					class:selected={$sortFieldStore === field}>{label}</button
-				>
-			{/each}
-		</div>
-		<p class="text-md mt-4 lg:mt-0 text-gray-600">Direction</p>
-		<div class="bg-gray-100 grid grid-cols-2 gap-2 p-1">
-			<button
-				on:click={() => {
-					if ($sortDirectionStore !== 'desc') {
-						sortDirectionStore.set('desc');
-						sortDialog.close();
-					}
-				}}
-				class="bg-gray-300 rounded-md py-2 px-4 text-black"
-				class:selected={$sortDirectionStore === 'desc'}
-			>
-				{#if $sortFieldStore === 'likes'}
-					Most
-				{:else}
-					Newest
-				{/if}
-			</button>
-			<button
-				on:click={() => {
-					if ($sortDirectionStore !== 'asc') {
-						sortDirectionStore.set('asc');
-						sortDialog.close();
-					}
-				}}
-				class="bg-gray-300 rounded-md py-2 px-4 text-black"
-				class:selected={$sortDirectionStore === 'asc'}
-			>
-				{#if $sortFieldStore === 'likes'}
-					Least
-				{:else}
-					Oldest
-				{/if}
-			</button>
-		</div>
-		<button
-			on:click={() => sortDialog.close()}
-			class="absolute top-2 right-2 lg:static lg:top-auto lg:right-auto"
-			><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
-				><path
-					d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
-				/></svg
-			></button
-		>
-	</div>
+	<Sort {sortDialog} />
 </dialog>
 
 <Dialog
@@ -441,7 +387,7 @@
 		box-shadow: none;
 	}
 
-	.selected {
-		@apply bg-gray-500 text-white;
+	.hide-button {
+		@apply translate-x-72;
 	}
 </style>

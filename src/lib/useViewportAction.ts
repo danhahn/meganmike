@@ -13,8 +13,6 @@ interface IntersectionObserverEntry {
 let intersectionObserver: IntersectionObserver;
 
 function ensureIntersectionObserver(callBack: (entry: IntersectionObserverEntry) => void) {
-	if (intersectionObserver) return;
-
 	intersectionObserver = new IntersectionObserver(
 		(entries: IntersectionObserverEntry[]) => {
 			entries.forEach((entry: IntersectionObserverEntry) => {
