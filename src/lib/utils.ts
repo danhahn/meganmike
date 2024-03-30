@@ -277,6 +277,5 @@ export async function toggleLike(id: string) {
 export const toggleOptions: Array<{ field: SortField; label: string }> = [
 	{ field: 'dateAdded', label: 'Date Added' },
 	{ field: 'dateTaken', label: 'Date Taken' },
-	{ field: 'likes', label: 'Likes' },
-	{ field: 'uploadedBy', label: 'Uploaded By' }
+	{ field: 'likes', label: 'Likes' }
 ];
