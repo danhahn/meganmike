@@ -246,7 +246,7 @@
 										height={iconSize}
 									/>
 								</a>
-								<LikeButton id={item.id} {toggleLike} likes={item.likes} />
+								<LikeButton hideCount id={item.id} {toggleLike} likes={item.likes} />
 							</li>
 						{/if}
 					{/each}
@@ -402,7 +402,7 @@
 	{/if}
 </Dialog>
 
-<style lang="postcs">
+<style lang="postcss">
 	progress[value] {
 		--color: rgb(147, 31, 62); /* the progress color */
 		--background: rgb(255, 255, 255); /* the background color */
