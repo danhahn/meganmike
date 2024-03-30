@@ -2,7 +2,7 @@
 	import { UploadTask } from 'sveltefire';
 	import type { PageData } from './$types';
 	import Dialog from '$lib/components/Dialog.svelte';
-	import { rewriteUrl, toggleLike } from '$lib/utils';
+	import { rewriteUrl, toggleLike, toggleOptions } from '$lib/utils';
 	import { db, storage } from '$lib/firebase/firebase';
 	import { dev } from '$app/environment';
 	import { Timestamp, addDoc, collection, doc, getDoc } from 'firebase/firestore';
@@ -287,26 +287,18 @@
 	>
 		<p class="text-md text-gray-600">Sort By</p>
 		<div class="bg-gray-100 grid grid-cols-2 gap-2 p-1">
-			<button
-				on:click={() => {
-					if ($sortFieldStore !== 'dateAdded') {
-						sortFieldStore.set('dateAdded');
-						sortDialog.close();
-					}
-				}}
-				class="bg-gray-300 rounded-md py-2 px-4 text-black"
-				class:selected={$sortFieldStore === 'dateAdded'}>Date Added</button
-			>
-			<button
-				on:click={() => {
-					if ($sortFieldStore !== 'dateTaken') {
-						sortFieldStore.set('dateTaken');
-						sortDialog.close();
-					}
-				}}
-				class="bg-gray-300 rounded-md py-2 px-4 text-black"
-				class:selected={$sortFieldStore === 'dateTaken'}>Date Taken</button
-			>
+			{#each toggleOptions as { field, label } (field)}
+				<button
+					on:click={() => {
+						if ($sortFieldStore !== field) {
+							sortFieldStore.set(field);
+							sortDialog.close();
+						}
+					}}
+					class="bg-gray-300 rounded-md py-2 px-4 text-black"
+					class:selected={$sortFieldStore === field}>{label}</button
+				>
+			{/each}
 		</div>
 		<p class="text-md mt-4 lg:mt-0 text-gray-600">Direction</p>
 		<div class="bg-gray-100 grid grid-cols-2 gap-2 p-1">
@@ -318,8 +310,14 @@
 					}
 				}}
 				class="bg-gray-300 rounded-md py-2 px-4 text-black"
-				class:selected={$sortDirectionStore === 'desc'}>Newest</button
+				class:selected={$sortDirectionStore === 'desc'}
 			>
+				{#if $sortFieldStore === 'likes'}
+					Most
+				{:else}
+					Newest
+				{/if}
+			</button>
 			<button
 				on:click={() => {
 					if ($sortDirectionStore !== 'asc') {
@@ -328,8 +326,14 @@
 					}
 				}}
 				class="bg-gray-300 rounded-md py-2 px-4 text-black"
-				class:selected={$sortDirectionStore === 'asc'}>Oldest</button
+				class:selected={$sortDirectionStore === 'asc'}
 			>
+				{#if $sortFieldStore === 'likes'}
+					Least
+				{:else}
+					Oldest
+				{/if}
+			</button>
 		</div>
 		<button
 			on:click={() => sortDialog.close()}

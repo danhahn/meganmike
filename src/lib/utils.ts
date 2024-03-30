@@ -3,6 +3,7 @@ import { db } from './firebase/firebase';
 import { dev } from '$app/environment';
 import { goto } from '$app/navigation';
 import { userId, userLikes } from './stores/user';
+import type { SortField } from './stores/sortStore';
 
 export const title = '❤️ Megan and Mike 2024 ❤️';
 const imageUrl = 'https://ik.imagekit.io/hahnster';
@@ -272,3 +273,10 @@ export async function toggleLike(id: string) {
 	const imageRef = doc(db, 'photos', id);
 	await setDoc(imageRef, { likes: increment(add ? 1 : -1) }, { merge: true });
 }
+
+export const toggleOptions: Array<{ field: SortField; label: string }> = [
+	{ field: 'dateAdded', label: 'Date Added' },
+	{ field: 'dateTaken', label: 'Date Taken' },
+	{ field: 'likes', label: 'Likes' },
+	{ field: 'uploadedBy', label: 'Uploaded By' }
+];

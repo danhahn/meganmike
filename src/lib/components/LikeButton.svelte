@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { userId, userLikes } from '$lib/stores/user';
+	import { sortFieldStore } from '$lib/stores/sortStore';
 
 	export let toggleLike: (id: string) => void;
 	export let id: string;
@@ -9,7 +10,7 @@
 
 {#if $userId}
 	<button
-		class={`col-start-1 relative row-start-1 self-end justify-self-end bg-white/50 text-megan-600 p-[2px] lg:p-1 rounded-full m-2 flex items-center gap-1 ${
+		class={`col-start-1 relative row-start-1 self-end justify-self-end bg-white/70 text-megan-600 p-[2px] lg:p-1 rounded-full m-2 flex items-center gap-1 ${
 			likes && !hideCount ? 'mr-4' : ''
 		}`}
 		on:click={() => toggleLike(id)}
@@ -33,9 +34,18 @@
 				/></svg
 			>
 		{/if}
+		{#if $sortFieldStore === 'likes' && hideCount}
+			<p class="text-[0.7rem] font-sans mr-1">
+				{#if likes === 1}
+					1 Like
+				{:else}
+					<span class:text-black={likes === 0}>{likes} Likes</span>
+				{/if}
+			</p>
+		{/if}
 		{#if likes && !hideCount}
 			<p
-				class="absolute scale-95 -top-2 -right-2 bg-megan-600 text-white p-[3px] grid place-content-center rounded-full leading-none text-xs aspect-square w-4"
+				class="absolute scale-95 font-mono -top-2 -right-2 bg-megan-600 text-white p-[3px] grid place-content-center rounded-full leading-none text-xs aspect-square w-4"
 			>
 				{likes}
 			</p>
