@@ -181,7 +181,9 @@
 
 		const docId = activeTable.id;
 
-		const confirm = window.confirm('Are you sure you want to delete this guest?');
+		const confirm = window.confirm(
+			'Are you sure you want to remove this this guest from the table?'
+		);
 		if (!confirm) return;
 
 		const updateTable = activeTable.guests?.filter((guest) => guest?.id !== id) ?? [];
@@ -405,19 +407,7 @@
 						<p class="text-left" class:deleted={guest.deleted}>
 							{guest.name}
 						</p>
-						{#if guest.rsvp === 'yes'}
-							<span class:deleted={guest.deleted} class="material-symbols-outlined text-green-500">
-								check_circle
-							</span>
-						{:else if guest.rsvp === 'no'}
-							<span class:deleted={guest.deleted} class="material-symbols-outlined text-red-500">
-								block
-							</span>
-						{:else}
-							<span class:deleted={guest.deleted} class="material-symbols-outlined text-yellow-500">
-								warning
-							</span>
-						{/if}
+
 						<button
 							disabled={guest.deleted}
 							type="button"
@@ -429,7 +419,7 @@
 								class="material-symbols-outlined block aspect-square text-lg leading-none translate-y-1 hover:text-red-600"
 								class:deleted={guest.deleted}
 							>
-								delete
+								cancel
 							</span>
 						</button>
 					</li>
