@@ -450,17 +450,7 @@
 			{/each}
 		</ul>
 	{/if}
-	<div class="flex gap-4 mt-4 justify-center">
-		<div class="flex gap-1">
-			<span class="material-symbols-outlined text-green-500"> check_circle </span>RSVP Yes
-		</div>
-		<div class="flex gap-1">
-			<span class="material-symbols-outlined text-red-500"> block </span> RSVP No
-		</div>
-		<div class="flex gap-1">
-			<span class="material-symbols-outlined text-yellow-500"> warning </span> No RSVP Yet
-		</div>
-	</div>
+
 	<div class="mt-4 flex justify-end">
 		<Button size="small" variant="naked" on:click={addSetToTable}>
 			<span class="material-symbols-outlined"> add </span>
