@@ -4,7 +4,7 @@
 	import Button from '$lib/components/forms/Button.svelte';
 	import Dialog from '$lib/components/Dialog.svelte';
 
-	import type { Guest, RsvpProps } from '$lib/types';
+	import type { Guest } from '$lib/types';
 	import { deleteGuest, formatPhoneNumber } from '$lib/utils';
 	import Td from './Td.svelte';
 	import Th from './Th.svelte';
@@ -12,6 +12,10 @@
 
 	export let headerData: string[];
 	export let data: Guest[];
+
+	let status: 'yes' | 'no' | 'noResponse' | 'all' = 'all';
+
+	$: filtered = data;
 
 	let deleteGuestData: Guest | undefined;
 
@@ -26,7 +30,35 @@
 			goto('/admin');
 		}
 	}
+
+	function filterYes() {
+		filtered = data.filter((guest) => guest.rsvp === 'yes');
+		status = 'yes';
+	}
+
+	function filterNo() {
+		filtered = data.filter((guest) => guest.rsvp === 'no');
+		status = 'no';
+	}
+
+	function filterNoResponse() {
+		filtered = data.filter((guest) => guest.rsvp === null);
+		status = 'noResponse';
+	}
+
+	function filterAll() {
+		filtered = data;
+		status = 'all';
+	}
 </script>
+
+<div class="flex gap-4 mt-4 items-center border border-megan-400 py-2 px-4 rounded-lg bg-white">
+	<span class="font-bold">RSVP Status:</span>
+	<button class:active={status === 'all'} on:click={filterAll}>All</button>
+	<button class:active={status === 'yes'} on:click={filterYes}>Yes</button>
+	<button class:active={status === 'no'} on:click={filterNo}>No</button>
+	<button class:active={status === 'noResponse'} on:click={filterNoResponse}>No Response</button>
+</div>
 
 <table {...$$props} class="mt-4 w-full border-collapse lg:border border-megan-800">
 	<thead>
@@ -37,7 +69,7 @@
 		</Tr>
 	</thead>
 	<tbody>
-		{#each data as row}
+		{#each filtered as row}
 			<Tr>
 				<Td isRow class="text-2xl lg:text-base">
 					<a class="hover:underline underline-offset-2 flex gap-2" href={`/admin/view/${row.id}`}
@@ -62,7 +94,7 @@
 				>
 				<Td isRow>{formatPhoneNumber(String(row.phone))}</Td>
 				<Td class="mt-4 lg:mt-0 text-2xl text-center">
-					<Rsvp rsvp={row.rsvp} totalGuests={row.totalGuests} />
+					<Rsvp rsvp={row.rsvp} totalGuests={row.totalGuests} guest={row} />
 				</Td>
 				<Td class="mt-4 lg:mt-0 text-center text-2xl">
 					{#if row.guests}
@@ -121,3 +153,13 @@
 		</h1>
 	{/if}
 </Dialog>
+
+<style lang="postcss">
+	button {
+		@apply border border-megan-400 py-1 px-4 rounded-lg bg-white text-megan-800;
+	}
+
+	button.active {
+		@apply bg-megan-400 text-white;
+	}
+</style>

@@ -1,15 +1,39 @@
 <script lang="ts">
-	import type { RsvpProps } from '$lib/types';
+	import type { Guest, RsvpProps } from '$lib/types';
+	import { doc, setDoc } from 'firebase/firestore';
+	import Dialog from './Dialog.svelte';
+	import { db } from '$lib/firebase/firebase';
 
 	export let rsvp: RsvpProps;
 	export let totalGuests: number | undefined;
 	export let size: 'small' | 'large' = 'small';
 	export let row: boolean = false;
+	export let guest: Guest;
+
+	const docRef = doc(db, 'guests', guest.id);
+
+	let dialog: HTMLDialogElement;
 	$: isSmall = size === 'small';
 	$: isLarge = size === 'large';
+
+	function changeRSVP() {
+		dialog.showModal();
+	}
+
+	function handleDialogClose() {
+		dialog.close();
+	}
+
+	const rsvpYes = async () => {
+		setDoc(docRef, { rsvp: 'yes', totalGuests: guest.guests.length + 1 }, { merge: true });
+	};
+
+	const rsvpNo = async () => {
+		setDoc(docRef, { rsvp: 'no', totalGuests: 0 }, { merge: true });
+	};
 </script>
 
-<div class="flex gap-2 items-center" class:row>
+<button class="flex gap-2 items-center" class:row on:click={changeRSVP}>
 	{#if rsvp === null}
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +68,22 @@
 		>
 		<p class:isLarge class:isSmall>No ☹️</p>
 	{/if}
-</div>
+</button>
+
+<Dialog id="addGuest" bind:dialog on:close={handleDialogClose} confirm="Done">
+	<p>Change RSVP?</p>
+	<p>{guest.firstName} {guest.lastName}</p>
+	<div class="flex gap-4 justify-center mt-4">
+		<button
+			class="aspect-square rounded-full w-20 bg-green-700 text-white p-3"
+			on:click|preventDefault={rsvpYes}>Yes</button
+		>
+		<button
+			class="aspect-square rounded-full w-20 bg-red-700 text-white p-3"
+			on:click|preventDefault={rsvpNo}>No</button
+		>
+	</div>
+</Dialog>
 
 <style lang="postcss">
 	.isSmall {
