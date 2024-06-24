@@ -8,9 +8,7 @@
 	export let totalGuests: number | undefined;
 	export let size: 'small' | 'large' = 'small';
 	export let row: boolean = false;
-	export let guest: Guest;
-
-	const docRef = doc(db, 'guests', guest.id);
+	export let guest: Guest | undefined = undefined;
 
 	let dialog: HTMLDialogElement;
 	$: isSmall = size === 'small';
@@ -25,10 +23,16 @@
 	}
 
 	const rsvpYes = async () => {
+		if (!guest) return;
+		const docRef = doc(db, 'guests', guest.id);
+
 		setDoc(docRef, { rsvp: 'yes', totalGuests: guest.guests.length + 1 }, { merge: true });
 	};
 
 	const rsvpNo = async () => {
+		if (!guest) return;
+
+		const docRef = doc(db, 'guests', guest.id);
 		setDoc(docRef, { rsvp: 'no', totalGuests: 0 }, { merge: true });
 	};
 </script>
@@ -69,21 +73,22 @@
 		<p class:isLarge class:isSmall>No ☹️</p>
 	{/if}
 </button>
-
-<Dialog id="addGuest" bind:dialog on:close={handleDialogClose} confirm="Done">
-	<p>Change RSVP?</p>
-	<p>{guest.firstName} {guest.lastName}</p>
-	<div class="flex gap-4 justify-center mt-4">
-		<button
-			class="aspect-square rounded-full w-20 bg-green-700 text-white p-3"
-			on:click|preventDefault={rsvpYes}>Yes</button
-		>
-		<button
-			class="aspect-square rounded-full w-20 bg-red-700 text-white p-3"
-			on:click|preventDefault={rsvpNo}>No</button
-		>
-	</div>
-</Dialog>
+{#if guest}
+	<Dialog id="addGuest" bind:dialog on:close={handleDialogClose} confirm="Done">
+		<p>Change RSVP?</p>
+		<p>{guest.firstName} {guest.lastName}</p>
+		<div class="flex gap-4 justify-center mt-4">
+			<button
+				class="aspect-square rounded-full w-20 bg-green-700 text-white p-3"
+				on:click|preventDefault={rsvpYes}>Yes</button
+			>
+			<button
+				class="aspect-square rounded-full w-20 bg-red-700 text-white p-3"
+				on:click|preventDefault={rsvpNo}>No</button
+			>
+		</div>
+	</Dialog>
+{/if}
 
 <style lang="postcss">
 	.isSmall {
