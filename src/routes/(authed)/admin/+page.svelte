@@ -94,39 +94,41 @@
 	</div>
 </div>
 
-<div class="mt-4 grid gap-2">
-	<Input id="search" label="Search" type="text" bind:value={search} on:input={handleSearch} />
-	{#if search}
-		<div class="flex gap-4 items-center">
-			<Button size="small" on:click={resetSearch}>reset</Button>
-			<p class="text-sm">Showing {searchData.length} results</p>
+<div class="flex gap-4">
+	<div class="mt-4 grid gap-2 flex-1">
+		<Input id="search" label="Search" type="text" bind:value={search} on:input={handleSearch} />
+		{#if search}
+			<div class="flex gap-4 items-center">
+				<Button size="small" on:click={resetSearch}>reset</Button>
+				<p class="text-sm">Showing {searchData.length} results</p>
+			</div>
+		{/if}
+	</div>
+
+	{#if totalNumberOfDocs > 10 && !search}
+		<div class="flex gap-2 mt-4 self-center">
+			<p>View Guest Per Page</p>
+			<Button
+				variant={itemsPerPage === 10 ? 'primary' : 'secondary'}
+				size="small"
+				class="w-10 font-sans"
+				on:click={() => setItemsPerPage(10)}>10</Button
+			>
+			<Button
+				variant={itemsPerPage === 20 ? 'primary' : 'secondary'}
+				size="small"
+				class="w-10 font-sans"
+				on:click={() => setItemsPerPage(20)}>20</Button
+			>
+			<Button
+				variant={itemsPerPage === 1000 ? 'primary' : 'secondary'}
+				size="small"
+				class="w-10 font-sans"
+				on:click={() => setItemsPerPage(1000)}>All</Button
+			>
 		</div>
 	{/if}
 </div>
-
-{#if totalNumberOfDocs > 10 && !search}
-	<div class="flex gap-2 mt-4">
-		<p>View Guest Per Page</p>
-		<Button
-			variant={itemsPerPage === 10 ? 'primary' : 'secondary'}
-			size="small"
-			class="w-10 font-sans"
-			on:click={() => setItemsPerPage(10)}>10</Button
-		>
-		<Button
-			variant={itemsPerPage === 20 ? 'primary' : 'secondary'}
-			size="small"
-			class="w-10 font-sans"
-			on:click={() => setItemsPerPage(20)}>20</Button
-		>
-		<Button
-			variant={itemsPerPage === 1000 ? 'primary' : 'secondary'}
-			size="small"
-			class="w-10 font-sans"
-			on:click={() => setItemsPerPage(1000)}>All</Button
-		>
-	</div>
-{/if}
 <div class="overflow-auto">
 	<Table
 		headerData={[

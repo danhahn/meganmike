@@ -13,7 +13,7 @@
 	import { onMount } from 'svelte';
 	import Input from '$lib/components/forms/Input.svelte';
 
-	const RSVPDate = 'July 20, 2023';
+	const RSVPDate = 'July 20, 2024';
 
 	export let data: PageData;
 	const docRef = doc(db, 'guests', data.id);
