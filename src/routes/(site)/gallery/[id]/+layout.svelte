@@ -7,7 +7,7 @@
 	import type { Image } from '$lib/types';
 	import { sortDirectionStore, sortFieldStore } from '$lib/stores/sortStore';
 	import { signInAnonymously } from 'firebase/auth';
-	import { userId, userLikes } from '$lib/stores/user';
+	import { userId } from '$lib/stores/user';
 	export let data: LayoutData;
 
 	let photosQuery: any;

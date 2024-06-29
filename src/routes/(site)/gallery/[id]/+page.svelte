@@ -2,24 +2,23 @@
 	import { UploadTask } from 'sveltefire';
 	import type { PageData } from './$types';
 	import Dialog from '$lib/components/Dialog.svelte';
-	import { breakpoint, rewriteUrl, toggleLike, toggleOptions } from '$lib/utils';
+	import { breakpoint, rewriteUrl, toggleLike } from '$lib/utils';
 	import { db, storage } from '$lib/firebase/firebase';
 	import { dev } from '$app/environment';
 	import { Timestamp, addDoc, collection, doc, getDoc } from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { onMount } from 'svelte';
-	import type { Image } from '$lib/types';
+	import type { Image, UserImageCount } from '$lib/types';
 	import { getDownloadURL, ref } from 'firebase/storage';
 	import GalleryIntro from '$lib/components/GalleryIntro.svelte';
 	import GetStarted from '$lib/components/GetStarted.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
-	import { gallery } from '$lib/stores/galleryStore';
+	import { gallery, userImageCount } from '$lib/stores/galleryStore';
 	import viewport from '$lib/useViewportAction';
 	import InfoHeader from '$lib/components/InfoHeader.svelte';
 	import { userId, userLikes } from '$lib/stores/user';
 	import LikeButton from '$lib/components/LikeButton.svelte';
 	import Sort from '$lib/components/Sort.svelte';
-	import { set } from 'firebase/database';
 
 	export let data: PageData;
 
@@ -34,6 +33,7 @@
 	let files: FileList | null = null;
 	let displayNameInput: string;
 	let displayName: string;
+	let isFilter = false;
 
 	$: status = data.status;
 
@@ -166,9 +166,41 @@
 
 	let y: number;
 
+	function filterBaseOnUserName(userName: string) {
+		images = $gallery.filter((image) => image.uploadedBy === userName);
+		isFilter = true;
+	}
+
+	function clearFilter() {
+		images = $gallery;
+		isFilter = false;
+	}
+
 	$: hideButton = y > 100;
 
-	$: shrinkButton = y > 20;
+	let tagsCount: { displayName: string; count: number }[] = [];
+
+	$: {
+		const tags = $gallery.map((image) => image.uploadedBy);
+		const tagsSet = new Set(tags);
+		tagsCount = Array.from(tagsSet)
+			.map((tag) => {
+				return {
+					displayName: tag,
+					count: tags.filter((t) => t === tag).length
+				};
+			})
+			// sort by count, if the count is the same sort by name
+			.sort((a, b) => {
+				if (a.count > b.count) {
+					return -1;
+				}
+				if (a.count < b.count) {
+					return 1;
+				}
+				return a.displayName.localeCompare(b.displayName);
+			});
+	}
 </script>
 
 <svelte:head>
@@ -225,6 +257,28 @@
 						/></svg
 					>
 				</button>
+			</div>
+
+			<div class="flex gap-2 p-1 px-2 bg-megan-50 border-b border-megan-600 overflow-x-auto">
+				{#if isFilter}
+					<button
+						class="font-mono text-xs bg-megan-400 px-4 uppercase py-[2px] rounded-full text-nowrap"
+						on:click={clearFilter}>clear</button
+					>
+				{:else}
+					{#each tagsCount as { displayName, count }}
+						<button
+							on:click={() => filterBaseOnUserName(displayName)}
+							class="font-mono text-xs bg-megan-600 px-2 pr-[2px] py-[2px] rounded-full text-megan-100 text-nowrap"
+						>
+							{displayName}
+							<span
+								class="bg-white text-megan-600 rounded-full p-1 h-4 text-center inline-grid place-content-center"
+								>{count}</span
+							>
+						</button>
+					{/each}
+				{/if}
 			</div>
 
 			<dialog bind:this={helpDialog} class="bg-transparent">
