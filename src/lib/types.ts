@@ -43,3 +43,9 @@ export type Image = {
 	id: string;
 	disabled?: boolean;
 };
+
+export type UserImageCount = {
+	[id: string]: number;
+};
+
+export type UserImageCountList = { displayName: string; count: number }[];

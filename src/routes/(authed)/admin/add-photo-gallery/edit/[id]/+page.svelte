@@ -11,7 +11,7 @@
 	const q = query(
 		collection(db, 'photos'),
 		where('gallery', '==', data.id),
-		orderBy('dateAdded', 'asc')
+		orderBy('dateAdded', 'desc')
 	);
 	const allPhotos = collectionStore<Image>(db, q as any);
 
@@ -27,8 +27,6 @@
 	}
 
 	async function deletePhoto(id: string) {
-		const confirm = window.confirm('Are you sure you want to remove this photo?');
-		if (!confirm) return;
 		await setDoc(doc(db, 'photos', id), { disabled: true }, { merge: true });
 	}
 
@@ -72,20 +70,22 @@
 	</div>
 	{#each photos as photo (photo.id)}
 		<div
-			class={`border border-black/20 bg-white p-4 lg:p-1 grid grid-cols-2 lg:grid-cols-[50px_1fr_1fr_1fr_1fr_auto] gap-4 items-center ${
-				photo.disabled ? 'opacity-50' : ''
-			}`}
+			class={`border border-black/20 bg-white p-4 lg:p-1 grid grid-cols-2 lg:grid-cols-[50px_1fr_1fr_1fr_1fr_auto] gap-4 items-center`}
 		>
 			<img
 				src={`${photo.url}&tr=w-${iconSize},h-${iconSize}`}
 				alt={photo.name}
-				class={`w-[${iconSize}px] h-[${iconSize}px] col-span-2 lg:col-span-1 aspect-square object-cover`}
+				class={`w-[${iconSize}px] h-[${iconSize}px] col-span-2 lg:col-span-1 aspect-square object-cover ${
+					photo.disabled ? 'opacity-50' : ''
+				}`}
 				width={iconSize}
 				height={iconSize}
 				loading="lazy"
 			/>
 			<p class="text-sm">{photo.uploadedBy}</p>
-			<p class="text-sm">{photo.name} ({photo.likes})</p>
+			<p class="text-sm whitespace-nowrap overflow-hidden text-ellipsis">
+				{photo.name} ({photo.likes})
+			</p>
 			<p class="text-xs">{formatDate(photo.dateTaken)}</p>
 			<p class="text-xs">{formatDate(photo.dateAdded)}</p>
 			{#if photo.disabled}
@@ -95,7 +95,7 @@
 				>
 			{:else}
 				<button
-					class="p-2 rounded-md bg-megan-600 text-white mr-4 col-span-2 lg:col-span-1 flex justify-center items-center gap-2"
+					class="p-2 rounded-md bg-megan-600 text-white mr-4 w-28 col-span-2 lg:col-span-1 flex justify-center items-center gap-2"
 					on:click={() => deletePhoto(photo.id)}
 				>
 					<svg
