@@ -12,6 +12,7 @@
 	import Loading from '$lib/components/Loading.svelte';
 	import { onMount } from 'svelte';
 	import Input from '$lib/components/forms/Input.svelte';
+	import { goOffline } from 'firebase/database';
 
 	const RSVPDate = 'July 20, 2024';
 
@@ -65,6 +66,13 @@
 	onMount(() => {
 		confirmed = !!localStorage.getItem(data.id);
 	});
+
+	let rsvpDatePassed = false;
+
+	// check if the RSVP date is has passed
+	$: if (new Date() > new Date(RSVPDate)) {
+		rsvpDatePassed = true;
+	}
 </script>
 
 <svelte:head>
@@ -76,14 +84,29 @@
 		class="bg-white p-6 max-w-96 md:max-w-3xl mx-auto rounded-2xl shadow-2xl shadow-black/50"
 	>
 		{#if $guest}
-			<h1 class="text-8xl lg:text-5xl text-center mb-4 text-megan-900">RSVP</h1>
+			<h1 class="text-8xl lg:text-5xl text-center mb-4 text-megan-900">
+				{#if rsvpDatePassed}
+					Oops!
+				{:else}
+					RSVP
+				{/if}
+			</h1>
 			<hr class="mb-4" />
 			<h2 class="text-2xl text-center text-megan-700 mb-4">
 				{$guest.firstName}
 				{$guest.lastName}!
 			</h2>
 
-			{#if !hasRsvp}
+			{#if rsvpDatePassed}
+				<div class="grid gap-4 text-center">
+					<p>
+						It seems our RSVP deadline has come and gone, and we're no longer able to accept any
+						more responses or changes. We'll miss having you celebrate with us! If you have any
+						questions or need more information, feel free to reach out to Tracy.
+					</p>
+					<p>We hope to catch up with you soon at another occasion!</p>
+				</div>
+			{:else if !hasRsvp}
 				{#if !confirmed}
 					<div class="min-w-[300px] mx-auto grid gap-4 text-center" style="text-wrap: balance">
 						<p class="text-balance">
