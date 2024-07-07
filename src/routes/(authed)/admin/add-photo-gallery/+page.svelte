@@ -37,6 +37,13 @@
 	}
 </script>
 
+<svelte:head>
+	<link
+		rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+	/>
+</svelte:head>
+
 <Headline>Add A Photo Gallery</Headline>
 
 <div class="border border-black rounded-lg bg-megan-100 p-4 grid gap-4">
@@ -81,18 +88,31 @@
 						<p class="aspect-square grid place-content-center bg-slate-300/45">No photos found</p>
 					{/if}
 					<p>(Photos {gallery.imageCount})</p>
-					<Button
-						class="whitespace-nowrap"
-						on:click={() => goto(`/admin/add-photo-gallery/edit/${gallery.name}`)}
-					>
-						Edit
-					</Button>
-					<Button class="whitespace-nowrap" on:click={() => goto(`/${galleryUrl}/${gallery.name}`)}>
-						View
-					</Button>
-					<Button on:click={() => goto(`/admin/add-photo-gallery/qr/${gallery.name}`)}
-						>Print QR Code</Button
-					>
+					<div class="grid grid-cols-2 gap-2">
+						<Button
+							class="whitespace-nowrap"
+							on:click={() => goto(`/admin/add-photo-gallery/edit/${gallery.name}`)}
+						>
+							<span class="material-symbols-outlined"> edit </span>
+							Edit
+						</Button>
+						<Button
+							class="whitespace-nowrap"
+							on:click={() => goto(`/${galleryUrl}/${gallery.name}`)}
+						>
+							<span class="material-symbols-outlined"> visibility </span>
+							View
+						</Button>
+						<Button on:click={() => goto(`/admin/add-photo-gallery/qr/${gallery.name}`)}>
+							<span class="material-symbols-outlined"> print </span>
+
+							Large</Button
+						>
+						<Button on:click={() => goto(`/admin/add-photo-gallery/sheet/${gallery.name}`)}>
+							<span class="material-symbols-outlined"> print </span>
+							Smalls</Button
+						>
+					</div>
 				</div>
 			{/each}
 		</div>
