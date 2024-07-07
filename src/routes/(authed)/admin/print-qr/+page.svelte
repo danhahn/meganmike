@@ -2,11 +2,10 @@
 	import Headline from '$lib/components/Headline.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
 	import { firestore } from '$lib/firebase/firebase';
-	import type { Guest } from '$lib/types';
 	import { title } from '$lib/utils';
 	import { collectionStore } from 'sveltefire';
 
-	import { collection, where, query, orderBy } from 'firebase/firestore';
+	import { collection, query, orderBy } from 'firebase/firestore';
 
 	const qrSize = 200;
 	var baseUrl = 'https://www.meganandmike2024.com';

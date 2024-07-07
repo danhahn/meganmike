@@ -15,8 +15,6 @@
 		const url = window.location.origin;
 
 		baseUrl = url;
-
-		console.log('baseUrl', baseUrl);
 	}
 </script>
 
