@@ -42,55 +42,54 @@
 				<Img alt="" src="engagment/love.jpg" size="square" />
 			</Stack>
 		</div>
-
-		<div
-			class="border-2 border-megan-300 bg-megan-100 rounded-lg m-4 p-4 flex flex-col items-center gap-2 justify-center"
-		>
-			<h2 class="m-0 text-megan-700 text-xl lg:text-5xl">Count Down</h2>
-			<div class="text-megan-500 font-serif text-2xl lg:text-5xl">
-				{#if remainingTime !== 0}
-					<ul class="gap grid-cols-4 gap-1">
-						<li class="bg-white p-2 rounded-md grid gap-1">
-							<div class="text-3xl font-bold">{days}</div>
-							<div class="text-xs">days</div>
-						</li>
-						<li class="bg-white p-2 rounded-md grid gap-1">
-							<div class="text-3xl font-bold">{hours}</div>
-							<di class="text-xs" v>hours</di>
-						</li>
-						<li class="bg-white p-2 rounded-md grid gap-1">
-							<div class="text-3xl font-bold">{minutes}</div>
-							<div class="text-xs">minutes</div>
-						</li>
-						<li class="bg-white p-2 rounded-md grid gap-1">
-							<div class="text-3xl font-bold">{seconds}</div>
-							<div class="text-xs">seconds</div>
-						</li>
-					</ul>
-				{:else}
-					<ul class="gap grid-cols-4 gap-1">
-						<li class="bg-white p-2 rounded-md grid gap-1">
-							<div class="text-3xl font-bold">♥️♥️</div>
-							<div class="text-xs">days</div>
-						</li>
-						<li class="bg-white p-2 rounded-md grid gap-1">
-							<div class="text-3xl font-bold">♥️♥️</div>
-							<di class="text-xs" v>hours</di>
-						</li>
-						<li class="bg-white p-2 rounded-md grid gap-1">
-							<div class="text-3xl font-bold">♥️♥️</div>
-							<div class="text-xs">minutes</div>
-						</li>
-						<li class="bg-white p-2 rounded-md grid gap-1">
-							<div class="text-3xl font-bold">♥️♥️</div>
-							<div class="text-xs">seconds</div>
-						</li>
-					</ul>
-				{/if}
-			</div>
-		</div>
-
 		<Section>
+			<div
+				class="border-2 border-megan-300 bg-megan-100 rounded-lg m-4 p-4 flex flex-col items-center gap-2 justify-center"
+			>
+				<h2 class="m-0 text-megan-700 text-xl lg:text-5xl">Count Down</h2>
+				<div class="text-megan-500 font-serif text-2xl lg:text-5xl">
+					{#if remainingTime !== 0}
+						<ul class="gap grid-cols-4 gap-1">
+							<li class="bg-white p-2 rounded-md grid gap-1">
+								<div class="text-3xl font-bold">{days}</div>
+								<div class="text-xs">days</div>
+							</li>
+							<li class="bg-white p-2 rounded-md grid gap-1">
+								<div class="text-3xl font-bold">{hours}</div>
+								<di class="text-xs" v>hours</di>
+							</li>
+							<li class="bg-white p-2 rounded-md grid gap-1">
+								<div class="text-3xl font-bold">{minutes}</div>
+								<div class="text-xs">minutes</div>
+							</li>
+							<li class="bg-white p-2 rounded-md grid gap-1">
+								<div class="text-3xl font-bold">{seconds}</div>
+								<div class="text-xs">seconds</div>
+							</li>
+						</ul>
+					{:else}
+						<ul class="gap grid-cols-4 gap-1">
+							<li class="bg-white p-2 rounded-md grid gap-1">
+								<div class="text-3xl font-bold">♥️♥️</div>
+								<div class="text-xs">days</div>
+							</li>
+							<li class="bg-white p-2 rounded-md grid gap-1">
+								<div class="text-3xl font-bold">♥️♥️</div>
+								<di class="text-xs" v>hours</di>
+							</li>
+							<li class="bg-white p-2 rounded-md grid gap-1">
+								<div class="text-3xl font-bold">♥️♥️</div>
+								<div class="text-xs">minutes</div>
+							</li>
+							<li class="bg-white p-2 rounded-md grid gap-1">
+								<div class="text-3xl font-bold">♥️♥️</div>
+								<div class="text-xs">seconds</div>
+							</li>
+						</ul>
+					{/if}
+				</div>
+			</div>
+
 			<Headline>Event Details</Headline>
 
 			<ul>
