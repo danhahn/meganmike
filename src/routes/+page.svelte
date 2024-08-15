@@ -7,7 +7,7 @@
 	import Stack from '$lib/components/Stack.svelte';
 	import { onMount } from 'svelte';
 
-	const end = new Date('2024-08-15T12:17:30');
+	const end = new Date('2024-08-15T17:30:00');
 	let remainingTime = 0;
 	let intervalId: any;
 
