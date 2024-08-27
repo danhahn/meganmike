@@ -9,9 +9,6 @@
 		nav.set(!$nav);
 	};
 
-	$: hidden = !$nav ? 'hidden' : '';
-	$: showNav = $nav ? '--tw-translate-x: 0;' : '--tw-translate-x: -100%;';
-
 	$: isOpen = $nav;
 
 	const checkResize = () => window.innerWidth >= 1024 && nav.set(false);
@@ -25,14 +22,8 @@
 	const navData: NavData[] = [
 		{ label: 'home', url: '/' },
 		{ url: '/about', label: 'About Us' },
-		{ url: '/wedding-details', label: 'Wedding Details' },
-		{ url: '/accommodations', label: 'Accommodations' },
-		{ url: '/rsvp', label: 'RSVP', disabled: true },
-		{ url: '/gift-registry', label: 'Gift Registry' },
-		{ url: '/gallery', label: 'Gallery' },
-		{ url: '/contact', label: 'Contact Us' },
-		{ url: '/faq', label: 'FAQs', disabled: true }
-	].filter((item) => !item.disabled);
+		{ url: '/gallery', label: 'Gallery' }
+	];
 </script>
 
 <svelte:window on:resize={checkResize} />

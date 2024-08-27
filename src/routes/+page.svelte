@@ -39,77 +39,12 @@
 			class="bg-white max-w-3xl mx-auto lg:mt-16 overflow-hidden lg:rounded-2xl shadow-lg shadow-megan-300/30 lg:p-4"
 		>
 			<Stack class="overflow-hidden shadow-xl lg:rounded-xl">
-				<Img alt="" src="engagment/love.jpg" size="square" />
+				<Img alt="" src="wedding-3.jpg" size="square" />
 			</Stack>
 		</div>
 		<Section>
-			<div
-				class="border-2 border-megan-300 bg-megan-100 rounded-lg m-4 p-4 flex flex-col items-center gap-2 justify-center"
-			>
-				<h2 class="m-0 text-megan-700 text-xl lg:text-5xl">Count Down</h2>
-				<div class="text-megan-500 font-serif text-2xl lg:text-5xl">
-					{#if remainingTime !== 0}
-						<ul class="gap grid-cols-4 gap-1">
-							<li class="bg-white p-2 rounded-md grid gap-1">
-								<div class="text-3xl font-bold">{days}</div>
-								<div class="text-xs">days</div>
-							</li>
-							<li class="bg-white p-2 rounded-md grid gap-1">
-								<div class="text-3xl font-bold">{hours}</div>
-								<di class="text-xs" v>hours</di>
-							</li>
-							<li class="bg-white p-2 rounded-md grid gap-1">
-								<div class="text-3xl font-bold">{minutes}</div>
-								<div class="text-xs">minutes</div>
-							</li>
-							<li class="bg-white p-2 rounded-md grid gap-1">
-								<div class="text-3xl font-bold">{seconds}</div>
-								<div class="text-xs">seconds</div>
-							</li>
-						</ul>
-					{:else}
-						<ul class="gap grid-cols-4 gap-1">
-							<li class="bg-white p-2 rounded-md grid gap-1">
-								<div class="text-3xl font-bold">♥️♥️</div>
-								<div class="text-xs">days</div>
-							</li>
-							<li class="bg-white p-2 rounded-md grid gap-1">
-								<div class="text-3xl font-bold">♥️♥️</div>
-								<di class="text-xs" v>hours</di>
-							</li>
-							<li class="bg-white p-2 rounded-md grid gap-1">
-								<div class="text-3xl font-bold">♥️♥️</div>
-								<div class="text-xs">minutes</div>
-							</li>
-							<li class="bg-white p-2 rounded-md grid gap-1">
-								<div class="text-3xl font-bold">♥️♥️</div>
-								<div class="text-xs">seconds</div>
-							</li>
-						</ul>
-					{/if}
-				</div>
-			</div>
-
-			<Headline>Event Details</Headline>
-
-			<ul>
-				<li><span>Date</span> <date>August 15, 2024</date></li>
-				<li><span>Time</span> 5:00 PM - 11:00 PM</li>
-				<li><span>Venue</span> Larkfield Manor</li>
-				<li>
-					<span>Address</span>
-					<address>507 Larkfield Rd East <br class="lg:inline" />Northport, NY 11731</address>
-				</li>
-			</ul>
-
-			<Headline>Schedule</Headline>
-
-			<ul>
-				<li>5:00 PM - 5:30 PM: Doors Open</li>
-				<li>5:30 PM - 6:00 PM: Ceremony</li>
-				<li>6:00 PM - 7:00 PM: Cocktail Hour</li>
-				<li>7:00 PM - 11:00 PM: Dinner and Dancing</li>
-			</ul>
+			<Headline>Congratulation</Headline>
+			<p>Congratulation Megan and Mike. We all wish you all the happiness in the world</p>
 		</Section>
 	</div>
 </Background>
