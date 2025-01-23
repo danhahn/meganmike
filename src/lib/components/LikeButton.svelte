@@ -6,6 +6,7 @@
 	export let id: string;
 	export let likes: number;
 	export let hideCount: boolean = false;
+	export let size: 'small' | 'large' = 'small';
 </script>
 
 {#if $userId}
@@ -13,6 +14,7 @@
 		class={`col-start-1 relative row-start-1 self-end justify-self-end bg-white/70 text-megan-600 p-[2px] lg:p-1 rounded-full m-2 flex items-center gap-1 ${
 			likes && !hideCount ? 'mr-4' : ''
 		}`}
+		class:scale-150={size === 'large'}
 		on:click={() => toggleLike(id)}
 	>
 		{#if $userLikes.includes(id)}
