@@ -18,7 +18,6 @@
 
 	let photoIndex: number | undefined = undefined;
 	let galleryWrapper: HTMLElement | null = null;
-	let container: HTMLElement | null = null;
 	let imagePositions: {
 		id: string;
 		position: number;
@@ -40,6 +39,7 @@
 			left: photoIndex * width,
 			behavior: 'instant'
 		});
+		window.scrollTo({ top: 77, behavior: 'instant' });
 	}
 
 	function watchScroll() {
@@ -70,22 +70,11 @@
 		// go back to the gallery
 		goto(`/gallery/${data.id}`);
 	}
-
-	function scrollToTop() {
-		if (container) {
-			container.scrollTo({
-				top: 0,
-				behavior: 'smooth'
-			});
-		}
-	}
-
-	onMount(scrollToTop);
 </script>
 
 <svelte:window bind:innerWidth />
 
-<div class="grid grid-rows-[1fr_auto] h-screen" bind:this={container}>
+<div class="grid grid-rows-[1fr_auto] h-screen">
 	{#if loading === 'pending'}
 		<div class="flex justify-center items-center h-full"></div>
 	{:else if loading === 'loading'}
