@@ -18,6 +18,7 @@
 
 	let photoIndex: number | undefined = undefined;
 	let galleryWrapper: HTMLElement | null = null;
+	let container: HTMLElement | null = null;
 	let imagePositions: {
 		id: string;
 		position: number;
@@ -44,7 +45,9 @@
 
 	function watchScroll() {
 		const scrollLeft = galleryWrapper ? galleryWrapper.scrollLeft : 0;
-		const currentImage = imagePositions.find((image) => image.position === scrollLeft);
+		const currentImage = imagePositions.find(
+			(image) => Math.abs(image.position - scrollLeft) <= 50
+		);
 		if (currentImage) {
 			window.history.replaceState(null, '', `/gallery/${data.id}/${currentImage.id}`);
 		}
@@ -70,11 +73,23 @@
 		// go back to the gallery
 		goto(`/gallery/${data.id}`);
 	}
+
+	function hideBackToGallery() {
+		const backToGallery = document.getElementById('back-to-gallery');
+
+		if (backToGallery) {
+			if (window.scrollY < 77) {
+				backToGallery.classList.add('hide');
+			} else {
+				backToGallery.classList.remove('hide');
+			}
+		}
+	}
 </script>
 
-<svelte:window bind:innerWidth />
+<svelte:window bind:innerWidth on:scroll={hideBackToGallery} />
 
-<div class="grid grid-rows-[1fr_auto] h-screen">
+<div class="grid grid-rows-[1fr_auto] h-[100dvh]">
 	{#if loading === 'pending'}
 		<div class="flex justify-center items-center h-full"></div>
 	{:else if loading === 'loading'}
@@ -82,7 +97,18 @@
 			<span class="loading loading-spinner loading-lg text-megan-500"></span>
 		</div>
 	{:else if loading === 'loaded'}
-		<div class="carousel w-full" bind:this={galleryWrapper} on:scroll={watchScroll}>
+		<div class="carousel relative w-full" bind:this={galleryWrapper} on:scroll={watchScroll}>
+			<div class="fixed top-4 left-4 z-30" id="back-to-gallery">
+				<button on:click={backToGallery} class="text-white">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 -960 960 960"
+						class="w-6 h-6 fill-current"
+					>
+						<path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+					</svg>
+				</button>
+			</div>
 			{#each $gallery as photo}
 				<div class="carousel-item w-full">
 					<div class={`grid w-[${width}px]`} id={photo.id}>
@@ -110,15 +136,26 @@
 			{/each}
 		</div>
 	{/if}
+</div>
 
-	<div class="flex justify-center p-2">
-		<Button on:click={backToGallery}>
+<div class="bg-megan-300 p-2">
+	<form method="POST" class="flex justify-stretch items-center">
+		<input
+			type="text"
+			class="input w-full focus:outline-none rounded-r-none"
+			placeholder="Add Comment"
+		/>
+		<button
+			class="btn btn-primary bg-megan-500 border-megan-700 text-white rounded-l-none"
+			type="submit"
+		>
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-6 h-6 fill-current"
-				><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" /></svg
+				><path
+					d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"
+				/></svg
 			>
-			Back to gallery
-		</Button>
-	</div>
+		</button>
+	</form>
 </div>
 
 <style lang="postcss">
@@ -130,5 +167,15 @@
 		height: 100%;
 		filter: blur(10px);
 		scale: 1.2;
+	}
+
+	#back-to-gallery {
+		transform: translateX(0);
+		transition: all 0.3s;
+	}
+
+	#back-to-gallery.hide {
+		/* slide off screen */
+		transform: translateX(calc(-100% - 1rem));
 	}
 </style>
