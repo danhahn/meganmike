@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import Button from '$lib/components/forms/Button.svelte';
 	import type { PageData } from './$types';
 	import { gallery } from '$lib/stores/galleryStore';
 	import type { Image } from '$lib/types';
@@ -28,7 +27,45 @@
 
 	$: imageSize = innerWidth > 768 ? 1000 : innerWidth;
 
+	$: if (innerWidth < 768) {
+		goto(`/gallery/${data.id}/m/${data.photoId}`);
+	}
+
 	let dialog: HTMLDialogElement;
+
+	function goToNextPhoto() {
+		if (nextPhoto) {
+			goto(`/gallery/${data.id}/${nextPhoto.id}`);
+		}
+	}
+
+	function goToPrevPhoto() {
+		if (prevPhoto) {
+			goto(`/gallery/${data.id}/${prevPhoto.id}`);
+		}
+	}
+
+	function backToGallery() {
+		goto(`/gallery/${data.id}`);
+	}
+
+	function handleKeyDown(event: KeyboardEvent) {
+		switch (event.key) {
+			case 'ArrowRight':
+			case 'ArrowDown':
+			case 'j':
+				goToNextPhoto();
+				break;
+			case 'ArrowLeft':
+			case 'ArrowUp':
+			case 'k':
+				goToPrevPhoto();
+				break;
+			case 'Escape':
+				backToGallery();
+				break;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -38,7 +75,7 @@
 		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
 	/>
 </svelte:head>
-<svelte:window bind:innerWidth />
+<svelte:window bind:innerWidth on:keydown={handleKeyDown} />
 
 {#if data.status === 404}
 	<p>Page Not found</p>
