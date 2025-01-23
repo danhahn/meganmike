@@ -1,7 +1,7 @@
 import { dev } from '$app/environment';
 
 // IntersectionObserver interface (optional for type safety)
-interface IntersectionObserverEntry {
+export interface IntersectionObserverEntry {
 	readonly boundingClientRect: DOMRectReadOnly;
 	readonly intersectionRatio: number;
 	readonly isIntersecting: boolean;

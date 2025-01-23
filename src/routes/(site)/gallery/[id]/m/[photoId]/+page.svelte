@@ -6,6 +6,8 @@
 	export let data: PageData;
 	import LikeButton from '$lib/components/LikeButton.svelte';
 	import { toggleLike } from '$lib/utils';
+	import viewport, { type IntersectionObserverEntry } from '$lib/useViewportAction';
+	import { onMount } from 'svelte';
 
 	let innerWidth = 0;
 	let loading: 'pending' | 'loading' | 'loaded' = 'pending';
@@ -16,6 +18,7 @@
 
 	let photoIndex: number | undefined = undefined;
 	let galleryWrapper: HTMLElement | null = null;
+	let container: HTMLElement | null = null;
 	let imagePositions: {
 		id: string;
 		position: number;
@@ -47,15 +50,42 @@
 		}
 	}
 
+	function loadImage(entry: IntersectionObserverEntry) {
+		const image = entry.target as HTMLImageElement;
+		const src = image.dataset.image;
+		if (src) {
+			image.src = src;
+		}
+	}
+
+	function addBackgroundStyle(entry: IntersectionObserverEntry) {
+		const bg = entry.target as HTMLElement;
+		const src = bg.dataset.bg;
+		if (src) {
+			bg.style.setProperty('--bg', src);
+		}
+	}
+
 	function backToGallery() {
 		// go back to the gallery
 		goto(`/gallery/${data.id}`);
 	}
+
+	function scrollToTop() {
+		if (container) {
+			container.scrollTo({
+				top: 0,
+				behavior: 'smooth'
+			});
+		}
+	}
+
+	onMount(scrollToTop);
 </script>
 
 <svelte:window bind:innerWidth />
 
-<div class="grid grid-rows-[1fr_auto] h-full">
+<div class="grid grid-rows-[1fr_auto] h-screen" bind:this={container}>
 	{#if loading === 'pending'}
 		<div class="flex justify-center items-center h-full"></div>
 	{:else if loading === 'loading'}
@@ -66,15 +96,22 @@
 		<div class="carousel w-full" bind:this={galleryWrapper} on:scroll={watchScroll}>
 			{#each $gallery as photo}
 				<div class="carousel-item w-full">
-					<div class="grid" id={photo.id}>
+					<div class={`grid w-[${width}px]`} id={photo.id}>
 						<div class="overflow-clip col-start-1 row-start-1">
-							<div class="bg" style="--bg: url('{photo.url}')"></div>
+							<div
+								use:viewport={addBackgroundStyle}
+								class="bg"
+								style=""
+								data-bg="url('{photo.url}')"
+							></div>
 						</div>
 						<img
-							src={photo.url}
+							use:viewport={loadImage}
+							src=""
 							class="col-start-1 row-start-1 w-full object-scale-down z-10 self-center"
 							alt=""
 							loading="lazy"
+							data-image={photo.url}
 						/>
 						<div class="z-20 col-start-1 row-start-1 flex justify-end items-center p-6">
 							<LikeButton size="large" id={photo.id} {toggleLike} likes={photo.likes} />
