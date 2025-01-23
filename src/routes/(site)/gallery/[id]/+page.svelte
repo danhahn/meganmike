@@ -25,7 +25,7 @@
 	let dialog: HTMLDialogElement;
 	let helpDialog: HTMLDialogElement;
 	let sortButton: HTMLButtonElement;
-	let dropdown: HTMLDivElement;
+	let dropdown: HTMLDivElement | null = null;
 	let sortDialog: HTMLDialogElement;
 	let input: HTMLInputElement;
 
@@ -139,6 +139,9 @@
 	// calculate the number image pre row
 	$: iconsPerRow = innerWidth > breakpoint ? 5 : 3;
 	$: iconSize = Math.ceil(innerWidth / iconsPerRow) - 2;
+	$: isMobile = innerWidth < 768;
+
+	$: console.log(isMobile);
 
 	$: numberOfRow = Math.round(innerHeight / iconSize);
 
@@ -158,7 +161,7 @@
 
 		if (isDropdownOpen) {
 			sortButton.setAttribute('aria-expanded', 'true');
-			dropdown.focus();
+			dropdown?.focus();
 		} else {
 			sortButton.setAttribute('aria-expanded', 'false');
 		}
@@ -290,9 +293,12 @@
 			{:else}
 				<ul class="grid grid-cols-3 lg:grid-cols-5 bg-slate-50 gap-[2px] border-2 border-slate-50">
 					{#each images as item (item.id)}
+						{@const url = !isMobile
+							? `/gallery/${data.id}/${item.id}`
+							: `/gallery/${data.id}/m/${item.id}`}
 						{#if item.url}
 							<li class="grid">
-								<a href={`/gallery/${data.id}/${item.id}`} class="col-start-1 row-start-1">
+								<a href={url} class="col-start-1 row-start-1">
 									<img
 										src={`${item.url}&tr=w-${iconSize},h-${iconSize}`}
 										alt=""
