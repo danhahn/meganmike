@@ -42,6 +42,7 @@ export type Image = {
 	gallery: string;
 	id: string;
 	disabled?: boolean;
+	comments: Comment[];
 };
 
 export type UserImageCount = {
@@ -49,3 +50,9 @@ export type UserImageCount = {
 };
 
 export type UserImageCountList = { displayName: string; count: number }[];
+
+export type Comment = {
+	id: string;
+	comment: string;
+	timestamp: Timestamp;
+};
