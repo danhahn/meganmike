@@ -42,7 +42,7 @@ export type Image = {
 	gallery: string;
 	id: string;
 	disabled?: boolean;
-	comments: Comment[];
+	comments?: Comment[];
 };
 
 export type UserImageCount = {
