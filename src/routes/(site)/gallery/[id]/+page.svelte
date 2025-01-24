@@ -141,8 +141,6 @@
 	$: iconSize = Math.ceil(innerWidth / iconsPerRow) - 2;
 	$: isMobile = innerWidth < 768;
 
-	$: console.log(isMobile);
-
 	$: numberOfRow = Math.round(innerHeight / iconSize);
 
 	$: totalNumberRequested =
