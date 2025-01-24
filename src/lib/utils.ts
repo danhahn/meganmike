@@ -1,9 +1,19 @@
-import { addDoc, collection, deleteDoc, doc, increment, setDoc } from 'firebase/firestore';
+import {
+	addDoc,
+	arrayUnion,
+	collection,
+	deleteDoc,
+	doc,
+	increment,
+	setDoc,
+	Timestamp
+} from 'firebase/firestore';
 import { db } from './firebase/firebase';
 import { dev } from '$app/environment';
 import { goto } from '$app/navigation';
 import { userId, userLikes } from './stores/user';
 import type { SortField } from './stores/sortStore';
+import type { Comment } from './types';
 
 export const title = '❤️ Megan and Mike 2024 ❤️';
 const imageUrl = 'https://ik.imagekit.io/hahnster';
@@ -274,6 +284,21 @@ export async function toggleLike(id: string) {
 	// get the current document
 	const imageRef = doc(db, 'photos', id);
 	await setDoc(imageRef, { likes: increment(add ? 1 : -1) }, { merge: true });
+}
+
+export async function addComment(id: string, comment: string) {
+	if (!uid) {
+		return;
+	}
+	const newComment: Comment = {
+		id: uid,
+		comment,
+		timestamp: Timestamp.now()
+	};
+
+	const imageRef = doc(db, 'photos', id);
+	console.log(newComment);
+	await setDoc(imageRef, { comments: arrayUnion(newComment) }, { merge: true });
 }
 
 export const toggleOptions: Array<{ field: SortField; label: string }> = [
