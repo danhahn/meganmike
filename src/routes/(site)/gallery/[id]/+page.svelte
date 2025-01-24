@@ -19,6 +19,7 @@
 	import { userId, userLikes } from '$lib/stores/user';
 	import LikeButton from '$lib/components/LikeButton.svelte';
 	import Sort from '$lib/components/Sort.svelte';
+	import { goto } from '$app/navigation';
 
 	export let data: PageData;
 
@@ -296,7 +297,7 @@
 							: `/gallery/${data.id}/m/${item.id}`}
 						{#if item.url}
 							<li class="grid">
-								<a href={url} class="col-start-1 row-start-1">
+								<button on:click={() => goto(url)} class="col-start-1 row-start-1">
 									<img
 										src={`${item.url}&tr=w-${iconSize},h-${iconSize}`}
 										alt=""
@@ -305,7 +306,7 @@
 										width={iconSize}
 										height={iconSize}
 									/>
-								</a>
+								</button>
 								<LikeButton hideCount id={item.id} {toggleLike} likes={item.likes} />
 							</li>
 						{/if}
