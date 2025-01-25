@@ -2,23 +2,19 @@
 	import type { Image } from '$lib/types';
 	export let photo: Image;
 	export let size: 'sm' | 'lg' = 'lg';
-	$: padding = size === 'sm' ? 'p-2' : 'p-6';
+
 	$: svgSize = size === 'sm' ? 'w-4 h-4' : 'w-6 h-6';
 	$: buttonType = size === 'sm' ? 'btn-ghost' : '';
 </script>
 
-<div
-	class={`z-20 col-start-1 row-start-1 flex justify-start items-end ${padding} pointer-events-none`}
->
+<div class="comment-trigger">
 	<div class="indicator">
 		{#if photo.comments?.length}
 			<span class="indicator-item badge badge-primary font-mono" class:scale-50={size === 'sm'}
 				><span class:hidden={size === 'sm'}>{photo.comments.length}</span></span
 			>
 		{/if}
-		<button
-			class={`btn pointer-events-auto btn-${size} ${buttonType}`}
-			popovertarget={`photo-${photo.id}`}
+		<button class={`btn btn-${size} ${buttonType}`} popovertarget={`comment-layer`}
 			><svg
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 -960 960 960"
