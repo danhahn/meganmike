@@ -324,7 +324,9 @@ export function timeSince(date: Timestamp) {
 		return `<span class="font-bold">${hours}</span> hour${hours === 1 ? '' : 's'} ago`;
 	} else if (minutes > 0) {
 		return `<span class="font-bold">${minutes}</span> minute${minutes === 1 ? '' : 's'} ago`;
-	} else {
+	} else if (seconds > 0) {
 		return `<span class="font-bold">${seconds}</span> second${seconds === 1 ? '' : 's'} ago`;
+	} else {
+		return 'now';
 	}
 }
