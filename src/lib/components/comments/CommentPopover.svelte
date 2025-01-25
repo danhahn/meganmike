@@ -6,7 +6,7 @@
 	export let photo: Image;
 	export let currentPhotoId: string | undefined;
 
-	let comment: string = '🍑';
+	let comment: string = '';
 
 	async function handleSubmit(event: CustomEvent<string>) {
 		comment = event.detail;
@@ -22,7 +22,16 @@
 	<div class="grid grid-rows-[auto_1fr_auto] h-full">
 		<div class="flex justify-between p-2 bg-megan-400">
 			<h3>Comments</h3>
-			<button popovertarget={`photo-${photo.id}`} popovertargetaction="hide">close</button>
+			<button popovertarget={`photo-${photo.id}`} popovertargetaction="hide">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 -960 960 960"
+					class="w-6 h-6 fill-current"
+					><path
+						d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
+					/></svg
+				>
+			</button>
 		</div>
 		<div class="overflow-auto">
 			<Comments {photo} />
