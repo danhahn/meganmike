@@ -32,5 +32,22 @@ module.exports = {
 			}
 		}
 	},
+	daisyui: {
+		themes: [
+			{
+				mytheme: {
+					primary: 'hsl(348, 63%, 53%)',
+					secondary: '#eab308',
+					accent: '#c084fc',
+					neutral: '#050217',
+					'base-100': '#fffbff',
+					info: '#00a3f2',
+					success: '#008a00',
+					warning: '#fe6200',
+					error: '#ff7e7e'
+				}
+			}
+		]
+	},
 	plugins: [require('daisyui')]
 };
