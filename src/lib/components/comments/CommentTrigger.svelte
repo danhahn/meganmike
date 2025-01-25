@@ -4,6 +4,7 @@
 	export let size: 'sm' | 'lg' = 'lg';
 	$: padding = size === 'sm' ? 'p-2' : 'p-6';
 	$: svgSize = size === 'sm' ? 'w-4 h-4' : 'w-6 h-6';
+	$: buttonType = size === 'sm' ? 'btn-ghost' : '';
 </script>
 
 <div
@@ -11,9 +12,13 @@
 >
 	<div class="indicator">
 		{#if photo.comments?.length}
-			<span class="indicator-item badge badge-primary font-mono">{photo.comments.length}</span>
+			<span class="indicator-item badge badge-primary font-mono" class:scale-50={size === 'sm'}
+				><span class:hidden={size === 'sm'}>{photo.comments.length}</span></span
+			>
 		{/if}
-		<button class={`btn pointer-events-auto btn-${size}`} popovertarget={`photo-${photo.id}`}
+		<button
+			class={`btn pointer-events-auto btn-${size} ${buttonType}`}
+			popovertarget={`photo-${photo.id}`}
 			><svg
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 -960 960 960"
