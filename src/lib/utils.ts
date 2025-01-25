@@ -306,3 +306,25 @@ export const toggleOptions: Array<{ field: SortField; label: string }> = [
 	{ field: 'dateTaken', label: 'Date Taken' },
 	{ field: 'likes', label: 'Likes' }
 ];
+
+// function that takes a date and return the amount time since that date
+// e.g. 2 days ago, 3 hours ago, 4 minutes ago, 5 seconds ago
+export function timeSince(date: Timestamp) {
+	const now = new Date();
+	const elapsed = now.getTime() - date.seconds * 1000; // Difference in milliseconds
+
+	const seconds = Math.floor(elapsed / 1000);
+	const minutes = Math.floor(seconds / 60);
+	const hours = Math.floor(minutes / 60);
+	const days = Math.floor(hours / 24);
+
+	if (days > 0) {
+		return `<span class="font-bold">${days}</span> day${days === 1 ? '' : 's'} ago`;
+	} else if (hours > 0) {
+		return `<span class="font-bold">${hours}</span> hour${hours === 1 ? '' : 's'} ago`;
+	} else if (minutes > 0) {
+		return `<span class="font-bold">${minutes}</span> minute${minutes === 1 ? '' : 's'} ago`;
+	} else {
+		return `<span class="font-bold">${seconds}</span> second${seconds === 1 ? '' : 's'} ago`;
+	}
+}
