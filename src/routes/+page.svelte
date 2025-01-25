@@ -53,12 +53,4 @@
 	:global(html) {
 		background-color: theme(colors.megan.50);
 	}
-
-	ul {
-		@apply text-center grid grid-rows-1 gap-2 lg:gap-4 text-xl;
-	}
-
-	li span {
-		@apply text-megan-500 block text-2xl lg:text-3xl mb-1 lg:mb-4;
-	}
 </style>
