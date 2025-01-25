@@ -37,7 +37,7 @@
 	}
 
 	[popover] {
-		@apply m-0 ml-auto h-screen p-0 lg:w-[500px] w-full shadow-2xl shadow-black;
+		@apply m-0 ml-auto h-dvh p-0 lg:w-[500px] w-full shadow-2xl shadow-black;
 	}
 
 	[popover]::backdrop {
