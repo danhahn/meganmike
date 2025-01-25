@@ -8,6 +8,7 @@
 	import { sortDirectionStore, sortFieldStore } from '$lib/stores/sortStore';
 	import { signInAnonymously } from 'firebase/auth';
 	import { userId } from '$lib/stores/user';
+	import CommentPopover from '$lib/components/comments/CommentPopover.svelte';
 	export let data: LayoutData;
 
 	let photosQuery: any;
@@ -50,4 +51,5 @@
 
 <FirebaseApp {auth} {firestore} {storage}>
 	<slot />
+	<CommentPopover />
 </FirebaseApp>
