@@ -20,6 +20,8 @@
 	import LikeButton from '$lib/components/LikeButton.svelte';
 	import Sort from '$lib/components/Sort.svelte';
 	import { goto } from '$app/navigation';
+	import CommentTrigger from '$lib/components/comments/CommentTrigger.svelte';
+	import CommentPopover from '$lib/components/comments/CommentPopover.svelte';
 
 	export let data: PageData;
 
@@ -307,6 +309,8 @@
 										height={iconSize}
 									/>
 								</button>
+								<CommentTrigger size="sm" photo={item} />
+								<CommentPopover photo={item} currentPhotoId={item.id} />
 								<LikeButton hideCount id={item.id} {toggleLike} likes={item.likes} />
 							</li>
 						{/if}
