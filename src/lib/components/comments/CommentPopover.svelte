@@ -19,43 +19,49 @@
 </script>
 
 <div id={`photo-${photo.id}`} popover>
-	<div class="h-1/2"></div>
-	<div class="flex flex-col">
+	<div class="grid grid-rows-[auto_1fr_auto] h-full">
 		<div class="flex justify-between p-2 bg-megan-400">
 			<h3>Comments</h3>
 			<button popovertarget={`photo-${photo.id}`} popovertargetaction="hide">close</button>
 		</div>
-		<Comments {photo} />
+		<div class="overflow-auto">
+			<Comments {photo} />
+		</div>
+		<AddComment on:add-comment={handleSubmit} {comment} />
 	</div>
-	<AddComment on:add-comment={handleSubmit} {comment} />
 </div>
 
-<style>
+<style lang="postcss">
 	:global(body:has([popover]:popover-open)) {
 		overflow: hidden;
 	}
 
 	[popover] {
-		background: transparent;
-		width: 100vw;
-		min-height: calc(100vh - 64px);
-		height: clamp(10rem, 50vh, 80vh);
-
-		position: relative;
-		margin: 0;
-		margin-top: 77px;
-		padding: 0;
-	}
-
-	:global([popover] .add-comment) {
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		width: 100%;
+		@apply m-0 ml-auto h-screen p-0 lg:w-[500px] w-full;
 	}
 
 	[popover]::backdrop {
 		background-color: rgb(0 0 0 / 50%);
+	}
+
+	/*   IS-OPEN STATE   */
+	[popover]:popover-open {
+		translate: 0 0;
+	}
+
+	/*   EXIT STATE   */
+	[popover] {
+		transition:
+			translate 0.2s ease-out,
+			display 0.2s ease-out allow-discrete,
+			overlay 0.2s ease-out allow-discrete;
+		translate: 100% 0;
+	}
+
+	/*   0. BEFORE-OPEN STATE   */
+	@starting-style {
+		[popover]:popover-open {
+			translate: 100% 0;
+		}
 	}
 </style>
