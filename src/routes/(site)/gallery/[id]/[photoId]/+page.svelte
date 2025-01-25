@@ -6,6 +6,9 @@
 	import LikeButton from '$lib/components/LikeButton.svelte';
 	import { toggleLike } from '$lib/utils';
 	import DownloadHelp from '$lib/components/DownloadHelp.svelte';
+	import CommentPopover from '$lib/components/comments/CommentPopover.svelte';
+	import CommentTrigger from '$lib/components/comments/CommentTrigger.svelte';
+	import { onMount } from 'svelte';
 
 	export let data: PageData;
 
@@ -62,7 +65,14 @@
 				goToPrevPhoto();
 				break;
 			case 'Escape':
-				backToGallery();
+				if (dialog.open) {
+					dialog.close();
+				} else {
+					backToGallery();
+				}
+				break;
+			case 'h':
+				dialog.showModal();
 				break;
 		}
 	}
@@ -97,6 +107,8 @@
 					alt=""
 					class="max-h-screen shadow-lg shadow-black/40 col-start-1 row-start-1"
 				/>
+				<CommentTrigger photo={currentPhoto} />
+				<CommentPopover photo={currentPhoto} currentPhotoId={currentPhoto.id} />
 				<LikeButton id={currentPhoto.id} {toggleLike} likes={currentPhoto.likes} />
 			</div>
 		{/if}
