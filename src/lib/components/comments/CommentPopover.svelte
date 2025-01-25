@@ -37,11 +37,11 @@
 	}
 
 	[popover] {
-		@apply m-0 ml-auto h-screen p-0 lg:w-[500px] w-full;
+		@apply m-0 ml-auto h-screen p-0 lg:w-[500px] w-full shadow-2xl shadow-black;
 	}
 
 	[popover]::backdrop {
-		background-color: rgb(0 0 0 / 50%);
+		background-color: rgb(0 0 0 / 25%);
 	}
 
 	/*   IS-OPEN STATE   */
