@@ -309,8 +309,12 @@
 										height={iconSize}
 									/>
 								</button>
-								<CommentTrigger size="sm" photo={item} />
-								<CommentPopover photo={item} currentPhotoId={item.id} />
+
+								<div
+									class={`z-20 col-start-1 row-start-1 flex justify-start items-end pointer-events-none`}
+								>
+									<CommentTrigger size="sm" photo={item} />
+								</div>
 								<LikeButton hideCount id={item.id} {toggleLike} likes={item.likes} />
 							</li>
 						{/if}

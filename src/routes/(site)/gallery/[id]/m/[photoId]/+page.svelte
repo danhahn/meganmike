@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { gallery } from '$lib/stores/galleryStore';
+	import { gallery, currentPhoto as photoStore } from '$lib/stores/galleryStore';
 	export let data: PageData;
 	import LikeButton from '$lib/components/LikeButton.svelte';
 	import { toggleLike } from '$lib/utils';
 	import viewport, { type IntersectionObserverEntry } from '$lib/useViewportAction';
-	import CommentPopover from '$lib/components/comments/CommentPopover.svelte';
 	import CommentTrigger from '$lib/components/comments/CommentTrigger.svelte';
 	import type { PageData } from './$types';
+	import type { Image } from '$lib/types';
 
 	let innerWidth = 0;
 	let loading: 'pending' | 'loading' | 'loaded' = 'pending';
@@ -15,6 +15,8 @@
 	$: if (data) {
 		loading = 'loading';
 	}
+
+	let currentPhoto: Image | undefined = undefined;
 
 	let photoIndex: number | undefined = undefined;
 	let galleryWrapper: HTMLElement | null = null;
@@ -25,6 +27,8 @@
 
 	$: width = innerWidth;
 
+	$: if (currentPhoto) photoStore.set(currentPhoto);
+
 	$: if (width > 786) {
 		goto(`/gallery/${data.id}/${data.photoId}`);
 	}
@@ -32,6 +36,7 @@
 		photoIndex = $gallery.findIndex((photo) => photo.id === data.photoId);
 		imagePositions = $gallery.map((photo, index) => ({ id: photo.id, position: index * width }));
 		loading = 'loaded';
+		currentPhoto = $gallery[photoIndex];
 	}
 	$: if (galleryWrapper && photoIndex !== undefined) {
 		// scroll to the current photo
@@ -52,6 +57,7 @@
 		if (currentImage) {
 			window.history.replaceState(null, '', `/gallery/${data.id}/${currentImage.id}`);
 			currentPhotoId = currentImage.id;
+			photoStore.set($gallery.find((photo) => photo.id === currentImage.id) || null);
 		}
 	}
 
@@ -130,11 +136,12 @@
 							loading="lazy"
 							data-image={photo.url}
 						/>
-						<div class="z-20 col-start-1 row-start-1 flex justify-end items-center p-6">
+						<div class="z-20 col-start-1 row-start-1 flex justify-between items-end p-6">
+							{#if currentPhoto}
+								<CommentTrigger {photo} />
+							{/if}
 							<LikeButton size="large" id={photo.id} {toggleLike} likes={photo.likes} />
 						</div>
-						<CommentTrigger {photo} />
-						<CommentPopover {photo} {currentPhotoId} />
 					</div>
 				</div>
 			{/each}
