@@ -311,11 +311,15 @@
 								</button>
 
 								<div
-									class={`z-20 col-start-1 row-start-1 flex justify-start items-end pointer-events-none`}
+									class={`z-20 col-start-1 row-start-1 flex justify-between items-end pointer-events-none`}
 								>
-									<CommentTrigger size="sm" photo={item} />
+									<div class="pointer-events-auto">
+										<CommentTrigger size="sm" photo={item} />
+									</div>
+									<div class="pointer-events-auto">
+										<LikeButton size="sm" hideCount id={item.id} {toggleLike} likes={item.likes} />
+									</div>
 								</div>
-								<LikeButton hideCount id={item.id} {toggleLike} likes={item.likes} />
 							</li>
 						{/if}
 					{/each}
