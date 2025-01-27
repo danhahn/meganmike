@@ -57,6 +57,7 @@
 		if (currentImage) {
 			window.history.replaceState(null, '', `/gallery/${data.id}/${currentImage.id}`);
 			currentPhotoId = currentImage.id;
+			console.log(currentImage.id);
 			photoStore.set($gallery.find((photo) => photo.id === currentImage.id) || null);
 		}
 	}
@@ -136,16 +137,39 @@
 							loading="lazy"
 							data-image={photo.url}
 						/>
-						<div class="z-20 col-start-1 row-start-1 flex justify-between items-end p-6">
-							{#if currentPhoto}
-								<CommentTrigger {photo} />
-							{/if}
-							<LikeButton size="large" id={photo.id} {toggleLike} likes={photo.likes} />
-						</div>
 					</div>
 				</div>
 			{/each}
 		</div>
+	{/if}
+</div>
+
+<div class="btm-nav">
+	<button on:click={() => goto(`/gallery/${data.id}`)}>
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-6 h-6 fill-current"
+			><path
+				d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"
+			/></svg
+		>
+	</button>
+	{#if currentPhoto}
+		<CommentTrigger photo={currentPhoto} isBottomNav />
+		<LikeButton
+			isBottomNav
+			size="lg"
+			id={currentPhoto.id}
+			{toggleLike}
+			likes={currentPhoto.likes}
+		/>
+	{/if}
+	{#if currentPhoto?.url}
+		<button on:click={() => goto(currentPhoto.url)}>
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-6 h-6 fill-current"
+				><path
+					d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"
+				/></svg
+			>
+		</button>
 	{/if}
 </div>
 
