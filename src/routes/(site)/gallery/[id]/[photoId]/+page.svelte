@@ -10,8 +10,6 @@
 
 	export let data: PageData;
 
-	$: console.log(data);
-
 	// get the current photo index from the gallery
 	$: currentIndex = $gallery.findIndex((photo) => photo.id === data.photoId);
 
@@ -108,8 +106,10 @@
 					alt=""
 					class="max-h-screen shadow-lg shadow-black/40 col-start-1 row-start-1"
 				/>
-				<CommentTrigger photo={currentPhoto} />
-				<LikeButton id={currentPhoto.id} {toggleLike} likes={currentPhoto.likes} />
+				<div class="flex fixed top-4 right-64 gap-4">
+					<CommentTrigger photo={currentPhoto} />
+					<LikeButton id={currentPhoto.id} {toggleLike} likes={currentPhoto.likes} />
+				</div>
 			</div>
 
 			<div class="fixed top-4 right-4 flex gap-4">
