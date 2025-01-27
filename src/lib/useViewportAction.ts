@@ -1,5 +1,3 @@
-import { dev } from '$app/environment';
-
 // IntersectionObserver interface (optional for type safety)
 export interface IntersectionObserverEntry {
 	readonly boundingClientRect: DOMRectReadOnly;
@@ -17,7 +15,7 @@ function ensureIntersectionObserver(callBack: (entry: IntersectionObserverEntry)
 		(entries: IntersectionObserverEntry[]) => {
 			entries.forEach((entry: IntersectionObserverEntry) => {
 				if (entry.isIntersecting) {
-					if (dev) console.log('entry', entry);
+					// if (dev) console.log('entry', entry);
 					callBack(entry);
 				}
 			});
