@@ -5,9 +5,11 @@
 	export let likes: number;
 	export let hideCount: boolean = false;
 	export let size: 'sm' | 'lg' = 'lg';
+	export let isBottomNav: boolean = false;
 
 	$: svgSize = size === 'sm' ? 'w-4 h-4' : 'w-6 h-6';
 	$: buttonType = size === 'sm' ? 'btn-ghost' : '';
+	$: buttonStyles = isBottomNav ? '' : `btn btn-${size} ${buttonType}`;
 </script>
 
 {#if $userId}
@@ -16,7 +18,7 @@
 			{#if likes && !hideCount}
 				<span class="indicator-item badge badge-primary font-mono">{likes}</span>
 			{/if}
-			<button class={`btn btn-${size} ${buttonType}`} on:click={() => toggleLike(id)}>
+			<button class={buttonStyles} on:click={() => toggleLike(id)}>
 				{#if $userLikes.includes(id)}
 					<svg
 						xmlns="http://www.w3.org/2000/svg"

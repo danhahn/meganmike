@@ -2,9 +2,11 @@
 	import type { Image } from '$lib/types';
 	export let photo: Image;
 	export let size: 'sm' | 'lg' = 'lg';
+	export let isBottomNav: boolean = false;
 
 	$: svgSize = size === 'sm' ? 'w-4 h-4' : 'w-6 h-6';
 	$: buttonType = size === 'sm' ? 'btn-ghost' : '';
+	$: buttonStyles = isBottomNav ? '' : `btn btn-${size} ${buttonType}`;
 </script>
 
 <div class="comment-trigger">
@@ -14,7 +16,7 @@
 				><span class:hidden={size === 'sm'}>{photo.comments.length}</span></span
 			>
 		{/if}
-		<button class={`btn btn-${size} ${buttonType}`} popovertarget={`comment-layer`}
+		<button class={buttonStyles} popovertarget={`comment-layer`}
 			><svg
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 -960 960 960"
