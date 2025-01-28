@@ -4,13 +4,13 @@
 	export let data: PageData;
 	import LikeButton from '$lib/components/LikeButton.svelte';
 	import { addComment, toggleLike } from '$lib/utils';
+	import Comment from '$lib/components/comments/Comment.svelte';
 	import viewport, { type IntersectionObserverEntry } from '$lib/useViewportAction';
 	import CommentTrigger from '$lib/components/comments/CommentTrigger.svelte';
 	import type { PageData } from './$types';
 	import type { Image } from '$lib/types';
-	import Comment from '$lib/components/comments/Comment.svelte';
+	import type { Comment as CommentType } from '$lib/types';
 	import { tick } from 'svelte';
-	import { set } from 'firebase/database';
 
 	let innerWidth = 0;
 	let loading: 'pending' | 'loading' | 'loaded' = 'pending';
@@ -84,21 +84,21 @@
 		goto(`/gallery/${data.id}`);
 	}
 
-	function hideBackToGallery() {
-		const backToGallery = document.getElementById('back-to-gallery');
+	$: sortedComments = currentPhoto?.comments?.sort(
+		(a: CommentType, b: CommentType) => a.timestamp.seconds - b.timestamp.seconds
+	);
 
-		if (backToGallery) {
-			if (window.scrollY < 77) {
-				backToGallery.classList.add('hide');
-			} else {
-				backToGallery.classList.remove('hide');
-			}
-		}
-	}
+	$: console.log(
+		sortedComments?.map((comment) => ({
+			date: new Date(comment.timestamp.seconds * 1000).toLocaleString(),
+			comment: comment.comment
+		}))
+	);
 
 	let comment: string = '';
 
 	async function handleSubmit(event: SubmitEvent) {
+		event.preventDefault();
 		if (!currentPhoto?.id) return;
 		if (!comment) return;
 		await addComment(currentPhoto.id, comment);
@@ -109,6 +109,7 @@
 		if (commentLayer) {
 			commentLayer.scrollTop = commentLayer.scrollHeight;
 		}
+		focusCommentInput();
 		comment = '';
 	}
 
@@ -116,6 +117,10 @@
 		if (!currentPhoto) return;
 		const commentInput = document.getElementById(`comment-${currentPhoto.id}`);
 		if (commentInput) {
+			const commentLayer = document.getElementById(`comment-layer-${currentPhoto.id}`);
+			if (commentLayer) {
+				commentLayer.scrollTop = commentLayer.scrollHeight;
+			}
 			commentInput.focus();
 			commentInput.scrollIntoView({ behavior: 'smooth' });
 		}
@@ -124,11 +129,11 @@
 	function displayComments() {
 		showComments = true;
 		// if there is a current photo query the dom for the comments input and focus on it
-		setTimeout(focusCommentInput, 100);
+		tick().then(focusCommentInput);
 	}
 </script>
 
-<svelte:window bind:innerWidth on:scroll={hideBackToGallery} />
+<svelte:window bind:innerWidth />
 
 <div class="grid grid-rows-[1fr_auto] h-[100dvh]">
 	{#if loading === 'pending'}
@@ -171,9 +176,9 @@
 						/>
 					</div>
 					<div class="grid">
-						{#if photo?.comments?.length && showComments && currentPhoto?.id === photo.id}
+						{#if sortedComments?.length && showComments && currentPhoto?.id === photo.id}
 							<div class="max-h-[calc(62.5px*7)] overflow-y-auto" id={`comment-layer-${photo.id}`}>
-								{#each photo.comments as comment}
+								{#each sortedComments as comment (comment.timestamp.seconds)}
 									<Comment comment={comment.comment} timestamp={comment.timestamp} />
 								{/each}
 							</div>
