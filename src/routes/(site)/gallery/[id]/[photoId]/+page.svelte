@@ -7,6 +7,7 @@
 	import { toggleLike } from '$lib/utils';
 	import DownloadHelp from '$lib/components/DownloadHelp.svelte';
 	import CommentTrigger from '$lib/components/comments/CommentTrigger.svelte';
+	import TriggerContainer from '$lib/components/TriggerContainer.svelte';
 
 	export let data: PageData;
 
@@ -106,26 +107,23 @@
 					alt=""
 					class="max-h-screen shadow-lg shadow-black/40 col-start-1 row-start-1"
 				/>
-				<div class="flex fixed top-4 right-64 gap-4">
-					<CommentTrigger photo={currentPhoto} />
-					<LikeButton id={currentPhoto.id} {toggleLike} likes={currentPhoto.likes} />
+				<div class="join fixed top-4 right-20">
+					<CommentTrigger photo={currentPhoto} isJoined />
+					<LikeButton id={currentPhoto.id} {toggleLike} likes={currentPhoto.likes} isJoined />
+					<TriggerContainer on:click={() => goto(currentPhoto.url)} isJoined>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 -960 960 960"
+							class="w-6 h-6 fill-current"
+							><path
+								d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"
+							/></svg
+						>
+					</TriggerContainer>
 				</div>
 			</div>
 
-			<div class="fixed top-4 right-4 flex gap-4">
-				<a
-					href={currentPhoto.url}
-					target="_blank"
-					class=" flex gap-2 items-center bg-megan-600/60 text-white px-6 py-2 rounded-full z-50"
-					>Download <svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 -960 960 960"
-						class="w-6 h-6 fill-current"
-						><path
-							d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"
-						/></svg
-					></a
-				>
+			<div class="fixed top-6 right-8 flex gap-4">
 				<button on:click={() => dialog.showModal()}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
