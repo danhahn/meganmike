@@ -52,6 +52,7 @@ export type UserImageCount = {
 export type UserImageCountList = { displayName: string; count: number }[];
 
 export type Comment = {
+	uid: string;
 	id: string;
 	comment: string;
 	timestamp: Timestamp;
