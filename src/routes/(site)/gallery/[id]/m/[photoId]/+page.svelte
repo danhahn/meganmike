@@ -33,6 +33,12 @@
 
 	$: if (currentPhoto) photoStore.set(currentPhoto);
 
+	$: if (currentPhoto) {
+		console.log('Current Photo:', currentPhoto);
+		console.log('Current Photo ID:', currentPhoto?.id);
+		console.log('Photo Index:', photoIndex);
+	}
+
 	$: if (width > 786) {
 		goto(`/gallery/${data.id}/${data.photoId}`);
 	}
@@ -48,7 +54,6 @@
 			left: photoIndex * width,
 			behavior: 'instant'
 		});
-		window.scrollTo({ top: 77, behavior: 'instant' });
 	}
 
 	function watchScroll() {
@@ -84,9 +89,10 @@
 		goto(`/gallery/${data.id}`);
 	}
 
-	$: sortedComments = currentPhoto?.comments?.sort(
-		(a: CommentType, b: CommentType) => a.timestamp.seconds - b.timestamp.seconds
-	);
+	$: sortedComments =
+		currentPhoto?.comments?.sort(
+			(a: CommentType, b: CommentType) => a.timestamp.seconds - b.timestamp.seconds
+		) || [];
 
 	$: console.log(
 		sortedComments?.map((comment) => ({
@@ -106,6 +112,7 @@
 		await tick();
 		// scroll to the last comment
 		const commentLayer = document.getElementById(`comment-layer-${currentPhoto.id}`);
+		console.log(commentLayer);
 		if (commentLayer) {
 			commentLayer.scrollTop = commentLayer.scrollHeight;
 		}
@@ -131,11 +138,21 @@
 		// if there is a current photo query the dom for the comments input and focus on it
 		tick().then(focusCommentInput);
 	}
+
+	function toggleDisplayComments() {
+		if (!showComments) {
+			displayComments();
+		} else {
+			showComments = false;
+		}
+	}
+
+	$: gridRows = 'grid-rows-[calc(100dvh-64px)_auto]';
 </script>
 
 <svelte:window bind:innerWidth />
 
-<div class="grid grid-rows-[1fr_auto] h-[100dvh]">
+<div class="grid grid-rows-[1fr_auto] h-[calc(100dvh-64px)] overflow-hidden">
 	{#if loading === 'pending'}
 		<div class="flex justify-center items-center h-full"></div>
 	{:else if loading === 'loading'}
@@ -154,10 +171,11 @@
 						<path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
 					</svg>
 				</button>
+				{showComments ? 'Hide Comments' : 'Show Comments'}
 			</div>
 			{#each $gallery as photo}
 				<div class="carousel-item grid w-full relative">
-					<div class={`grid w-[${width}px] grid-rows-[100dvh]`} id={photo.id}>
+					<div class={`grid w-[${width}px] ${gridRows}`} id={photo.id}>
 						<div class="overflow-clip col-start-1 row-start-1">
 							<div
 								use:viewport={addBackgroundStyle}
@@ -175,43 +193,53 @@
 							data-image={photo.url}
 						/>
 					</div>
-					<div class="grid">
+					<div
+						class="grid"
+						class:show={showComments}
+						class:hidden={!showComments}
+						class:h-0={!showComments}
+						class:overflow-hidden={!showComments}
+					>
 						{#if sortedComments?.length && showComments && currentPhoto?.id === photo.id}
-							<div class="max-h-[calc(62.5px*7)] overflow-y-auto" id={`comment-layer-${photo.id}`}>
-								{#each sortedComments as comment (comment.timestamp.seconds)}
+							<div id={`comment-layer-${photo.id}`}>
+								{#each sortedComments as comment (comment.id)}
 									<Comment comment={comment.comment} timestamp={comment.timestamp} />
 								{/each}
 							</div>
 						{/if}
 
 						<div
-							class="bg-megan-300 p-2 add-comment pb-8"
+							class="bg-megan-300 p-2 add-comment"
 							class:show={showComments}
 							class:hidden={!showComments}
+							class:h-0={!showComments}
+							class:overflow-hidden={!showComments}
 						>
 							<form
 								on:submit|preventDefault={handleSubmit}
 								class="flex justify-stretch items-center"
 							>
-								<label class="input input-bordered flex items-center gap-2 w-full">
+								<label
+									class="input input-md rounded-r-none outline-none input-bordered flex items-center gap-2 w-full"
+								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
 										viewBox="0 -960 960 960"
-										class="w-6 h-6 fill-current"
+										class="w-4 h-4 fill-current"
 										><path
 											d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z"
 										/></svg
 									>
 									<input
 										type="text"
-										class="grow focus:outline-none rounded-r-none"
+										class="grow text-[16px]"
 										placeholder="Add A Comment"
 										bind:value={comment}
 										id={`comment-${photo.id}`}
 									/>
 								</label>
 								<button
-									class="btn btn-primary bg-megan-500 border-megan-700 text-white rounded-l-none"
+									class="btn btn-primary btn-md bg-megan-500 border-megan-700 text-white rounded-l-none"
 									type="submit"
 								>
 									<svg
@@ -241,7 +269,7 @@
 		>
 	</button>
 	{#if currentPhoto}
-		<CommentTrigger photo={currentPhoto} isBottomNav on:click={displayComments} />
+		<CommentTrigger photo={currentPhoto} isBottomNav on:click={toggleDisplayComments} />
 		<LikeButton
 			isBottomNav
 			size="lg"
