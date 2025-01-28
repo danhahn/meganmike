@@ -9,7 +9,8 @@
 	import type { PageData } from './$types';
 	import type { Image } from '$lib/types';
 	import Comment from '$lib/components/comments/Comment.svelte';
-	import AddComment from '$lib/components/comments/AddComment.svelte';
+	import { tick } from 'svelte';
+	import { set } from 'firebase/database';
 
 	let innerWidth = 0;
 	let loading: 'pending' | 'loading' | 'loaded' = 'pending';
@@ -19,6 +20,7 @@
 	}
 
 	let currentPhoto: Image | undefined = undefined;
+	let showComments: boolean = false;
 
 	let photoIndex: number | undefined = undefined;
 	let galleryWrapper: HTMLElement | null = null;
@@ -30,8 +32,6 @@
 	$: width = innerWidth;
 
 	$: if (currentPhoto) photoStore.set(currentPhoto);
-
-	$: console.log(currentPhoto);
 
 	$: if (width > 786) {
 		goto(`/gallery/${data.id}/${data.photoId}`);
@@ -59,6 +59,7 @@
 		if (currentImage && currentImage?.id !== currentPhoto?.id) {
 			window.history.replaceState(null, '', `/gallery/${data.id}/${currentImage.id}`);
 			currentPhoto = $gallery.find((photo) => photo.id === currentImage.id);
+			showComments = false;
 		}
 	}
 
@@ -102,7 +103,28 @@
 		if (!comment) return;
 		await addComment(currentPhoto.id, comment);
 		console.log('update');
+		await tick();
+		// scroll to the last comment
+		const commentLayer = document.getElementById(`comment-layer-${currentPhoto.id}`);
+		if (commentLayer) {
+			commentLayer.scrollTop = commentLayer.scrollHeight;
+		}
 		comment = '';
+	}
+
+	function focusCommentInput() {
+		if (!currentPhoto) return;
+		const commentInput = document.getElementById(`comment-${currentPhoto.id}`);
+		if (commentInput) {
+			commentInput.focus();
+			commentInput.scrollIntoView({ behavior: 'smooth' });
+		}
+	}
+
+	function displayComments() {
+		showComments = true;
+		// if there is a current photo query the dom for the comments input and focus on it
+		setTimeout(focusCommentInput, 100);
 	}
 </script>
 
@@ -129,8 +151,8 @@
 				</button>
 			</div>
 			{#each $gallery as photo}
-				<div class="carousel-item grid w-full">
-					<div class={`grid w-[${width}px] h-[calc(100dvh-64px)]`} id={photo.id}>
+				<div class="carousel-item grid w-full relative">
+					<div class={`grid w-[${width}px] grid-rows-[100dvh]`} id={photo.id}>
 						<div class="overflow-clip col-start-1 row-start-1">
 							<div
 								use:viewport={addBackgroundStyle}
@@ -148,45 +170,56 @@
 							data-image={photo.url}
 						/>
 					</div>
-					{#if photo?.comments?.length}
-						<div class="">
-							{#each photo.comments as comment}
-								<Comment comment={comment.comment} timestamp={comment.timestamp} />
-							{/each}
-						</div>
-					{/if}
-					<div class="bg-megan-300 p-2 add-comment pb-8">
-						<form on:submit|preventDefault={handleSubmit} class="flex justify-stretch items-center">
-							<label class="input input-bordered flex items-center gap-2 w-full">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 -960 960 960"
-									class="w-6 h-6 fill-current"
-									><path
-										d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z"
-									/></svg
-								>
-								<input
-									type="text"
-									class="grow focus:outline-none rounded-r-none"
-									placeholder="Add A Comment"
-									bind:value={comment}
-								/>
-							</label>
-							<button
-								class="btn btn-primary bg-megan-500 border-megan-700 text-white rounded-l-none"
-								type="submit"
+					<div class="grid">
+						{#if photo?.comments?.length && showComments && currentPhoto?.id === photo.id}
+							<div class="max-h-[calc(62.5px*7)] overflow-y-auto" id={`comment-layer-${photo.id}`}>
+								{#each photo.comments as comment}
+									<Comment comment={comment.comment} timestamp={comment.timestamp} />
+								{/each}
+							</div>
+						{/if}
+
+						<div
+							class="bg-megan-300 p-2 add-comment pb-8"
+							class:show={showComments}
+							class:hidden={!showComments}
+						>
+							<form
+								on:submit|preventDefault={handleSubmit}
+								class="flex justify-stretch items-center"
 							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 -960 960 960"
-									class="w-6 h-6 fill-current"
-									><path
-										d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"
-									/></svg
+								<label class="input input-bordered flex items-center gap-2 w-full">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 -960 960 960"
+										class="w-6 h-6 fill-current"
+										><path
+											d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z"
+										/></svg
+									>
+									<input
+										type="text"
+										class="grow focus:outline-none rounded-r-none"
+										placeholder="Add A Comment"
+										bind:value={comment}
+										id={`comment-${photo.id}`}
+									/>
+								</label>
+								<button
+									class="btn btn-primary bg-megan-500 border-megan-700 text-white rounded-l-none"
+									type="submit"
 								>
-							</button>
-						</form>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 -960 960 960"
+										class="w-6 h-6 fill-current"
+										><path
+											d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"
+										/></svg
+									>
+								</button>
+							</form>
+						</div>
 					</div>
 				</div>
 			{/each}
@@ -203,7 +236,7 @@
 		>
 	</button>
 	{#if currentPhoto}
-		<CommentTrigger photo={currentPhoto} isBottomNav />
+		<CommentTrigger photo={currentPhoto} isBottomNav on:click={displayComments} />
 		<LikeButton
 			isBottomNav
 			size="lg"
