@@ -13,7 +13,7 @@
 	{size}
 	{isBottomNav}
 	itemsCount={photo.comments?.length}
-	popovertarget={`comment-layer`}
+	popovertarget={!isBottomNav ? `comment-layer` : undefined}
 	{isJoined}
 >
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class={`${svgSize} fill-current`}

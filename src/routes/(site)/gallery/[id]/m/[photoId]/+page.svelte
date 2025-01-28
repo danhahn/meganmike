@@ -3,11 +3,13 @@
 	import { gallery, currentPhoto as photoStore } from '$lib/stores/galleryStore';
 	export let data: PageData;
 	import LikeButton from '$lib/components/LikeButton.svelte';
-	import { toggleLike } from '$lib/utils';
+	import { addComment, toggleLike } from '$lib/utils';
 	import viewport, { type IntersectionObserverEntry } from '$lib/useViewportAction';
 	import CommentTrigger from '$lib/components/comments/CommentTrigger.svelte';
 	import type { PageData } from './$types';
 	import type { Image } from '$lib/types';
+	import Comment from '$lib/components/comments/Comment.svelte';
+	import AddComment from '$lib/components/comments/AddComment.svelte';
 
 	let innerWidth = 0;
 	let loading: 'pending' | 'loading' | 'loaded' = 'pending';
@@ -29,6 +31,8 @@
 
 	$: if (currentPhoto) photoStore.set(currentPhoto);
 
+	$: console.log(currentPhoto);
+
 	$: if (width > 786) {
 		goto(`/gallery/${data.id}/${data.photoId}`);
 	}
@@ -47,18 +51,14 @@
 		window.scrollTo({ top: 77, behavior: 'instant' });
 	}
 
-	let currentPhotoId: string | undefined = data.photoId;
-
 	function watchScroll() {
 		const scrollLeft = galleryWrapper ? galleryWrapper.scrollLeft : 0;
 		const currentImage = imagePositions.find(
 			(image) => Math.abs(image.position - scrollLeft) <= 50
 		);
-		if (currentImage) {
+		if (currentImage && currentImage?.id !== currentPhoto?.id) {
 			window.history.replaceState(null, '', `/gallery/${data.id}/${currentImage.id}`);
-			currentPhotoId = currentImage.id;
-			console.log(currentImage.id);
-			photoStore.set($gallery.find((photo) => photo.id === currentImage.id) || null);
+			currentPhoto = $gallery.find((photo) => photo.id === currentImage.id);
 		}
 	}
 
@@ -94,6 +94,16 @@
 			}
 		}
 	}
+
+	let comment: string = '';
+
+	async function handleSubmit(event: SubmitEvent) {
+		if (!currentPhoto?.id) return;
+		if (!comment) return;
+		await addComment(currentPhoto.id, comment);
+		console.log('update');
+		comment = '';
+	}
 </script>
 
 <svelte:window bind:innerWidth on:scroll={hideBackToGallery} />
@@ -119,8 +129,8 @@
 				</button>
 			</div>
 			{#each $gallery as photo}
-				<div class="carousel-item w-full">
-					<div class={`grid w-[${width}px]`} id={photo.id}>
+				<div class="carousel-item grid w-full">
+					<div class={`grid w-[${width}px] h-[calc(100dvh-64px)]`} id={photo.id}>
 						<div class="overflow-clip col-start-1 row-start-1">
 							<div
 								use:viewport={addBackgroundStyle}
@@ -137,6 +147,46 @@
 							loading="lazy"
 							data-image={photo.url}
 						/>
+					</div>
+					{#if photo?.comments?.length}
+						<div class="">
+							{#each photo.comments as comment}
+								<Comment comment={comment.comment} timestamp={comment.timestamp} />
+							{/each}
+						</div>
+					{/if}
+					<div class="bg-megan-300 p-2 add-comment pb-8">
+						<form on:submit|preventDefault={handleSubmit} class="flex justify-stretch items-center">
+							<label class="input input-bordered flex items-center gap-2 w-full">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 -960 960 960"
+									class="w-6 h-6 fill-current"
+									><path
+										d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z"
+									/></svg
+								>
+								<input
+									type="text"
+									class="grow focus:outline-none rounded-r-none"
+									placeholder="Add A Comment"
+									bind:value={comment}
+								/>
+							</label>
+							<button
+								class="btn btn-primary bg-megan-500 border-megan-700 text-white rounded-l-none"
+								type="submit"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 -960 960 960"
+									class="w-6 h-6 fill-current"
+									><path
+										d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"
+									/></svg
+								>
+							</button>
+						</form>
 					</div>
 				</div>
 			{/each}
@@ -162,8 +212,8 @@
 			likes={currentPhoto.likes}
 		/>
 	{/if}
-	{#if currentPhoto?.url}
-		<button on:click={() => goto(currentPhoto.url)}>
+	{#if currentPhoto && currentPhoto.url}
+		<button on:click={() => goto(currentPhoto?.url || '')}>
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-6 h-6 fill-current"
 				><path
 					d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"

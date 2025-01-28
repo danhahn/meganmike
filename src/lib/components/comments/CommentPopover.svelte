@@ -10,6 +10,7 @@
 	$: photo = $currentPhoto;
 
 	async function handleSubmit(event: CustomEvent<string>) {
+		event.preventDefault();
 		comment = event.detail;
 		if (!photo?.id) return;
 		if (!comment) return;

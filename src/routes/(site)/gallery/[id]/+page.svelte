@@ -317,7 +317,7 @@
 										<CommentTrigger size="sm" photo={item} />
 									</div>
 									<div class="pointer-events-auto">
-										<LikeButton size="sm" hideCount id={item.id} {toggleLike} likes={item.likes} />
+										<LikeButton size="sm" id={item.id} {toggleLike} likes={item.likes} />
 									</div>
 								</div>
 							</li>
