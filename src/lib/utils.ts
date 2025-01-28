@@ -290,8 +290,12 @@ export async function addComment(id: string, comment: string) {
 	if (!uid) {
 		return;
 	}
+
+	// get a uuid for the comment
+	const uuid = Math.random().toString(36).substr(2, 9);
 	const newComment: Comment = {
-		id: uid,
+		uid: uid,
+		id: uuid,
 		comment,
 		timestamp: Timestamp.now()
 	};
