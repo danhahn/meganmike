@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { timeSince } from '$lib/utils';
 	import type { Timestamp } from 'firebase/firestore';
+	import type { Comment as CommentType } from '$lib/types';
 
-	export let comment: string;
+	export let comment: CommentType['comment'];
 	export let timestamp: Timestamp;
+	export let displayName: CommentType['displayName'];
+	export let avatar: CommentType['avatar'];
 	import { onMount } from 'svelte';
 
 	let timeDisplay = timeSince(timestamp);
@@ -21,10 +24,14 @@
 	<div>
 		<div class="avatar rows">
 			<div class="w-12 rounded-full">
-				<img
-					src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-					alt=""
-				/>
+				{#if avatar}
+					<img src={avatar} alt={displayName || ''} />
+				{:else}
+					<img
+						src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+						alt=""
+					/>
+				{/if}
 			</div>
 		</div>
 	</div>
