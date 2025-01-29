@@ -12,9 +12,7 @@
 <div class="comment-trigger">
 	<div class="indicator">
 		{#if itemsCount}
-			<span
-				class="indicator-item p-1 badge badge-secondary font-mono"
-				class:scale-50={size === 'sm'}
+			<span class="indicator-item badge badge-primary font-mono" class:scale-50={size === 'sm'}
 				><span class="text-[0.6rem]" class:hidden={size === 'sm'}>{itemsCount}</span></span
 			>
 		{/if}
