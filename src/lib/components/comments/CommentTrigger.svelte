@@ -12,7 +12,7 @@
 <TriggerContainer
 	{size}
 	{isBottomNav}
-	itemsCount={photo.comments?.length}
+	itemsCount={photo.comments}
 	popovertarget={!isBottomNav ? `comment-layer` : undefined}
 	on:click
 	{isJoined}
