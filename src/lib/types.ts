@@ -37,12 +37,13 @@ export type Image = {
 	dateTaken: Timestamp;
 	dateAdded: Timestamp;
 	uploadedBy: string;
+	uploaderUserId?: string;
 	likes: number;
-	comments?: number;
+	comments: number;
 	size: string;
 	gallery: string;
 	id: string;
-	disabled?: boolean;
+	disabled: boolean;
 };
 
 export type UserImageCount = {
