@@ -90,7 +90,7 @@
 {#if data.status === 404}
 	<p>Page Not found</p>
 {:else}
-	<button class="fixed z-50 top-6 left-2" on:click={() => goto(`/gallery/${data.id}`)}>
+	<button class="fixed z-50 top-10 left-2" on:click={() => goto(`/gallery/${data.id}`)}>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 -960 960 960"
@@ -99,7 +99,7 @@
 			<path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
 		</svg>
 	</button>
-	<div class="h-full grid place-content-center bg-megan-400">
+	<div class="h-[calc(100% - 32px)] mt-8 grid place-content-center bg-megan-400">
 		{#if currentPhoto !== undefined}
 			<div class="grid">
 				<img
@@ -107,7 +107,7 @@
 					alt=""
 					class="max-h-screen shadow-lg shadow-black/40 col-start-1 row-start-1"
 				/>
-				<div class="join fixed top-4 right-20">
+				<div class="join fixed top-10 right-20">
 					<CommentTrigger photo={currentPhoto} isJoined />
 					<LikeButton id={currentPhoto.id} {toggleLike} likes={currentPhoto.likes} isJoined />
 					<TriggerContainer on:click={() => goto(currentPhoto.url)} isJoined>
@@ -123,7 +123,7 @@
 				</div>
 			</div>
 
-			<div class="fixed top-6 right-8 flex gap-4">
+			<div class="fixed top-12 right-8 flex gap-4">
 				<button on:click={() => dialog.showModal()}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"

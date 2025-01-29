@@ -4,7 +4,6 @@
 	export let data: PageData;
 	import LikeButton from '$lib/components/LikeButton.svelte';
 	import { addComment, toggleLike } from '$lib/utils';
-	import Comment from '$lib/components/comments/Comment.svelte';
 	import viewport, { type IntersectionObserverEntry } from '$lib/useViewportAction';
 	import CommentTrigger from '$lib/components/comments/CommentTrigger.svelte';
 	import type { PageData } from './$types';
@@ -12,6 +11,10 @@
 	import type { Comment as CommentType } from '$lib/types';
 	import { tick } from 'svelte';
 	import MobileComments from '$lib/components/comments/MobileComments.svelte';
+	import { auth } from '$lib/firebase/firebase';
+	import { userStore } from 'sveltefire';
+
+	const user = userStore(auth);
 
 	let innerWidth = 0;
 	let loading: 'pending' | 'loading' | 'loaded' = 'pending';
@@ -107,9 +110,18 @@
 
 	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
+		if (!$user) {
+			return;
+		}
 		if (!currentPhoto?.id) return;
 		if (!comment) return;
-		await addComment(currentPhoto.id, comment);
+		await addComment({
+			photoId: currentPhoto.id,
+			comment: comment,
+			uid: $user.uid,
+			displayName: $user?.displayName || 'anonymous',
+			avatar: $user?.photoURL || ''
+		});
 		console.log('update');
 		await tick();
 		// scroll to the last comment
@@ -285,6 +297,15 @@
 				/></svg
 			>
 		</button>
+	{/if}
+	{#if $user?.uid}
+		<a href="/gallery/profile">
+			<div class="avatar">
+				<div class="w-6 rounded-full bg-megan-50 border border-megan-500">
+					<img src={$user.photoURL} alt={$user.displayName} />
+				</div>
+			</div>
+		</a>
 	{/if}
 </div>
 

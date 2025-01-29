@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { userId, userLikes } from '$lib/stores/user';
+	import { userLikes } from '$lib/stores/user';
+	import { userStore } from 'sveltefire';
 	import TriggerContainer from './TriggerContainer.svelte';
+	import { auth } from '$lib/firebase/firebase';
 	export let toggleLike: (id: string) => void;
 	export let id: string;
 	export let likes: number;
@@ -8,10 +10,12 @@
 	export let isBottomNav: boolean = false;
 	export let isJoined: boolean = false;
 
+	const user = userStore(auth);
+
 	$: svgSize = size === 'sm' ? 'w-4 h-4' : 'w-6 h-6';
 </script>
 
-{#if $userId}
+{#if $user?.uid}
 	<TriggerContainer
 		{size}
 		{isBottomNav}

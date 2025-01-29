@@ -239,16 +239,27 @@
 			<div
 				class="px-4 py-1 bg-megan-300/35 text-center text-megan-700 grid grid-cols-[auto_1fr_auto]"
 			>
-				<button bind:this={sortButton} on:click={toggleDropdown}>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 -960 960 960"
-						class="w-4 h-4 fill-megan-700 translate-y-[1px]"
-						><path
-							d="M400-240v-80h160v80H400ZM240-440v-80h480v80H240ZM120-640v-80h720v80H120Z"
-						/></svg
+				<div class="flex items-center gap-4">
+					<a class="link flex" href="/gallery">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 -960 960 960"
+							class="w-4 h-4 fill-megan-700 translate-y-1"
+							><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" /></svg
+						>
+						Back to Gallery</a
 					>
-				</button>
+					<button bind:this={sortButton} on:click={toggleDropdown}>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 -960 960 960"
+							class="w-4 h-4 fill-megan-700 translate-y-[1px]"
+							><path
+								d="M400-240v-80h160v80H400ZM240-440v-80h480v80H240ZM120-640v-80h720v80H120Z"
+							/></svg
+						>
+					</button>
+				</div>
 
 				<h3 class="text-lg">{data.title}</h3>
 				<button on:click={() => helpDialog.showModal()}>

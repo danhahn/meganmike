@@ -1,10 +1,12 @@
 <script lang="ts">
-	import { db, firestore } from '$lib/firebase/firebase';
+	import { auth, db, firestore } from '$lib/firebase/firebase';
 	import { collection, orderBy, query, where } from 'firebase/firestore';
-	import { collectionStore } from 'sveltefire';
+	import { collectionStore, userStore } from 'sveltefire';
 	import Comment from './Comment.svelte';
 
 	export let photoId: string;
+
+	const user = userStore(auth);
 
 	// create a ref to the comments with the photoId to select from firebase
 	$: postsRef = collection(db, 'comments');
@@ -14,5 +16,12 @@
 </script>
 
 {#each $comments as comment}
-	<Comment comment={comment.comment} timestamp={comment.timestamp} />
+	<Comment
+		comment={comment.comment}
+		timestamp={comment.timestamp}
+		displayName={comment.displayName}
+		avatar={comment.avatar}
+		userId={comment.userId}
+		uid={$user?.uid}
+	/>
 {/each}

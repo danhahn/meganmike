@@ -1,6 +1,6 @@
-import { onAuthStateChanged, type User } from 'firebase/auth';
+import { onAuthStateChanged, signInWithPopup, type User } from 'firebase/auth';
 import { writable } from 'svelte/store';
-import { auth } from './firebase';
+import { auth, provider } from './firebase';
 
 /**
  * @returns a store with the current firebase user
@@ -16,7 +16,7 @@ function userStore() {
 		};
 	}
 
-	const { subscribe } = writable(auth?.currentUser ?? null, (set) => {
+	const { subscribe } = writable<User | null>(auth?.currentUser ?? null, (set) => {
 		unsubscribe = onAuthStateChanged(auth, (user) => {
 			set(user);
 		});
@@ -30,3 +30,7 @@ function userStore() {
 }
 
 export const user = userStore();
+
+export async function functionSignInWithGoogle() {
+	await signInWithPopup(auth, provider);
+}

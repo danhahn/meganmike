@@ -2,11 +2,14 @@
 	import { timeSince } from '$lib/utils';
 	import type { Timestamp } from 'firebase/firestore';
 	import type { Comment as CommentType } from '$lib/types';
+	import type { User } from 'firebase/auth';
 
 	export let comment: CommentType['comment'];
 	export let timestamp: Timestamp;
 	export let displayName: CommentType['displayName'];
 	export let avatar: CommentType['avatar'];
+	export let uid: User['uid'] = '';
+	export let userId: CommentType['userId'];
 	import { onMount } from 'svelte';
 
 	let timeDisplay = timeSince(timestamp);
@@ -20,9 +23,12 @@
 	});
 </script>
 
-<div class="comment border-b border-base-300 p-1 flex gap-2">
+<div
+	class="comment border-b border-base-300 p-1 flex gap-2 px-4"
+	class:flex-row-reverse={uid === userId}
+>
 	<div>
-		<div class="avatar rows">
+		<div class="avatar rows" class:flex-row-reverse={uid === userId}>
 			<div class="w-12 rounded-full">
 				{#if avatar}
 					<img src={avatar} alt={displayName || ''} />
@@ -36,8 +42,8 @@
 		</div>
 	</div>
 	<div class="grid flex-1">
-		<div class="flex justify-between">
-			<p>UserName</p>
+		<div class="flex justify-between" class:flex-row-reverse={uid === userId}>
+			<p>{displayName}</p>
 			<p class="text-sm opacity-50 text-right">
 				{@html timeDisplay}
 			</p>

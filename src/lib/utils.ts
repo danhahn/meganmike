@@ -285,20 +285,28 @@ export async function toggleLike(id: string) {
 	const imageRef = doc(db, 'photos', id);
 	await setDoc(imageRef, { likes: increment(add ? 1 : -1) }, { merge: true });
 }
+export async function addComment({
+	photoId,
+	comment,
+	displayName,
+	avatar,
+	uid
+}: {
+	photoId: string;
+	comment: string;
+	displayName: string;
+	avatar?: string;
+	uid: string;
+}) {
+	console.log('adding comment', { photoId, comment, displayName, avatar });
 
-export async function addComment(
-	photoId: string,
-	comment: string,
-	displayName?: string,
-	avatar?: string
-) {
-	if (!uid || !comment || !photoId) return;
+	console.log('here');
 
 	// get a uuid for the comment
 	const newComment: Comment = {
 		photoId,
 		userId: uid,
-		displayName: displayName || 'Anonymous',
+		displayName: displayName,
 		avatar: avatar || '',
 		comment,
 		timestamp: Timestamp.now()
