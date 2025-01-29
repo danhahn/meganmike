@@ -351,3 +351,13 @@ export function timeSince(date: Timestamp) {
 		return 'now';
 	}
 }
+
+export function createSlug(title: string): string {
+	return title
+		.toLowerCase() // Convert to lowercase
+		.replace(/[^\w\s-]/g, '') // Remove special characters (except spaces and hyphens)
+		.replace(/\s+/g, '-') // Replace spaces with hyphens
+		.replace(/-+/g, '-') // Replace multiple hyphens with a single hyphen
+		.replace(/^-+/, '') // Remove leading hyphen
+		.replace(/-+$/, ''); // Remove trailing hyphen
+}
