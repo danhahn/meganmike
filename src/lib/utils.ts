@@ -286,23 +286,40 @@ export async function toggleLike(id: string) {
 	await setDoc(imageRef, { likes: increment(add ? 1 : -1) }, { merge: true });
 }
 
-export async function addComment(id: string, comment: string) {
-	if (!uid) {
-		return;
-	}
+export async function addComment(
+	photoId: string,
+	comment: string,
+	displayName?: string,
+	avatar?: string
+) {
+	if (!uid || !comment || !photoId) return;
 
 	// get a uuid for the comment
-	const uuid = Math.random().toString(36).substr(2, 9);
 	const newComment: Comment = {
-		uid: uid,
-		id: uuid,
+		photoId,
+		userId: uid,
+		displayName: displayName || 'Anonymous',
+		avatar: avatar || '',
 		comment,
 		timestamp: Timestamp.now()
 	};
 
-	const imageRef = doc(db, 'photos', id);
-	console.log(newComment);
-	await setDoc(imageRef, { comments: arrayUnion(newComment) }, { merge: true });
+	// each comment should be in a its own document.  This way we can query for all comments for a specific image
+	try {
+		const docRef = await addDoc(collection(db, 'comments'), newComment);
+		if (dev) {
+			console.log('Document written with ID: ', docRef.id);
+		}
+	} catch (e) {
+		console.error('Error adding comment: ', e);
+	}
+	// update the comments number in the image document
+	try {
+		const imageRef = doc(db, 'photos', photoId);
+		await setDoc(imageRef, { comments: increment(1) }, { merge: true });
+	} catch (e) {
+		console.error('Error updating comments count: ', e);
+	}
 }
 
 export const toggleOptions: Array<{ field: SortField; label: string }> = [
