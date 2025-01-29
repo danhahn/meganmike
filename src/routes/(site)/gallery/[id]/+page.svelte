@@ -2,26 +2,23 @@
 	import { UploadTask } from 'sveltefire';
 	import type { PageData } from './$types';
 	import Dialog from '$lib/components/Dialog.svelte';
-	import { breakpoint, rewriteUrl, toggleLike } from '$lib/utils';
+	import { breakpoint, rewriteUrl } from '$lib/utils';
 	import { db, storage } from '$lib/firebase/firebase';
 	import { dev } from '$app/environment';
 	import { Timestamp, addDoc, collection, doc, getDoc } from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { onMount } from 'svelte';
-	import type { Image, UserImageCount } from '$lib/types';
+	import type { Image } from '$lib/types';
 	import { getDownloadURL, ref } from 'firebase/storage';
 	import GalleryIntro from '$lib/components/GalleryIntro.svelte';
 	import GetStarted from '$lib/components/GetStarted.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
-	import { gallery, userImageCount } from '$lib/stores/galleryStore';
+	import { gallery } from '$lib/stores/galleryStore';
 	import viewport from '$lib/useViewportAction';
 	import InfoHeader from '$lib/components/InfoHeader.svelte';
 	import { userId, userLikes } from '$lib/stores/user';
-	import LikeButton from '$lib/components/LikeButton.svelte';
 	import Sort from '$lib/components/Sort.svelte';
 	import { goto } from '$app/navigation';
-	import CommentTrigger from '$lib/components/comments/CommentTrigger.svelte';
-	import CommentPopover from '$lib/components/comments/CommentPopover.svelte';
 
 	export let data: PageData;
 
@@ -309,17 +306,6 @@
 										height={iconSize}
 									/>
 								</button>
-
-								<div
-									class={`z-20 col-start-1 row-start-1 flex justify-between items-end pointer-events-none`}
-								>
-									<div class="pointer-events-auto">
-										<CommentTrigger size="sm" photo={item} />
-									</div>
-									<div class="pointer-events-auto">
-										<LikeButton size="sm" id={item.id} {toggleLike} likes={item.likes} />
-									</div>
-								</div>
 							</li>
 						{/if}
 					{/each}
