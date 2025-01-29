@@ -108,7 +108,10 @@
 			uploadedBy: displayName,
 			size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
 			likes: 0,
+			comments: 0,
 			gallery: data.id,
+			disabled: false,
+			uploaderUserId: $userId,
 			url
 		} as Image);
 		if (dev) {
