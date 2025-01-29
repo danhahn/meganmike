@@ -11,6 +11,7 @@
 	import type { Image } from '$lib/types';
 	import type { Comment as CommentType } from '$lib/types';
 	import { tick } from 'svelte';
+	import MobileComments from '$lib/components/comments/MobileComments.svelte';
 
 	let innerWidth = 0;
 	let loading: 'pending' | 'loading' | 'loaded' = 'pending';
@@ -42,6 +43,7 @@
 	$: if (width > 786) {
 		goto(`/gallery/${data.id}/${data.photoId}`);
 	}
+
 	$: if ($gallery.length) {
 		photoIndex = $gallery.findIndex((photo) => photo.id === data.photoId);
 		imagePositions = $gallery.map((photo, index) => ({ id: photo.id, position: index * width }));
@@ -89,17 +91,17 @@
 		goto(`/gallery/${data.id}`);
 	}
 
-	$: sortedComments =
-		currentPhoto?.comments?.sort(
-			(a: CommentType, b: CommentType) => a.timestamp.seconds - b.timestamp.seconds
-		) || [];
+	// $: sortedComments =
+	// 	currentPhoto?.comments?.sort(
+	// 		(a: CommentType, b: CommentType) => a.timestamp.seconds - b.timestamp.seconds
+	// 	) || [];
 
-	$: console.log(
-		sortedComments?.map((comment) => ({
-			date: new Date(comment.timestamp.seconds * 1000).toLocaleString(),
-			comment: comment.comment
-		}))
-	);
+	// $: console.log(
+	// 	sortedComments?.map((comment) => ({
+	// 		date: new Date(comment.timestamp.seconds * 1000).toLocaleString(),
+	// 		comment: comment.comment
+	// 	}))
+	// );
 
 	let comment: string = '';
 
@@ -171,7 +173,6 @@
 						<path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
 					</svg>
 				</button>
-				{showComments ? 'Hide Comments' : 'Show Comments'}
 			</div>
 			{#each $gallery as photo}
 				<div class="carousel-item grid w-full relative">
@@ -200,13 +201,11 @@
 						class:h-0={!showComments}
 						class:overflow-hidden={!showComments}
 					>
-						{#if sortedComments?.length && showComments && currentPhoto?.id === photo.id}
-							<div id={`comment-layer-${photo.id}`}>
-								{#each sortedComments as comment (comment.id)}
-									<Comment comment={comment.comment} timestamp={comment.timestamp} />
-								{/each}
-							</div>
-						{/if}
+						<div id={`comment-layer-${photo.id}`}>
+							{#if photo.comments && showComments && currentPhoto?.id === photo.id}
+								<MobileComments photoId={photo.id} />
+							{/if}
+						</div>
 
 						<div
 							class="bg-megan-300 p-2 add-comment"
