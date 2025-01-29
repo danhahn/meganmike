@@ -38,11 +38,11 @@ export type Image = {
 	dateAdded: Timestamp;
 	uploadedBy: string;
 	likes: number;
+	comments?: number;
 	size: string;
 	gallery: string;
 	id: string;
 	disabled?: boolean;
-	comments?: Comment[];
 };
 
 export type UserImageCount = {
@@ -52,8 +52,10 @@ export type UserImageCount = {
 export type UserImageCountList = { displayName: string; count: number }[];
 
 export type Comment = {
-	uid: string;
-	id: string;
+	photoId: string;
+	userId: string;
 	comment: string;
 	timestamp: Timestamp;
+	displayName: string;
+	avatar: string;
 };
