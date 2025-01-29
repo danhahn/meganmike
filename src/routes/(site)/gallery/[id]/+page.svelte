@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { UploadTask } from 'sveltefire';
+	import { UploadTask, userStore } from 'sveltefire';
 	import type { PageData } from './$types';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { breakpoint, rewriteUrl } from '$lib/utils';
-	import { db, storage } from '$lib/firebase/firebase';
+	import { auth, db, storage } from '$lib/firebase/firebase';
 	import { dev } from '$app/environment';
 	import { Timestamp, addDoc, collection, doc, getDoc } from 'firebase/firestore';
 	import Input from '$lib/components/forms/Input.svelte';
@@ -22,6 +22,8 @@
 
 	export let data: PageData;
 
+	const user = userStore(auth);
+
 	let dialog: HTMLDialogElement;
 	let helpDialog: HTMLDialogElement;
 	let sortButton: HTMLButtonElement;
@@ -32,7 +34,7 @@
 	let status: 'loading' | PageData['status'] = 'loading';
 	let files: FileList | null = null;
 	let displayNameInput: string;
-	let displayName: string;
+	$: displayName = $user?.displayName || undefined;
 	let isFilter = false;
 
 	$: status = data.status;
@@ -98,24 +100,30 @@
 			return false;
 		}
 
+		if (!$user) return;
+
 		const rawUrl = await getDownloadURL(ref(storage, `${data.id}/${file.name}`));
 		const url = rewriteUrl(rawUrl);
 
-		const docRef = await addDoc(collection(db, 'photos'), {
-			name: file.name,
-			dateTaken: Timestamp.fromDate(new Date(file.lastModified)),
-			dateAdded: Timestamp.now(),
-			uploadedBy: displayName,
-			size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
-			likes: 0,
-			comments: 0,
-			gallery: data.id,
-			disabled: false,
-			uploaderUserId: $userId,
-			url
-		} as Image);
-		if (dev) {
-			console.log('Document written with ID: ', docRef.id);
+		try {
+			const docRef = await addDoc(collection(db, 'photos'), {
+				name: file.name,
+				dateTaken: Timestamp.fromDate(new Date(file.lastModified)),
+				dateAdded: Timestamp.now(),
+				uploadedBy: displayName,
+				size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
+				likes: 0,
+				comments: 0,
+				gallery: data.id,
+				disabled: false,
+				uploaderUserId: $user.uid,
+				url
+			} as Image);
+			if (dev) {
+				console.log('Document written with ID: ', docRef.id);
+			}
+		} catch (error) {
+			console.error('Error adding document: ', error);
 		}
 
 		return true;
@@ -128,13 +136,6 @@
 			dialog.showModal();
 		}
 	}
-
-	onMount(() => {
-		const isInLocalStage = localStorage.getItem('displayName');
-		if (isInLocalStage) {
-			displayName = isInLocalStage;
-		}
-	});
 
 	let innerWidth = 0;
 	let innerHeight = 0;
