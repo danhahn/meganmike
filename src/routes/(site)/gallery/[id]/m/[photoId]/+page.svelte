@@ -24,7 +24,7 @@
 	}
 
 	let currentPhoto: Image | undefined = undefined;
-	let showComments: boolean = false;
+	let showComments: boolean = true;
 
 	let photoIndex: number | undefined = undefined;
 	let galleryWrapper: HTMLElement | null = null;
@@ -94,59 +94,8 @@
 		goto(`/gallery/${data.id}`);
 	}
 
-	let comment: string = '';
-
-	async function handleSubmit(event: SubmitEvent) {
-		event.preventDefault();
-		if (!$user) {
-			return;
-		}
-		if (!currentPhoto?.id) return;
-		if (!comment) return;
-		await addComment({
-			photoId: currentPhoto.id,
-			comment: comment,
-			uid: $user.uid,
-			displayName: $user?.displayName || 'anonymous',
-			avatar: $user?.photoURL || ''
-		});
-		console.log('update');
-		await tick();
-		// scroll to the last comment
-		const commentLayer = document.getElementById(`comment-layer-${currentPhoto.id}`);
-		console.log(commentLayer);
-		if (commentLayer) {
-			commentLayer.scrollTop = commentLayer.scrollHeight;
-		}
-		focusCommentInput();
-		comment = '';
-	}
-
-	function focusCommentInput() {
-		if (!currentPhoto) return;
-		const commentInput = document.getElementById(`comment-${currentPhoto.id}`);
-		if (commentInput) {
-			const commentLayer = document.getElementById(`comment-layer-${currentPhoto.id}`);
-			if (commentLayer) {
-				commentLayer.scrollTop = commentLayer.scrollHeight;
-			}
-			commentInput.focus();
-			commentInput.scrollIntoView({ behavior: 'smooth' });
-		}
-	}
-
-	function displayComments() {
-		showComments = true;
-		// if there is a current photo query the dom for the comments input and focus on it
-		tick().then(focusCommentInput);
-	}
-
 	function toggleDisplayComments() {
-		if (!showComments) {
-			displayComments();
-		} else {
-			showComments = false;
-		}
+		showComments = !showComments;
 	}
 
 	$: gridRows = 'grid-rows-[calc(100dvh-64px)_auto]';
@@ -194,53 +143,14 @@
 							data-image={photo.url}
 						/>
 					</div>
-					<div class="grid" id="comment-layer-{photo.id}">
-						<div>
-							{#if photo.comments && currentPhoto?.id === photo.id}
-								<MobileComments photoId={photo.id} />
-							{/if}
-						</div>
-					</div>
+
+					{#if showComments && currentPhoto?.id === photo.id}
+						<MobileComments photoId={photo.id} closeComments={() => (showComments = false)} />
+					{/if}
 				</div>
 			{/each}
 		</div>
 	{/if}
-</div>
-
-<div
-	class="bg-megan-300 z-[1000] p-2 add-comment fixed bottom-16 left-0 right-0"
-	class:show={showComments}
-	class:hidden={!showComments}
-	class:h-0={!showComments}
-	class:overflow-hidden={!showComments}
->
-	<form on:submit|preventDefault={handleSubmit} class="flex justify-stretch items-center">
-		<label
-			class="input input-md rounded-r-none outline-none input-bordered flex items-center gap-2 w-full"
-		>
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-4 h-4 fill-current"
-				><path
-					d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z"
-				/></svg
-			>
-			<input
-				type="text"
-				class="grow text-[16px]"
-				placeholder="Add A Comment"
-				bind:value={comment}
-			/>
-		</label>
-		<button
-			class="btn btn-primary btn-md bg-megan-500 border-megan-700 text-white rounded-l-none"
-			type="submit"
-		>
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-6 h-6 fill-current"
-				><path
-					d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"
-				/></svg
-			>
-		</button>
-	</form>
 </div>
 
 <div class="btm-nav shadow-2xl shadow-black/50 border-t border-megan-500 bg-megan-500 text-white">
@@ -290,15 +200,5 @@
 		height: 100%;
 		filter: blur(10px);
 		scale: 1.2;
-	}
-
-	#back-to-gallery {
-		transform: translateX(0);
-		transition: all 0.3s;
-	}
-
-	#back-to-gallery.hide {
-		/* slide off screen */
-		transform: translateX(calc(-100% - 1rem));
 	}
 </style>
