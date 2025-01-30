@@ -94,18 +94,6 @@
 		goto(`/gallery/${data.id}`);
 	}
 
-	// $: sortedComments =
-	// 	currentPhoto?.comments?.sort(
-	// 		(a: CommentType, b: CommentType) => a.timestamp.seconds - b.timestamp.seconds
-	// 	) || [];
-
-	// $: console.log(
-	// 	sortedComments?.map((comment) => ({
-	// 		date: new Date(comment.timestamp.seconds * 1000).toLocaleString(),
-	// 		comment: comment.comment
-	// 	}))
-	// );
-
 	let comment: string = '';
 
 	async function handleSubmit(event: SubmitEvent) {
@@ -206,10 +194,12 @@
 							data-image={photo.url}
 						/>
 					</div>
-					<div class="grid" popover id="comment-layer-{photo.id}">
-						{#if photo.comments && currentPhoto?.id === photo.id}
-							<MobileComments photoId={photo.id} />
-						{/if}
+					<div class="grid" id="comment-layer-{photo.id}">
+						<div>
+							{#if photo.comments && currentPhoto?.id === photo.id}
+								<MobileComments photoId={photo.id} />
+							{/if}
+						</div>
 					</div>
 				</div>
 			{/each}
@@ -218,7 +208,7 @@
 </div>
 
 <div
-	class="bg-megan-300 z-[1000] p-2 add-comment fixed bottom-0 left-0 right-0"
+	class="bg-megan-300 z-[1000] p-2 add-comment fixed bottom-16 left-0 right-0"
 	class:show={showComments}
 	class:hidden={!showComments}
 	class:h-0={!showComments}
@@ -253,7 +243,7 @@
 	</form>
 </div>
 
-<div class="btm-nav">
+<div class="btm-nav shadow-2xl shadow-black/50 border-t border-megan-500 bg-megan-500 text-white">
 	<button on:click={() => goto(`/gallery/${data.id}`)}>
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-6 h-6 fill-current"
 			><path
@@ -262,7 +252,6 @@
 		>
 	</button>
 	{#if currentPhoto}
-		<button popovertarget={`comment-layer-${currentPhoto.id}`}> comments </button>
 		<CommentTrigger photo={currentPhoto} isBottomNav on:click={toggleDisplayComments} />
 		<LikeButton
 			isBottomNav
@@ -293,8 +282,6 @@
 </div>
 
 <style>
-	[popover] {
-	}
 	.bg {
 		--bg: none;
 		background-image: var(--bg);
