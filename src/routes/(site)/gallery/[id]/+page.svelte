@@ -241,7 +241,7 @@
 				class="px-4 py-1 bg-megan-300/35 text-center text-megan-700 grid grid-cols-[auto_1fr_auto]"
 			>
 				<div class="flex items-center gap-4">
-					<a class="link flex" href="/gallery">
+					<a class="hidden link lg:flex" href="/gallery">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 -960 960 960"
@@ -263,7 +263,8 @@
 				</div>
 
 				<h3 class="text-lg">{data.title}</h3>
-				<button on:click={() => helpDialog.showModal()}>
+
+				<button class="hidden lg:block" on:click={() => helpDialog.showModal()}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 -960 960 960"
@@ -348,7 +349,7 @@
 		<button
 			class:hide-button={hideButton}
 			on:click={checkIfCanUpload}
-			class="translate-x-0 transition-all add-btn z-50 flex items-center bg-megan-600 hover:bg-megan-800 fixed bottom-8 rounded-full lg:bottom-20 right-4"
+			class="hidden translate-x-0 transition-all add-btn z-50 lg:flex items-center bg-megan-600 hover:bg-megan-800 fixed bottom-8 rounded-full lg:bottom-20 right-4"
 		>
 			<div class="text-white overflow-hidden transition-all">
 				<div class="pl-6 whitespace-nowrap uppercase">Add Your Memories</div>
@@ -364,6 +365,40 @@
 <dialog bind:this={sortDialog} class="absolute">
 	<Sort {sortDialog} />
 </dialog>
+
+<div
+	class="lg:hidden btm-nav shadow-2xl shadow-black/50 border-t border-megan-500 bg-megan-500 text-white"
+>
+	<button on:click={() => goto(`/gallery`)}>
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-6 h-6 fill-current"
+			><path
+				d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"
+			/></svg
+		>
+	</button>
+	<button on:click={() => helpDialog.showModal()}>
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-6 h-6 fill-current"
+			><path
+				d="M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
+			/></svg
+		>
+	</button>
+	<button on:click={checkIfCanUpload}>
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-8 h-8 fill-white"
+			><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg
+		>
+	</button>
+
+	{#if $user?.uid}
+		<a href="/gallery/profile">
+			<div class="avatar">
+				<div class="w-6 rounded-full bg-megan-50 border border-megan-500">
+					<img src={$user.photoURL} alt={$user.displayName} />
+				</div>
+			</div>
+		</a>
+	{/if}
+</div>
 
 <Dialog
 	id="gallryUpload"
@@ -386,13 +421,16 @@
 	{#if files}
 		<ul class="grid gap-1 overflow-scroll">
 			{#each Array.from(files) as file}
-				<li class="bg-megan-50 p-4">
+				<li class="p-1">
 					<UploadTask ref={`${data.id}/${file.name}`} data={file} let:progress let:snapshot>
 						{#if snapshot?.state === 'running'}
 							<p class="text-xs mb-2 text-left font-bold">{file.name}</p>
 							<div class="flex items-center gap-4">
-								<progress value={progress.toFixed(2)} max="100" class="flex-1" />
-								<p class="text-lg">{progress.toFixed(2)}%</p>
+								<progress
+									class="progress progress-primary w-56"
+									value={progress.toFixed(2)}
+									max="100"
+								></progress>
 							</div>
 						{/if}
 
@@ -401,12 +439,18 @@
 							<p class="text-xs mb-2 text-left font-bold">{file.name}</p>
 
 							<div class="flex items-center gap-4">
-								<progress value={progress.toFixed(2)} max="100" class="flex-1" />
+								<div class="flex">
+									<progress
+										class="progress progress-primary w-56"
+										value={progress.toFixed(2)}
+										max="100"
+									></progress>
+								</div>
 
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 -960 960 960"
-									class="w-8 h-8 fill-green-800"
+									class="w-6 h-6 fill-green-800"
 									><path
 										d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
 									/></svg
@@ -425,41 +469,7 @@
 </Dialog>
 
 <style lang="postcss">
-	progress[value] {
-		--color: rgb(147, 31, 62); /* the progress color */
-		--background: rgb(255, 255, 255); /* the background color */
-
-		-webkit-appearance: none;
-		-moz-appearance: none;
-		appearance: none;
-		height: 20px;
-		border: 1px solid var(--color);
-		border-radius: 10em;
-		background: var(--background);
-	}
-	progress[value]::-webkit-progress-bar {
-		border-radius: 10em;
-		background: var(--background);
-	}
-	progress[value]::-webkit-progress-value {
-		border-radius: 10em;
-		background: var(--color);
-	}
-	progress[value]::-moz-progress-bar {
-		border-radius: 10em;
-		background: var(--color);
-	}
-
-	.add-btn {
-		box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.5);
-	}
-
-	.add-btn:active {
-		translate: 1px 1px;
-		box-shadow: none;
-	}
-
-	.hide-button {
-		@apply translate-x-72;
+	:global(body:has(dialog[open])) {
+		overflow: hidden;
 	}
 </style>
