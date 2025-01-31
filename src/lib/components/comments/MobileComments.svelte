@@ -52,12 +52,10 @@
 </script>
 
 <div
-	class="h-96 bg-white fixed bottom-0 left-0 right-0 z-50 p-2 px-4 rounded-t-box grid grid-rows-[auto_1fr_auto] gap-2"
+	class="h-96 bg-white fixed bottom-0 left-0 right-0 z-50 py-2 rounded-t-box grid grid-rows-[auto_1fr_auto] gap-2"
 >
-	<div class="flex justify-between items-center">
+	<div class="flex justify-between items-center px-4 border-b pb-2 border-gray-200">
 		<p>Comments {c.length}</p>
-		<p>{photoId}</p>
-		<p>{count}</p>
 		<button on:click={closeComments}>close</button>
 	</div>
 	<div class="overflow-y-auto flex flex-col">
@@ -75,11 +73,11 @@
 			/>
 		{/each}
 	</div>
-	<form on:submit|preventDefault={handleSubmit} class="flex justify-stretch items-center">
+	<form on:submit|preventDefault={handleSubmit} class="flex justify-stretch items-center px-2">
 		<label
 			class="input input-md rounded-r-none outline-none input-bordered flex items-center gap-2 w-full"
 		>
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-4 h-4 fill-current"
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-6 h-6 fill-current"
 				><path
 					d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z"
 				/></svg
