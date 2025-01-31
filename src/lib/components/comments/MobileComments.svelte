@@ -4,12 +4,11 @@
 	import { collectionStore, userStore } from 'sveltefire';
 	import Comment from './Comment.svelte';
 	import { addComment } from '$lib/utils';
-	import { tick } from 'svelte';
-	import { page } from '$app/stores';
+	import { onMount, tick } from 'svelte';
+	import type { Comment as CommentType } from '$lib/types';
 
 	export let photoId: string;
-
-	$: console.log('photoId', photoId);
+	export let count: number;
 
 	export let closeComments: () => void;
 
@@ -17,24 +16,16 @@
 
 	let comment = '';
 
-	// create a ref to the comments with the photoId to select from firebase
-	$: postsRef = collection(db, 'comments');
-	$: q = query(postsRef, where('photoId', '==', photoId), orderBy('timestamp', 'desc'));
-
-	$: comments = collectionStore(firestore, q);
-
 	async function handleSubmit(event: SubmitEvent) {
+		event.preventDefault();
 		// get the current url
-		const currentPhoto = { id: $page.url.pathname.split('/').pop() };
+		const currentPhoto = { id: photoId };
 		// get the last part of the url
 
-		console.log('currentPhoto', currentPhoto.id);
-		event.preventDefault();
-		if (!$user) {
-			return;
-		}
-		if (!currentPhoto?.id) return;
+		if (!$user) return;
+		if (!currentPhoto.id) return;
 		if (!comment) return;
+
 		await addComment({
 			photoId: currentPhoto.id,
 			comment: comment,
@@ -42,26 +33,38 @@
 			displayName: $user?.displayName || 'anonymous',
 			avatar: $user?.photoURL || ''
 		});
-		console.log('update');
+
 		await tick();
 
 		comment = '';
 	}
+
+	let c: CommentType[] = [];
+
+	onMount(async () => {
+		const postsRef = collection(db, 'comments');
+		const q = query(postsRef, where('photoId', '==', photoId), orderBy('timestamp', 'desc'));
+		const comments = collectionStore<CommentType>(firestore, q as any);
+		comments.subscribe((data) => {
+			c = data;
+		});
+	});
 </script>
 
 <div
-	class="h-96 bg-white fixed bottom-0 left-0 right-0 z-50 p-2 rounded-t-box grid grid-rows-[auto_1fr_auto] gap-2"
+	class="h-96 bg-white fixed bottom-0 left-0 right-0 z-50 p-2 px-4 rounded-t-box grid grid-rows-[auto_1fr_auto] gap-2"
 >
 	<div class="flex justify-between items-center">
-		<p>Comments {$comments.length}</p>
+		<p>Comments {c.length}</p>
 		<p>{photoId}</p>
+		<p>{count}</p>
 		<button on:click={closeComments}>close</button>
 	</div>
 	<div class="overflow-y-auto flex flex-col">
-		{#if $comments.length === 0}
+		{#if c.length === 0}
 			<p class="text-center">No Comments Yet</p>
 		{/if}
-		{#each $comments as comment}
+		{#each c as comment}
 			<Comment
 				comment={comment.comment}
 				timestamp={comment.timestamp}
