@@ -9,7 +9,7 @@
 	export let displayName: CommentType['displayName'];
 	export let avatar: CommentType['avatar'];
 	export let uid: User['uid'] = '';
-	export let userId: CommentType['userId'];
+	export let userId: CommentType['userId'] = '';
 	import { onMount } from 'svelte';
 
 	let timeDisplay = timeSince(timestamp);
