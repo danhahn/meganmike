@@ -11,6 +11,7 @@
 	import MobileComments from '$lib/components/comments/MobileComments.svelte';
 	import { auth } from '$lib/firebase/firebase';
 	import { userStore } from 'sveltefire';
+	import Avatar from '$lib/components/Avatar.svelte';
 
 	const user = userStore(auth);
 
@@ -156,21 +157,13 @@
 	{/if}
 	{#if $user?.uid}
 		<a href="/gallery/profile">
-			<div class="avatar">
-				<div class="w-6 rounded-full bg-megan-50 border border-megan-500">
-					<img src={$user.photoURL} alt={$user.displayName} />
-				</div>
-			</div>
+			<Avatar />
 		</a>
 	{/if}
 </div>
 
 {#if showComments && currentPhoto?.id}
-	<MobileComments
-		count={0}
-		photoId={currentPhoto.id}
-		closeComments={() => (showComments = false)}
-	/>
+	<MobileComments photoId={currentPhoto.id} closeComments={() => (showComments = false)} />
 {/if}
 
 <style>

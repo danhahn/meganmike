@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Avatar from '$lib/components/Avatar.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
 	import Headline from '$lib/components/Headline.svelte';
 	import Section from '$lib/components/Section.svelte';
@@ -20,11 +21,7 @@
 			<!-- back to gallery -->
 			<Button variant="naked" on:click={goBack}>Back to Gallery</Button>
 			<div class="flex-1 self-center text-center">
-				<div class="avatar">
-					<div class="w-24 rounded-full bg-megan-50 border border-megan-500">
-						<img src={$user.photoURL} alt={$user.displayName} />
-					</div>
-				</div>
+				<Avatar size="large" />
 				<p>{$user.displayName}</p>
 				<!-- email address -->
 				<p>{$user.email}</p>

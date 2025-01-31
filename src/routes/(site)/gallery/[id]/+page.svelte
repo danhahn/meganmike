@@ -19,6 +19,7 @@
 	import { userId, userLikes } from '$lib/stores/user';
 	import Sort from '$lib/components/Sort.svelte';
 	import { goto } from '$app/navigation';
+	import Avatar from '$lib/components/Avatar.svelte';
 
 	export let data: PageData;
 
@@ -391,11 +392,7 @@
 
 	{#if $user?.uid}
 		<a href="/gallery/profile">
-			<div class="avatar">
-				<div class="w-6 rounded-full bg-megan-50 border border-megan-500">
-					<img src={$user.photoURL} alt={$user.displayName} />
-				</div>
-			</div>
+			<Avatar />
 		</a>
 	{/if}
 </div>

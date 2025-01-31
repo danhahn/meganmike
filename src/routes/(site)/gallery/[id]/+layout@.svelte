@@ -12,6 +12,7 @@
 	import { functionSignInWithGoogle } from '$lib/firebase';
 	import Button from '$lib/components/forms/Button.svelte';
 	import Logo from '$lib/components/Logo.svelte';
+	import Avatar from '$lib/components/Avatar.svelte';
 	export let data: LayoutData;
 
 	let photosQuery: any;
@@ -100,11 +101,7 @@
 		{:else}
 			<div class="hidden md:flex justify-between p-1 bg-megan-700">
 				<div class="flex gap-2 items-center pl-2">
-					<div class="avatar">
-						<div class="w-6 rounded-full bg-megan-50 border border-megan-500">
-							<img src={$user.photoURL} alt={$user.displayName} />
-						</div>
-					</div>
+					<Avatar size="small" />
 					<p class="text-sm font-sans font-extrabold text-megan-50">{$user.displayName}</p>
 				</div>
 				<div><Button size="small" on:click={() => signOut(auth)}>logout</Button></div>
