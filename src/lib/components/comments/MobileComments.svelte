@@ -8,7 +8,6 @@
 	import type { Comment as CommentType } from '$lib/types';
 
 	export let photoId: string;
-	export let count: number;
 
 	export let closeComments: () => void;
 
