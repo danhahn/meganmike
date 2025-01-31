@@ -3,13 +3,11 @@
 	import { gallery, currentPhoto as photoStore } from '$lib/stores/galleryStore';
 	export let data: PageData;
 	import LikeButton from '$lib/components/LikeButton.svelte';
-	import { addComment, toggleLike } from '$lib/utils';
+	import { toggleLike } from '$lib/utils';
 	import viewport, { type IntersectionObserverEntry } from '$lib/useViewportAction';
 	import CommentTrigger from '$lib/components/comments/CommentTrigger.svelte';
 	import type { PageData } from './$types';
 	import type { Image } from '$lib/types';
-	import type { Comment as CommentType } from '$lib/types';
-	import { tick } from 'svelte';
 	import MobileComments from '$lib/components/comments/MobileComments.svelte';
 	import { auth } from '$lib/firebase/firebase';
 	import { userStore } from 'sveltefire';
@@ -24,7 +22,7 @@
 	}
 
 	let currentPhoto: Image | undefined = undefined;
-	let showComments: boolean = true;
+	let showComments: boolean = false;
 
 	let photoIndex: number | undefined = undefined;
 	let galleryWrapper: HTMLElement | null = null;
@@ -37,12 +35,6 @@
 
 	$: if (currentPhoto) photoStore.set(currentPhoto);
 
-	$: if (currentPhoto) {
-		console.log('Current Photo:', currentPhoto);
-		console.log('Current Photo ID:', currentPhoto?.id);
-		console.log('Photo Index:', photoIndex);
-	}
-
 	$: if (width > 786) {
 		goto(`/gallery/${data.id}/${data.photoId}`);
 	}
@@ -53,6 +45,7 @@
 		loading = 'loaded';
 		currentPhoto = $gallery[photoIndex];
 	}
+
 	$: if (galleryWrapper && photoIndex !== undefined) {
 		// scroll to the current photo
 		galleryWrapper?.scrollTo({
@@ -97,8 +90,6 @@
 	function toggleDisplayComments() {
 		showComments = !showComments;
 	}
-
-	$: gridRows = 'grid-rows-[calc(100dvh-64px)_auto]';
 </script>
 
 <svelte:window bind:innerWidth />
@@ -123,9 +114,9 @@
 					</svg>
 				</button>
 			</div>
-			{#each $gallery as photo}
+			{#each $gallery as photo, index}
 				<div class="carousel-item grid w-full relative">
-					<div class={`grid w-[${width}px] ${gridRows}`} id={photo.id}>
+					<div class={`grid w-[${width}px] grid-rows-[calc(100dvh-64px)_auto]`} id={photo.id}>
 						<div class="overflow-clip col-start-1 row-start-1">
 							<div
 								use:viewport={addBackgroundStyle}
@@ -143,10 +134,6 @@
 							data-image={photo.url}
 						/>
 					</div>
-
-					{#if showComments && currentPhoto?.id === photo.id}
-						<MobileComments photoId={photo.id} closeComments={() => (showComments = false)} />
-					{/if}
 				</div>
 			{/each}
 		</div>
@@ -190,6 +177,14 @@
 		</a>
 	{/if}
 </div>
+
+{#if showComments && currentPhoto?.id}
+	<MobileComments
+		count={0}
+		photoId={currentPhoto.id}
+		closeComments={() => (showComments = false)}
+	/>
+{/if}
 
 <style>
 	.bg {
