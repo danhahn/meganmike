@@ -23,7 +23,7 @@
 	});
 </script>
 
-<div class="comment border-b border-base-300 p-1 flex gap-4 px-4">
+<div class="comment border-b border-base-300 dark:border-gray-700 p-1 flex gap-4 px-4">
 	<div>
 		<div class="avatar rows">
 			<div class="w-8 rounded-full mt-2">

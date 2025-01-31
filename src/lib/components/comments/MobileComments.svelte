@@ -52,9 +52,11 @@
 </script>
 
 <div
-	class="h-96 bg-white fixed bottom-0 left-0 right-0 z-50 py-2 rounded-t-box grid grid-rows-[auto_1fr_auto] gap-2"
+	class="h-96 bg-white dark:bg-slate-900 dark:text-slate-100 fixed bottom-0 left-0 right-0 z-50 py-2 rounded-t-box grid grid-rows-[auto_1fr_auto] gap-2"
 >
-	<div class="flex justify-between items-center px-4 border-b pb-2 border-gray-200">
+	<div
+		class="flex justify-between items-center px-4 border-b pb-2 border-gray-200 dark:border-gray-700"
+	>
 		<p>Comments {c.length}</p>
 		<button on:click={closeComments}>close</button>
 	</div>
@@ -75,7 +77,7 @@
 	</div>
 	<form on:submit|preventDefault={handleSubmit} class="flex justify-stretch items-center px-2">
 		<label
-			class="input input-md rounded-r-none outline-none input-bordered flex items-center gap-2 w-full"
+			class="input input-md rounded-r-none outline-none input-bordered flex items-center gap-2 w-full dark:bg-slate-800"
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-6 h-6 fill-current"
 				><path
@@ -90,7 +92,7 @@
 			/>
 		</label>
 		<button
-			class="btn btn-primary btn-md bg-megan-500 border-megan-700 text-white rounded-l-none"
+			class="btn btn-primary btn-md bg-megan-500 dark:bg-megan-800 border-megan-700 dark:border-megan-950 text-white rounded-l-none"
 			type="submit"
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-6 h-6 fill-current"
