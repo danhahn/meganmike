@@ -103,18 +103,7 @@
 		</div>
 	{:else if loading === 'loaded'}
 		<div class="carousel relative w-full" bind:this={galleryWrapper} on:scroll={watchScroll}>
-			<div class="fixed top-4 left-4 z-30" id="back-to-gallery">
-				<button on:click={backToGallery} class="text-white">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 -960 960 960"
-						class="w-6 h-6 fill-current"
-					>
-						<path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
-					</svg>
-				</button>
-			</div>
-			{#each $gallery as photo, index}
+			{#each $gallery as photo}
 				<div class="carousel-item grid w-full relative">
 					<div class={`grid w-[${width}px] grid-rows-[calc(100dvh-64px)_auto]`} id={photo.id}>
 						<div class="overflow-clip col-start-1 row-start-1">
@@ -141,12 +130,10 @@
 </div>
 
 <div class="btm-nav shadow-2xl shadow-black/50 border-t border-megan-500 bg-megan-500 text-white">
-	<button on:click={() => goto(`/gallery/${data.id}`)}>
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-6 h-6 fill-current"
-			><path
-				d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"
-			/></svg
-		>
+	<button on:click={backToGallery}>
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-6 h-6 fill-current">
+			<path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+		</svg>
 	</button>
 	{#if currentPhoto}
 		<CommentTrigger photo={currentPhoto} isBottomNav on:click={toggleDisplayComments} />
