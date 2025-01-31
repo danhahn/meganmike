@@ -99,7 +99,7 @@
 			<path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
 		</svg>
 	</button>
-	<div class="h-[calc(100% - 32px)] mt-8 grid place-content-center bg-megan-400">
+	<div class="h-[calc(100% - 32px)] grid place-content-center bg-megan-400">
 		{#if currentPhoto !== undefined}
 			<div class="grid">
 				<img
