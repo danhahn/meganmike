@@ -60,7 +60,7 @@
 	{:else if status === 'error'}
 		<p>Error</p>
 	{:else if status === 'success'}
-		{#if !$user?.uid}
+		{#if !$user?.displayName}
 			<div class="h-full bg-megan-400 grid place-content-center">
 				<div class="flex flex-col gap-4 items-center">
 					<Logo size="small" />
