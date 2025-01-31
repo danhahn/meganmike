@@ -34,7 +34,7 @@
 
 	let status: 'loading' | PageData['status'] = 'loading';
 	let files: FileList | null = null;
-	let displayNameInput: string;
+
 	$: displayName = $user?.displayName || undefined;
 	let isFilter = false;
 
@@ -78,20 +78,6 @@
 		if (dialog.returnValue === 'cancel') {
 			files = null;
 		}
-	}
-
-	function updateDisplayName() {
-		if (!displayNameInput) return;
-		// check if displayname is in local storage
-		const isInLocalStage = localStorage.getItem('displayName');
-		if (isInLocalStage) {
-			displayName = isInLocalStage;
-		} else {
-			localStorage.setItem('displayName', displayNameInput);
-			displayName = displayNameInput;
-		}
-		dialog.close();
-		input.click();
 	}
 
 	async function imageAddedToGallery(file: File) {
@@ -277,27 +263,29 @@
 				</button>
 			</div>
 
-			<div class="flex gap-2 p-1 px-2 bg-megan-50 border-b border-megan-600 overflow-x-auto">
-				{#if isFilter}
-					<button
-						class="font-mono text-xs bg-megan-400 px-4 uppercase py-[2px] rounded-full text-nowrap"
-						on:click={clearFilter}>clear</button
-					>
-				{:else}
-					{#each tagsCount as { displayName, count }}
+			{#if tagsCount.length}
+				<div class="flex gap-2 p-1 px-2 bg-megan-50 border-b border-megan-600 overflow-x-auto">
+					{#if isFilter}
 						<button
-							on:click={() => filterBaseOnUserName(displayName)}
-							class="font-mono text-xs bg-megan-600 px-2 pr-[2px] py-[2px] rounded-full text-megan-100 text-nowrap"
+							class="font-mono text-xs bg-megan-400 px-4 uppercase py-[2px] rounded-full text-nowrap"
+							on:click={clearFilter}>clear</button
 						>
-							{displayName}
-							<span
-								class="bg-white text-megan-600 rounded-full p-1 h-4 text-center inline-grid place-content-center"
-								>{count}</span
+					{:else}
+						{#each tagsCount as { displayName, count }}
+							<button
+								on:click={() => filterBaseOnUserName(displayName)}
+								class="font-mono text-xs bg-megan-600 px-2 pr-[2px] py-[2px] rounded-full text-megan-100 text-nowrap"
 							>
-						</button>
-					{/each}
-				{/if}
-			</div>
+								{displayName}
+								<span
+									class="bg-white text-megan-600 rounded-full p-1 h-4 text-center inline-grid place-content-center"
+									>{count}</span
+								>
+							</button>
+						{/each}
+					{/if}
+				</div>
+			{/if}
 
 			<dialog bind:this={helpDialog} class="bg-transparent">
 				<GetStarted close={() => helpDialog.close()} showCloseButton />
@@ -402,7 +390,7 @@
 <Dialog
 	id="gallryUpload"
 	bind:dialog
-	on:close={() => (displayName ? handleDialogClose() : updateDisplayName())}
+	on:close={handleDialogClose}
 	cancel={displayName ? 'Cancel' : null}
 	confirm={displayName
 		? 'Close'
@@ -410,13 +398,6 @@
 		<svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 -960 960 960" class="fill-current w-4"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/></svg>
 		</div>`}
 >
-	{#if !displayName}
-		<div class="grid gap-4 w-3/4 mx-auto">
-			<p>Please enter your name to upload your memories</p>
-			<Input id="diplayName" label="Your Name" bind:value={displayNameInput} />
-		</div>
-	{/if}
-
 	{#if files}
 		<ul class="grid gap-1 overflow-scroll">
 			{#each Array.from(files) as file}
