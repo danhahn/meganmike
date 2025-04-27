@@ -4,7 +4,8 @@
 	import Section from '$lib/components/Section.svelte';
 	import Button from '$lib/components/forms/Button.svelte';
 	import { title } from '$lib/utils';
-	import { fade, fly } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
+	import { Collection } from 'sveltefire';
 
 	const items = [
 		'engagment/water.jpg',
@@ -42,7 +43,16 @@
 </svelte:head>
 
 <Headline>Gallery</Headline>
+
 <Section>
+	<div class="flex gap-2">
+		<Collection ref={'galleries'} let:data let:count>
+			{#each data as gallery}
+				<Button href={`/gallery/${gallery.name}`}>{gallery.title}</Button>
+			{/each}
+			<p slot="loading">Loading...</p>
+		</Collection>
+	</div>
 	<div class="grid gap-2 p-2 grid-cols-1 sm:grid-cols-2">
 		{#each currentPageData as item}
 			{#key item}

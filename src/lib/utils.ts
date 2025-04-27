@@ -1,9 +1,19 @@
-import { addDoc, collection, deleteDoc, doc, increment, setDoc } from 'firebase/firestore';
+import {
+	addDoc,
+	arrayUnion,
+	collection,
+	deleteDoc,
+	doc,
+	increment,
+	setDoc,
+	Timestamp
+} from 'firebase/firestore';
 import { db } from './firebase/firebase';
 import { dev } from '$app/environment';
 import { goto } from '$app/navigation';
 import { userId, userLikes } from './stores/user';
 import type { SortField } from './stores/sortStore';
+import type { Comment } from './types';
 
 export const title = '❤️ Megan and Mike 2024 ❤️';
 const imageUrl = 'https://ik.imagekit.io/hahnster';
@@ -275,9 +285,87 @@ export async function toggleLike(id: string) {
 	const imageRef = doc(db, 'photos', id);
 	await setDoc(imageRef, { likes: increment(add ? 1 : -1) }, { merge: true });
 }
+export async function addComment({
+	photoId,
+	comment,
+	displayName,
+	avatar,
+	uid
+}: {
+	photoId: string;
+	comment: string;
+	displayName: string;
+	avatar?: string;
+	uid: string;
+}) {
+	console.log('adding comment', { photoId, comment, displayName, avatar });
+
+	console.log('here');
+
+	// get a uuid for the comment
+	const newComment: Comment = {
+		photoId,
+		userId: uid,
+		displayName: displayName,
+		avatar: avatar || '',
+		comment,
+		timestamp: Timestamp.now()
+	};
+
+	// each comment should be in a its own document.  This way we can query for all comments for a specific image
+	try {
+		const docRef = await addDoc(collection(db, 'comments'), newComment);
+		if (dev) {
+			console.log('Document written with ID: ', docRef.id);
+		}
+	} catch (e) {
+		console.error('Error adding comment: ', e);
+	}
+	// update the comments number in the image document
+	try {
+		const imageRef = doc(db, 'photos', photoId);
+		await setDoc(imageRef, { comments: increment(1) }, { merge: true });
+	} catch (e) {
+		console.error('Error updating comments count: ', e);
+	}
+}
 
 export const toggleOptions: Array<{ field: SortField; label: string }> = [
 	{ field: 'dateAdded', label: 'Date Added' },
 	{ field: 'dateTaken', label: 'Date Taken' },
 	{ field: 'likes', label: 'Likes' }
 ];
+
+// function that takes a date and return the amount time since that date
+// e.g. 2 days ago, 3 hours ago, 4 minutes ago, 5 seconds ago
+export function timeSince(date: Timestamp) {
+	const now = new Date();
+	const elapsed = now.getTime() - date.seconds * 1000; // Difference in milliseconds
+
+	const seconds = Math.floor(elapsed / 1000);
+	const minutes = Math.floor(seconds / 60);
+	const hours = Math.floor(minutes / 60);
+	const days = Math.floor(hours / 24);
+
+	if (days > 0) {
+		return `<span class="font-bold">${days}</span> day${days === 1 ? '' : 's'} ago`;
+	} else if (hours > 0) {
+		return `<span class="font-bold">${hours}</span> hour${hours === 1 ? '' : 's'} ago`;
+	} else if (minutes > 0) {
+		return `<span class="font-bold">${minutes}</span> minute${minutes === 1 ? '' : 's'} ago`;
+	} else if (seconds > 0) {
+		return `<span class="font-bold">${seconds}</span> second${seconds === 1 ? '' : 's'} ago`;
+	} else {
+		return 'now';
+	}
+}
+
+export function createSlug(title: string): string {
+	return title
+		.toLowerCase() // Convert to lowercase
+		.replace(/[^\w\s-]/g, '') // Remove special characters (except spaces and hyphens)
+		.replace(/\s+/g, '-') // Replace spaces with hyphens
+		.replace(/-+/g, '-') // Replace multiple hyphens with a single hyphen
+		.replace(/^-+/, '') // Remove leading hyphen
+		.replace(/-+$/, ''); // Remove trailing hyphen
+}

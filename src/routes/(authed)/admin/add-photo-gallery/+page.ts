@@ -34,7 +34,11 @@ export const load = (async () => {
 		querySnapshot.docs.map(async (doc) => {
 			// get count of images in the gallery
 			const q1 = query(collection(db, 'photos'), where('gallery', '==', doc.data().name), limit(1));
-			const q2 = query(collection(db, 'photos'), where('gallery', '==', doc.data().name));
+			const q2 = query(
+				collection(db, 'photos'),
+				where('gallery', '==', doc.data().name),
+				where('disabled', '==', false)
+			);
 
 			// get the first image from the gallery
 			const snapshot = await getDocs(q1);

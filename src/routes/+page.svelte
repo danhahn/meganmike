@@ -32,7 +32,7 @@
 </script>
 
 <Background>
-	<Navigation class="shadow-lg shadow-black/20 fixed lg:static right-0 left-0 z-10" />
+	<Navigation class="shadow-lg lg:static right-0 left-0 z-10" />
 
 	<div class="flex flex-col gap-6 mt-11">
 		<div
@@ -52,13 +52,5 @@
 <style lang="postcss">
 	:global(html) {
 		background-color: theme(colors.megan.50);
-	}
-
-	ul {
-		@apply text-center grid grid-rows-1 gap-2 lg:gap-4 text-xl;
-	}
-
-	li span {
-		@apply text-megan-500 block text-2xl lg:text-3xl mb-1 lg:mb-4;
 	}
 </style>

@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import Button from '$lib/components/forms/Button.svelte';
 	import type { PageData } from './$types';
-	import { gallery } from '$lib/stores/galleryStore';
+	import { gallery, currentPhoto as photoStore } from '$lib/stores/galleryStore';
 	import type { Image } from '$lib/types';
 	import LikeButton from '$lib/components/LikeButton.svelte';
 	import { toggleLike } from '$lib/utils';
 	import DownloadHelp from '$lib/components/DownloadHelp.svelte';
+	import CommentTrigger from '$lib/components/comments/CommentTrigger.svelte';
+	import TriggerContainer from '$lib/components/TriggerContainer.svelte';
 
 	export let data: PageData;
 
@@ -14,6 +15,7 @@
 	$: currentIndex = $gallery.findIndex((photo) => photo.id === data.photoId);
 
 	$: currentPhoto = $gallery[currentIndex];
+	$: photoStore.set(currentPhoto);
 
 	let prevPhoto: Image | undefined;
 
@@ -28,7 +30,52 @@
 
 	$: imageSize = innerWidth > 768 ? 1000 : innerWidth;
 
+	$: if (innerWidth < 768) {
+		goto(`/gallery/${data.id}/m/${data.photoId}`);
+	}
+
 	let dialog: HTMLDialogElement;
+
+	function goToNextPhoto() {
+		if (nextPhoto) {
+			goto(`/gallery/${data.id}/${nextPhoto.id}`);
+		}
+	}
+
+	function goToPrevPhoto() {
+		if (prevPhoto) {
+			goto(`/gallery/${data.id}/${prevPhoto.id}`);
+		}
+	}
+
+	function backToGallery() {
+		goto(`/gallery/${data.id}`);
+	}
+
+	function handleKeyDown(event: KeyboardEvent) {
+		switch (event.key) {
+			case 'ArrowRight':
+			case 'ArrowDown':
+			case 'j':
+				goToNextPhoto();
+				break;
+			case 'ArrowLeft':
+			case 'ArrowUp':
+			case 'k':
+				goToPrevPhoto();
+				break;
+			case 'Escape':
+				if (dialog.open) {
+					dialog.close();
+				} else {
+					backToGallery();
+				}
+				break;
+			case 'h':
+				dialog.showModal();
+				break;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -38,12 +85,12 @@
 		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
 	/>
 </svelte:head>
-<svelte:window bind:innerWidth />
+<svelte:window bind:innerWidth on:keydown={handleKeyDown} />
 
 {#if data.status === 404}
 	<p>Page Not found</p>
 {:else}
-	<button class="fixed z-50 top-6 left-2" on:click={() => goto(`/gallery/${data.id}`)}>
+	<button class="fixed z-50 top-10 left-2" on:click={() => goto(`/gallery/${data.id}`)}>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 -960 960 960"
@@ -52,7 +99,7 @@
 			<path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
 		</svg>
 	</button>
-	<div class="h-full grid place-content-center fixed bg-megan-400 inset-0">
+	<div class="h-[calc(100% - 32px)] grid place-content-center bg-megan-400">
 		{#if currentPhoto !== undefined}
 			<div class="grid">
 				<img
@@ -60,12 +107,23 @@
 					alt=""
 					class="max-h-screen shadow-lg shadow-black/40 col-start-1 row-start-1"
 				/>
-				<LikeButton id={currentPhoto.id} {toggleLike} likes={currentPhoto.likes} />
+				<div class="join fixed top-10 right-20">
+					<CommentTrigger photo={currentPhoto} isJoined />
+					<LikeButton id={currentPhoto.id} {toggleLike} likes={currentPhoto.likes} isJoined />
+					<TriggerContainer on:click={() => goto(currentPhoto.url)} isJoined>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 -960 960 960"
+							class="w-6 h-6 fill-current"
+							><path
+								d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"
+							/></svg
+						>
+					</TriggerContainer>
+				</div>
 			</div>
-		{/if}
 
-		{#if currentPhoto !== undefined}
-			<div class="fixed inset-4 top-auto right-auto flex gap-4">
+			<div class="fixed top-12 right-8 flex gap-4">
 				<button on:click={() => dialog.showModal()}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -77,19 +135,6 @@
 						/></svg
 					>
 				</button>
-				<a
-					href={currentPhoto.url}
-					target="_blank"
-					class=" flex gap-2 items-center bg-megan-600/60 text-white px-6 py-2 rounded-full z-50"
-					>Download <svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 -960 960 960"
-						class="w-6 h-6 fill-current"
-						><path
-							d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"
-						/></svg
-					></a
-				>
 			</div>
 		{/if}
 

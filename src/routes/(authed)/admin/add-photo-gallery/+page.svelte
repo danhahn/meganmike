@@ -4,6 +4,7 @@
 	import Button from '$lib/components/forms/Button.svelte';
 	import Input from '$lib/components/forms/Input.svelte';
 	import { db } from '$lib/firebase/firebase';
+	import { createSlug, title } from '$lib/utils';
 	import type { PageData } from './$types';
 	import { Timestamp, addDoc, collection } from 'firebase/firestore';
 
@@ -27,7 +28,9 @@
 		await addDoc(collection(db, firebaseDoc), {
 			name: encodeURIComponent(galleryName.replaceAll("'", '').replaceAll(' ', '-').toLowerCase()),
 			title: galleryName,
-			photos: [],
+			slug: createSlug(title),
+			createdBy: 'admin',
+			totalPhotos: 0,
 			date: Timestamp.now()
 		});
 		galleryName = '';
